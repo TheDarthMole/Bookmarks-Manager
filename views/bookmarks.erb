@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome to Login</title>
+    </head>
+    <body>
+        <p>[<%= session %>]</p>
+        <p>Username: <%= session[:user] %></p>
+        <p>Password: <%= session[:pass] %></p>
+        <form action="/" method="post">
+            <input type='submit' value='Go to Login'>
+        </form>
+    </body>
+</html>
