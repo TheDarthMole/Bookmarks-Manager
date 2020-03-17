@@ -17,7 +17,6 @@ get "/" do
 end
 
 post "/" do
-    puts "params:" , params
     session[:user] = params[:username]
     session[:pass] = params[:password]
     if @@db.try_login(session[:user], session[:pass])
@@ -32,13 +31,12 @@ get "/register" do
 end
 
 post "/register" do
-#     params[:username]
-#     params[:fname]
-#     params[:lname]
-#     params[:email]
-#     params[:password]
-#     params[:retry-password]
-#     params[:]
+    if params[:password] == params[:retry-password] # Checks to make sure the
+        
+    else
+        # Use a ruby variable to show an error on the erb
+    end
+            
     
 end
 
