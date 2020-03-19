@@ -4,6 +4,7 @@ class BookmarkDB
     
     def initialize
         @db = SQLite3::Database.new "./database.db"
+        @time = Time.new
     end
 
     def check_account_exists(username)
@@ -72,12 +73,33 @@ class BookmarkDB
         end
     end
     
+    def add_bookmark(bookmarkName, url, owner_id)
+        currentTime = @time.strftime("%s")
+        statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
+        @db.execute statement, bookmarkName, url, owner_id, currentTime
+    end
     
+    def get_all_bookmarks
+        # Only gets enabled bookmarks
+        statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE enabled = 1"
+        return @db.execute statement
+    end
+    
+    def add_sample_data
+        add_bookmark("Facebook","https://facebook.com",1)
+        add_bookmark("Instagram","https://instagram.com",1)
+        add_bookmark("Reddit","https://reddit.com",1)
+        add_bookmark("Messenger","https://messenger.com",1)
+        add_bookmark("Youtube","https://youtube.com",1)
+        add_bookmark("Google","https://google.com",1)
+        add_bookmark("Github","https://github.com",1)
+    end
     
 end
 
 db = BookmarkDB.new
-db.display_users
+# puts db.get_all_bookmarks
+# db.display_users
 # puts db.create_account("Jake1","Jake123","Jake","Robison","JakeRobison@gmail.com")
 # # puts db.check_account_exists("Nicki")
 # puts db.try_login("Nick","password1")

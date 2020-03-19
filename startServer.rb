@@ -8,7 +8,6 @@ set :bind, '0.0.0.0'
 
 configure do
     @@db = BookmarkDB.new
-    puts @@db.check_account_exists("Nick")
     enable :sessions
 end
 
@@ -27,6 +26,7 @@ post "/" do
 end
 
 get "/register" do
+    @passwordNotMatch = false
     erb :register
 end
 
@@ -34,6 +34,8 @@ post "/register" do
     if params[:password] == params[:retry-password] # Checks to make sure the
         
     else
+        passwordNotMatch = true
+        erb :register
         # Use a ruby variable to show an error on the erb
     end
             
@@ -44,6 +46,7 @@ get "/loggedin" do
     if not @@db.try_login(session[:user], session[:pass])
         redirect "/"
     else
+        @bookmarks = @@db.get_all_bookmarks
         erb :bookmarks
     end
 end
