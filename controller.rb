@@ -1,4 +1,5 @@
 require "sqlite3"
+require "openssl"
 
 class BookmarkDB
     
@@ -41,6 +42,7 @@ class BookmarkDB
     def create_account(username, password, first_name, last_name, email) # Doesn't need account type, seperate function to update
         if not get_account_id(username)
             if not get_username_email(email) ## unique username and email
+                salt = 
                 statement = "INSERT INTO users (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)"
                 retStatement = @db.execute statement, username, password, first_name, last_name, email
                 puts retStatement
@@ -101,5 +103,5 @@ db = BookmarkDB.new
 # puts db.get_all_bookmarks
 # db.display_users
 # puts db.create_account("Jake1","Jake123","Jake","Robison","JakeRobison@gmail.com")
-# # puts db.check_account_exists("Nicki")
+# puts db.check_account_exists("Nicki")
 # puts db.try_login("Nick","password1")
