@@ -6,8 +6,12 @@ require_relative 'controller'
 set :bind, '0.0.0.0'
 # set :public_folder, 'public'
 
+
+before do
+    @db = BookmarkDB.new
+end
+
 configure do
-    @@db = BookmarkDB.new
     enable :sessions
 end
 
@@ -18,7 +22,7 @@ end
 post "/" do
     session[:user] = params[:username]
     session[:pass] = params[:password]
-    if @@db.try_login(session[:user], session[:pass])
+    if @db.try_login(session[:user], session[:pass])
         redirect "/loggedin"
     else
         redirect "/"
@@ -43,10 +47,10 @@ post "/register" do
 end
 
 get "/loggedin" do
-    if not @@db.try_login(session[:user], session[:pass])
+    if not @db.try_login(session[:user], session[:pass])
         redirect "/"
     else
-        @bookmarks = @@db.get_all_bookmarks
+        @bookmarks = @db.get_all_bookmarks
         erb :bookmarks
     end
 end
