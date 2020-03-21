@@ -146,6 +146,16 @@ class BookmarkDB
         @db.execute statement, bookmark_name,url,currentTime,bookmark_id
     end
 
+    def remove_bookmark(bookmark_id)
+        statement = "DELETE FROM database WHERE bookmark_id =? "
+        @db.execute statement, bookmark_id
+    end
+
+    def get_user_bookmark(owner_id)
+        statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE owner_id=?"
+        return @db.execute statement, owner_id
+    end
+
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
