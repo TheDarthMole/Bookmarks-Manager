@@ -241,6 +241,7 @@ class BookmarkDB
         else
             puts "password is not long enough"
         end
+        return false
     end
 
     #checks if email is valid
