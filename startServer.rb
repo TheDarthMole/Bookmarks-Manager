@@ -16,10 +16,6 @@ configure do
     enable :sessions
 end
 
-before do
-    @database = BookmarkDB.new
-end
-
 get "/" do
     erb :loginPage
 end
