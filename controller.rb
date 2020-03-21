@@ -102,6 +102,9 @@ class BookmarkDB
         if newPassword != newPasswordCheck
             return "Passwords do not match"
         end
+        if newPassword == oldPassword
+            return "New password can't be the same as old password"
+        end
         if not password_check(newPassword)
             return "Insecure password"
         end
@@ -223,16 +226,21 @@ class BookmarkDB
                         if password.match? /[$&+,:;=?@#|'<>.^*()%!-]/
                             puts "pass"
                             return true
+                        else
+                            puts "No special chars: $ & + , : ; = ? @ # | ' < > . ^ * ( ) % ! - "
                         end
-                        puts "No special chars: $ & + , : ; = ? @ # | ' < > . ^ * ( ) % ! - "
+                    else
+                        puts "No numbers in password"
                     end
-                    puts "No numbers in password"
+                else
+                    puts "No upper letters"
                 end
-                puts "No upper letters"
+            else
+                puts "No lower case letters"
             end
+        else
             puts "password is not long enough"
         end
-        puts "password not secure enough"
         return false
     end
 
