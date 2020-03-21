@@ -6,9 +6,9 @@ var number = document.getElementById("number");
 var length = document.getElementById("length");
 
 
-passwordConfirm.onkeyup = function() {
-    // Add some function to check that the passwords are the same, if they are then enable the submit button
-}
+// passwordConfirm.onkeyup = function() {
+//     // Add some function to check that the passwords are the same, if they are then enable the submit button
+// }
 
 // When the user clicks on the password field, show the message box
 password.onfocus = function() {
