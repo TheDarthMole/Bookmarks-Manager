@@ -54,6 +54,9 @@ class BookmarkDB
     end
     
     def create_account(username, password, first_name, last_name, email) # Doesn't need account type, seperate function to update
+        if not password_check(password)
+            return "Insecure password"
+        end
         if not get_account_id(username)
             if not get_username_email(email) ## unique username and email
                 hash = generate_hash(password,salt="")
@@ -80,6 +83,9 @@ class BookmarkDB
     end
     
     def change_password(username, oldPassword, newPassword)
+        if not password_check(newPassword)
+            return "insecure password"
+        end
         if check_account_exists(username)
             if try_login(username, oldPassword)
                 hash = generate_hash(newPassword,salt="")
