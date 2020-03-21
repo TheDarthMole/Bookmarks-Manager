@@ -8,6 +8,7 @@ class BookmarkDB
         @time = Time.new
     end
 
+
     def check_account_exists(username)
         # If get_account_id returns something, there's an account
         # Else return false because no account
@@ -172,8 +173,30 @@ class BookmarkDB
     def exec(statement) # Mainly for testing
         return @db.execute statement
     end
-    
-end
+
+    def password_check(password)
+        if password.length >= 8
+                puts "password long enough"
+            if password.match? /[a-z]/
+                if password.match? /[A-Z]/
+                    puts "A-Z"
+                    if password.match? /[0-9]/
+                        puts "0-9"
+                        if password.match? /[!]/
+                            puts "pass"
+                            return true
+                        end
+                    end
+                end
+            end
+        end
+        puts "password fail"
+        return false
+    end
+
+    def email_check(email)
+
+    end
 
 # This section is for testing the database
 db = BookmarkDB.new
