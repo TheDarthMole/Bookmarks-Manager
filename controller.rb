@@ -174,23 +174,25 @@ class BookmarkDB
         return @db.execute statement
     end
 
+    #Checks password for security, only allows 8+ chars that includes lowercase,Uppercase,numbers and special chars
     def password_check(password)
         if password.length >= 8
-                puts "password long enough"
             if password.match? /[a-z]/
                 if password.match? /[A-Z]/
-                    puts "A-Z"
                     if password.match? /[0-9]/
-                        puts "0-9"
                         if password.match? /[$&+,:;=?@#|'<>.^*()%!-]/
                             puts "pass"
                             return true
                         end
+                        puts "No special chars: $ & + , : ; = ? @ # | ' < > . ^ * ( ) % ! - "
                     end
+                    puts "No numbers in password"
                 end
+                puts "No upper letters"
             end
+            puts "password is not long enough"
         end
-        puts "password fail"
+        puts "password not secure enough"
         return false
     end
 
