@@ -199,8 +199,12 @@ class BookmarkDB
     end
 
 # This section is for testing the database
-db = BookmarkDB.new
-db.display_users
+    db = BookmarkDB.new
+    db.display_users
+    db.password_check("Hello123!")
+
+
+end
 
 
 
