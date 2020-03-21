@@ -214,7 +214,5 @@ end
     db.password_check("Hello123!")
 
 
-end
-
 
 
