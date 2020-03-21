@@ -182,7 +182,7 @@ class BookmarkDB
                     puts "A-Z"
                     if password.match? /[0-9]/
                         puts "0-9"
-                        if password.match? /[!]/
+                        if password.match? /[$&+,:;=?@#|'<>.^*()%!-]/
                             puts "pass"
                             return true
                         end
