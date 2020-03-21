@@ -75,7 +75,7 @@ post "/change-password" do
     puts params 
     puts session[:user]
     puts params[:password]
-    @error = @db.change_password(session[:user], params[:oldpassword], params[:password], params[:passwordconfirm])
+    session[:changePassMessage] = @db.change_password(session[:user], params[:oldpassword], params[:password], params[:passwordconfirm])
     puts @error
     redirect "/change-password"
 end
