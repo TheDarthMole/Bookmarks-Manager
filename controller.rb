@@ -8,7 +8,15 @@ class BookmarkDB
         @time = Time.new
     end
 
-
+    def check_account_enabled(user_id)
+        statement = "SELECT enabled FROM users WHERE user_id = ?"
+        retStatement = @db.execute statement username
+        if retStatement[0][0] == 1
+            return true
+        end
+        return false
+    end
+    
     def check_account_exists(username)
         # If get_account_id returns something, there's an account
         # Else return false because no account
@@ -85,9 +93,9 @@ class BookmarkDB
         end
     end
     
-    def change_password(username, oldPassword, newPassword)
-        if not password_check(newPassword)
-            return "insecure password"
+    def change_password(username, oldPassword, newPassword, newPasswordCheck)
+        if not password_check(newPassword) and not password_check(newPasswordCheck)
+            return "Insecure password"
         end
         if check_account_exists(username)
             if try_login(username, oldPassword)

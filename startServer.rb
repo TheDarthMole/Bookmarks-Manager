@@ -5,7 +5,6 @@ require 'openssl'
 require_relative 'controller'
 
 set :bind, '0.0.0.0'
-# set :public_folder, 'public'
 
 
 before do
@@ -65,5 +64,15 @@ post "/loggedin" do
 end
 
 get "/change-password" do
-    erb :changePassword
+    if session[:user]
+        erb :changePassword
+    else
+        redirect "/"
+    end
+end
+
+post "/change-password" do
+    puts params 
+    @error = @db.change_password(params[:username],params[:old-password], params[:password], params[:password-confirm])
+    redirect "/change-password"
 end
