@@ -205,6 +205,8 @@ class BookmarkDB
     def email_check(email)
 
     end
+    
+end
 
 # This section is for testing the database
     db = BookmarkDB.new
