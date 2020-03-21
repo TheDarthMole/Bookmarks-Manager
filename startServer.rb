@@ -8,8 +8,11 @@ set :bind, '0.0.0.0'
 # set :public_folder, 'public'
 
 configure do
-    @@database = BookmarkDB.new
     enable :sessions
+end
+
+before do
+    @database = BookmarkDB.new
 end
 
 get "/" do
@@ -19,7 +22,7 @@ end
 post "/" do
     session[:user] = params[:username]
     session[:pass] = params[:password]
-    if @@database.try_login(session[:user], session[:pass])
+    if @database.try_login(session[:user], session[:pass])
         redirect "/loggedin"
     else
         redirect "/"
@@ -44,10 +47,10 @@ post "/register" do
 end
 
 get "/loggedin" do
-    if not @@database.try_login(session[:user], session[:pass])
+    if not @database.try_login(session[:user], session[:pass])
         redirect "/"
     else
-        @bookmarks = @@database.get_all_bookmarks
+        @bookmarks = @database.get_all_bookmarks
         erb :bookmarks
     end
 end
