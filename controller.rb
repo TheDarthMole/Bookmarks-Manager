@@ -57,6 +57,9 @@ class BookmarkDB
         if not password_check(password)
             return "Insecure password"
         end
+        if not email_check(email)
+            return "Incorrect Email"
+        end
         if not get_account_id(username)
             if not get_username_email(email) ## unique username and email
                 hash = generate_hash(password,salt="")
@@ -202,8 +205,14 @@ class BookmarkDB
         return false
     end
 
+    #checks if email is valid
     def email_check(email)
-
+        if email.match? /\A[a-z0-9\+\-_\.]+@[a-z\d\-.]+\.[a-z]+\z/i
+            puts "Valid email"
+            return true
+        end
+        puts "bad email"
+        return false
     end
     
 end
@@ -212,6 +221,9 @@ end
     db = BookmarkDB.new
     db.display_users
     db.password_check("Hello123!")
+   db.email_check("Jake@123.com")
+   db.email_check("lol@lol")
+   db.email_check("lol")
 
 
 
