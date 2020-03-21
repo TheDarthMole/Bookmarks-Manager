@@ -23,6 +23,12 @@ class BookmarkDB
         retStatement = @db.execute statement, username
         return retStatement[0]
     end
+
+    def get_account_username(user_id)
+        statement = "SELECT user_id FROM users where user_id=?"
+        retStatement = @db.execute statement, user_id
+        return retStatement[0]
+    end
     
     def try_login(username, password)
         if check_account_exists(username) 
@@ -105,9 +111,9 @@ class BookmarkDB
         
     end
     
-    def get_login_attempts(username)
-        statement = "SELECT login_attempts FROM users WHERE username = ?"
-        retStatement = @db.execute statement, username
+    def get_login_attempts(owner_id)
+        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
+        retStatement = @db.execute statement, owner_id
         return retStatement[0]
     end
     
@@ -139,7 +145,23 @@ class BookmarkDB
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE enabled = 1"
         return @db.execute statement
     end
-    
+
+    def update_bookmark(bookmark_id, bookmark_name, url)
+        currentTime = @time.strftime("%s")
+        statement = "UPDATE bookmarks SET bookmark_name=?, url=?, creation_time =? WHERE bookmark_id = ?"
+        @db.execute statement, bookmark_name,url,currentTime,bookmark_id
+    end
+
+    def remove_bookmark(bookmark_id)
+        statement = "DELETE FROM database WHERE bookmark_id =? "
+        @db.execute statement, bookmark_id
+    end
+
+    def get_user_bookmark(owner_id)
+        statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE owner_id=?"
+        return @db.execute statement, owner_id
+    end
+
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
@@ -224,6 +246,7 @@ end
    db.email_check("Jake@123.com")
    db.email_check("lol@lol")
    db.email_check("lol")
+db.update_bookmark(1,"hello","https://google.com")
 
 
 
