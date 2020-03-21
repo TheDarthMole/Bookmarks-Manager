@@ -48,17 +48,15 @@ post "/register" do
 end
 
 get "/loggedin" do
-<<<<<<< HEAD
     if not @db.try_login(session[:user], session[:pass])
         redirect "/"
     else
         @bookmarks = @db.get_all_bookmarks
-=======
-    if not @@database.try_login(session[:user], session[:pass])
+    end
+    if not @db.try_login(session[:user], session[:pass])
         redirect "/"
     else
-        @bookmarks = @@database.get_all_bookmarks
->>>>>>> master
+        @bookmarks = @db.get_all_bookmarks
         erb :bookmarks
     end
 end
