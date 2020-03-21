@@ -139,7 +139,13 @@ class BookmarkDB
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE enabled = 1"
         return @db.execute statement
     end
-    
+
+    def update_bookmark(bookmark_id, bookmark_name, url)
+        currentTime = @time.strftime("%s")
+        statement = "UPDATE bookmarks SET bookmark_name=?, url=?, creation_time =? WHERE bookmark_id = ?"
+        @db.execute statement, bookmark_name,url,currentTime,bookmark_id
+    end
+
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
@@ -224,6 +230,7 @@ end
    db.email_check("Jake@123.com")
    db.email_check("lol@lol")
    db.email_check("lol")
+db.update_bookmark(1,"hello","https://google.com")
 
 
 
