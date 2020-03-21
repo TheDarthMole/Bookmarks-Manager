@@ -8,7 +8,15 @@ class BookmarkDB
         @time = Time.new
     end
 
-
+    def check_account_enabled(user_id)
+        statement = "SELECT enabled FROM users WHERE user_id = ?"
+        retStatement = @db.execute statement username
+        if retStatement[0][0] == 1
+            return true
+        end
+        return false
+    end
+    
     def check_account_exists(username)
         # If get_account_id returns something, there's an account
         # Else return false because no account
@@ -34,13 +42,12 @@ class BookmarkDB
         if check_account_exists(username) 
             statement = "SELECT password, salt FROM users WHERE username = ?"
             retStatement = @db.execute(statement, username)[0]
-            puts password
             if not password or not username
                 puts "Returning early..."
+                puts "try_login password: " + password
+                puts "try_login username: " + username
                 return false
             end
-            puts "Pass=" + password
-            puts "Salt=" + retStatement[1]
             hash = generate_hash(password,salt=retStatement[1])
             if hash[0] == retStatement[0]
                 puts "Can login"
@@ -91,20 +98,22 @@ class BookmarkDB
         end
     end
     
-    def change_password(username, oldPassword, newPassword)
+    def change_password(username, oldPassword, newPassword, newPasswordCheck)
+        if newPassword != newPasswordCheck
+            return "Passwords do not match"
+        end
         if not password_check(newPassword)
-            return "insecure password"
+            return "Insecure password"
         end
-        if check_account_exists(username)
-            if try_login(username, oldPassword)
-                hash = generate_hash(newPassword,salt="")
-                statement = "UPDATE users SET password = ?, salt = ? WHERE username = ?"
-                @db.execute statement, hash[0], hash[1], username
-                return "Successful"
-            end
-            return "Incorrect old password"
+        if try_login(username, oldPassword)
+            hash = generate_hash(newPassword,salt="")
+            puts hash[0]
+            puts hash[1]
+            statement = "UPDATE users SET password = ?, salt = ? WHERE username = ?"
+            puts @db.execute statement, hash[0], hash[1], username
+            return "Successful"
         end
-        return "Incorrect username"
+        return "Incorrect old password"
     end
     
     def add_security_questions(username, sec_question, sec_answer)
@@ -240,14 +249,6 @@ class BookmarkDB
 end
 
 # This section is for testing the database
-    db = BookmarkDB.new
-    db.display_users
-    db.password_check("Hello123!")
-   db.email_check("Jake@123.com")
-   db.email_check("lol@lol")
-   db.email_check("lol")
-db.update_bookmark(1,"hello","https://google.com")
-
-
+db = BookmarkDB.new
 
 

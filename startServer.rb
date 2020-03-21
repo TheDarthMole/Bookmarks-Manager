@@ -5,7 +5,6 @@ require 'openssl'
 require_relative 'controller'
 
 set :bind, '0.0.0.0'
-# set :public_folder, 'public'
 
 
 before do
@@ -14,10 +13,6 @@ end
 
 configure do
     enable :sessions
-end
-
-before do
-    @database = BookmarkDB.new
 end
 
 get "/" do
@@ -69,5 +64,18 @@ post "/loggedin" do
 end
 
 get "/change-password" do
-    erb :changePassword
+    if session[:user]
+        erb :changePassword
+    else
+        redirect "/"
+    end
+end
+
+post "/change-password" do
+    puts params 
+    puts session[:user]
+    puts params[:password]
+    session[:changePassMessage] = @db.change_password(session[:user], params[:oldpassword], params[:password], params[:passwordconfirm])
+    puts @error
+    redirect "/change-password"
 end
