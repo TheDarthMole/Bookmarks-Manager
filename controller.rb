@@ -36,13 +36,12 @@ class BookmarkDB
         if check_account_exists(username) 
             statement = "SELECT password, salt FROM users WHERE username = ?"
             retStatement = @db.execute(statement, username)[0]
-            puts password
             if not password or not username
                 puts "Returning early..."
+                puts "try_login password: " + password
+                puts "try_login username: " + username
                 return false
             end
-            puts "Pass=" + password
-            puts "Salt=" + retStatement[1]
             hash = generate_hash(password,salt=retStatement[1])
             if hash[0] == retStatement[0]
                 puts "Can login"
@@ -102,8 +101,10 @@ class BookmarkDB
         end
         if try_login(username, oldPassword)
             hash = generate_hash(newPassword,salt="")
+            puts hash[0]
+            puts hash[1]
             statement = "UPDATE users SET password = ?, salt = ? WHERE username = ?"
-            @db.execute statement, hash[0], hash[1], username
+            puts @db.execute statement, hash[0], hash[1], username
             return "Successful"
         end
         return "Incorrect old password"
@@ -226,13 +227,6 @@ class BookmarkDB
 end
 
 # This section is for testing the database
-    db = BookmarkDB.new
-    db.display_users
-    db.password_check("Hello123!")
-   db.email_check("Jake@123.com")
-   db.email_check("lol@lol")
-   db.email_check("lol")
-
-
+db = BookmarkDB.new
 
 
