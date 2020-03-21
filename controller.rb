@@ -23,6 +23,12 @@ class BookmarkDB
         retStatement = @db.execute statement, username
         return retStatement[0]
     end
+
+    def get_account_username(user_id)
+        statement = "SELECT user_id FROM users where user_id=?"
+        retStatement = @db.execute statement, user_id
+        return retStatement[0]
+    end
     
     def try_login(username, password)
         if check_account_exists(username) 
@@ -105,9 +111,9 @@ class BookmarkDB
         
     end
     
-    def get_login_attempts(username)
-        statement = "SELECT login_attempts FROM users WHERE username = ?"
-        retStatement = @db.execute statement, username
+    def get_login_attempts(owner_id)
+        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
+        retStatement = @db.execute statement, owner_id
         return retStatement[0]
     end
     
