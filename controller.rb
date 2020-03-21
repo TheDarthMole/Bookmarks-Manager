@@ -94,19 +94,19 @@ class BookmarkDB
     end
     
     def change_password(username, oldPassword, newPassword, newPasswordCheck)
-        if not password_check(newPassword) and not password_check(newPasswordCheck)
+        if newPassword != newPasswordCheck
+            return "Passwords do not match"
+        end
+        if not password_check(newPassword)
             return "Insecure password"
         end
-        if check_account_exists(username)
-            if try_login(username, oldPassword)
-                hash = generate_hash(newPassword,salt="")
-                statement = "UPDATE users SET password = ?, salt = ? WHERE username = ?"
-                @db.execute statement, hash[0], hash[1], username
-                return "Successful"
-            end
-            return "Incorrect old password"
+        if try_login(username, oldPassword)
+            hash = generate_hash(newPassword,salt="")
+            statement = "UPDATE users SET password = ?, salt = ? WHERE username = ?"
+            @db.execute statement, hash[0], hash[1], username
+            return "Successful"
         end
-        return "Incorrect username"
+        return "Incorrect old password"
     end
     
     def add_security_questions(username, sec_question, sec_answer)
