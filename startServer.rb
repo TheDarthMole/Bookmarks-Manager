@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
+require 'openssl'
 require_relative 'controller'
 
 set :bind, '0.0.0.0'
@@ -47,13 +48,24 @@ post "/register" do
 end
 
 get "/loggedin" do
+<<<<<<< HEAD
     if not @db.try_login(session[:user], session[:pass])
         redirect "/"
     else
         @bookmarks = @db.get_all_bookmarks
+=======
+    if not @@database.try_login(session[:user], session[:pass])
+        redirect "/"
+    else
+        @bookmarks = @@database.get_all_bookmarks
+>>>>>>> master
         erb :bookmarks
     end
 end
 
 post "/loggedin" do
+end
+
+get "/change-password" do
+    erb :changePassword
 end
