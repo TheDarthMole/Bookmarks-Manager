@@ -13,9 +13,8 @@ class BookmarkDB
         # Else return false because no account
         if get_account_id(username)
             return true
-        else
-            return false
         end
+        return false
     end
     
     def get_account_id(username)
@@ -25,12 +24,27 @@ class BookmarkDB
     end
     
     def try_login(username, password)
-        statement = "SELECT user_id from users WHERE username = ? AND password = ?"
-        retStatement = @db.execute statement, username, password
-        if retStatement[0]
+        statement = "SELECT password, salt FROM users WHERE username = ?"
+        retStatement = @db.execute(statement, username)[0]
+        puts password
+        if not password or not username
+            puts "Returning early..."
+            return false
+        end
+        
+        iter = 20000
+        hash = OpenSSL::Digest::SHA256.new
+        len = hash.digest_length
+        value = OpenSSL::KDF.pbkdf2_hmac(password, salt: retStatement[1], iterations: iter,
+                                 length: len, hash: hash)
+        puts value
+        puts retStatement[0]
+        if value == retStatement[0]
+            puts "Can login"
             return true
         end
-            return false
+        puts "Cant login"
+        return false
     end
     
     def get_username_email(email)
@@ -42,15 +56,50 @@ class BookmarkDB
     def create_account(username, password, first_name, last_name, email) # Doesn't need account type, seperate function to update
         if not get_account_id(username)
             if not get_username_email(email) ## unique username and email
-                salt = 
-                statement = "INSERT INTO users (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)"
-                retStatement = @db.execute statement, username, password, first_name, last_name, email
+                salt = OpenSSL::Random.random_bytes(16)
+                iter = 20000
+                hash = OpenSSL::Digest::SHA256.new
+                len = hash.digest_length
+                key = OpenSSL::KDF.pbkdf2_hmac(password, salt: salt, iterations: iter,
+                                length: len, hash: hash)
+                
+                statement = "INSERT INTO users (username, password, salt, first_name, last_name, email) VALUES (?, ?, ?, ?, ?, ?)"
+                retStatement = @db.execute statement, username, key, salt, first_name, last_name, email
                 puts retStatement
                 return "successful"
             end
+            puts "User tried to make an account with duplicate email #{email}"
             return "fail-email"
         end
+        puts "User tried to make an account with duplicate username #{username}"
         return "fail-username"
+    end
+    
+    def upgrade_account_to_admin(username)
+        if check_account_exists(username)
+            statement = "UPDATE users SET role = 2 WHERE username = ?"
+            @db.execute statement, username
+        else
+            puts "Error upgrading #{username} to admin"
+        end
+    end
+    
+    def change_password(username, oldPassword, newPassword)
+        if check_account_exists(username)
+            if try_login(username, oldPassword)
+                salt = OpenSSL::Random.random_bytes(16)
+                iter = 20000
+                hash = OpenSSL::Digest::SHA256.new
+                len = hash.digest_length
+                key = OpenSSL::KDF.pbkdf2_hmac(newPassword, salt: salt, iterations: iter,
+                                length: len, hash: hash)
+                statement = "UPDATE users SET password = ?, salt = ? WHERE username = ?"
+                @db.execute statement, key, salt, username
+                return "Successful"
+            end
+            return "Incorrect old password"
+        end
+        return "Incorrect username"
     end
     
     def add_security_questions(username, sec_question, sec_answer)
@@ -99,7 +148,13 @@ class BookmarkDB
     
 end
 
+# This section is for testing the database
 db = BookmarkDB.new
+db.display_users
+# db.create_account("testNick","Password","Test","Two","testNick@Gmail.com")
+# puts db.change_password("test1","Password","password1")
+
+# username, password, first_name, last_name, email
 # puts db.get_all_bookmarks
 # db.display_users
 # puts db.create_account("Jake1","Jake123","Jake","Robison","JakeRobison@gmail.com")
