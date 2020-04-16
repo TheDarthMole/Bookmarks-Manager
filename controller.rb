@@ -118,7 +118,16 @@ class BookmarkDB
         end
         return "Incorrect old password"
     end
-    
+
+    def get_security_questions()
+        statement = "SELECT security_question FROM security_question"
+        retStatement = @db.execute statement
+        return retStatement
+
+    end
+
+
+
     def add_security_questions(username, sec_question, sec_answer)
         
     end
@@ -142,7 +151,6 @@ class BookmarkDB
                 counter+=1
                     
             end
-            puts
         end
     end
     
