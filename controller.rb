@@ -175,7 +175,6 @@ class BookmarkDB
         bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
         #debug code
         p bookmark_id_list
-
         bookmark_list=[]
         #goes through bookmark ID
         bookmark_id_list.each { |i|
@@ -185,6 +184,18 @@ class BookmarkDB
         p bookmark_list
         return bookmark_list
     end
+
+    def search_owner_bookmarks(owner)
+        #gets user_id based on name
+        owner_id = @db.execute("SELECT user_id FROM users WHERE first_name=? OR last_name=?", owner)
+        bookmark_list=[]
+        owner_id.each do
+            |i|
+            bookmark_list.append(get_user_bookmark(i))
+        end
+        return bookmark_list
+    end
+
 
     def search_bookmarks(tags, url, owner)
 
