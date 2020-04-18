@@ -154,10 +154,10 @@ class BookmarkDB
         #check if tag exists
         if not get_tag_id(tag_name)
             @db.execute("INSERT INTO tags(name) VALUES (?)", tag_name)
-            tag_id = get_tag_id(tag_name)
         end
+        tag_id = get_tag_id(tag_name)
         statement = "INSERT INTO bookmark_tags (?,?)"
-        retStatement = @db.execute statement, tag_name, bookmark_id
+        retStatement = @db.execute statement, tag_id, bookmark_id
         return retStatement
     end
 
