@@ -168,8 +168,6 @@ class BookmarkDB
         @db.execute statement,tag_id,bookmark_id
     end
 
-
-
     def search_bookmarks(tags, url, owner)
 
     end
