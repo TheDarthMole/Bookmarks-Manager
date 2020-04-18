@@ -170,20 +170,20 @@ class BookmarkDB
 
     def search_tags_bookmarks(tag_name)
         #gets tag_id based on name
-
         tag_id = get_tag_id(tag_name)
-
         #saves array of bookmarks with tag_ID
         bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
+        #debug code
+        p bookmark_id_list
 
+        bookmark_list=[]
         #goes through bookmark ID
-        for i in bookmark_id_list
-            bookmark_list =+ get_bookmark(bookmark_id_list[i])
-        end
-        puts bookmark_list
-
+        bookmark_id_list.each { |i|
+            bookmark_list.append(get_bookmark(i))
+        }
+        #debug code
+        p bookmark_list
         return bookmark_list
-
     end
 
     def search_bookmarks(tags, url, owner)
@@ -204,8 +204,9 @@ class BookmarkDB
     end
 
     def get_bookmark(bookmark_id)
-        statement = "SELECT bookmark_name,url, owner_id, creation_time FROM bookmarks WHERE enabled = 1 AND bookmark_id= ?"
-        return statement, bookmark_id
+        statement = "SELECT bookmark_name,url, owner_id, creation_time FROM bookmarks WHERE enabled=1 AND bookmark_id=?"
+        retStatment = @db.execute statement, bookmark_id
+        return retStatment[0]
     end
 
     def update_bookmark(bookmark_id, bookmark_name, url)
@@ -308,5 +309,5 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-
+db.search_tags_bookmarks("hello")
 
