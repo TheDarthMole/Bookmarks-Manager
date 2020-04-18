@@ -29,10 +29,17 @@ post "/" do
     end
 end
 
+get "/login" do
+    erb :login
+end
+
 get "/register" do
     @passwordNotMatch = false
     erb :register
 end
+
+
+
 
 post "/register" do
     if params[:password] == params[:retry-password] # Checks to make sure the
@@ -58,9 +65,6 @@ get "/loggedin" do
         @bookmarks = @db.get_all_bookmarks
         erb :bookmarks
     end
-end
-
-post "/loggedin" do
 end
 
 get "/change-password" do
