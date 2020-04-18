@@ -8,9 +8,10 @@ class BookmarkDB
         @time = Time.new
     end
 
+    #Account stuff
     def check_account_enabled(user_id)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
-        retStatement = @db.execute statement username
+        retStatement = @db.execute statement, username
         if retStatement[0][0] == 1
             return true
         end
@@ -119,29 +120,10 @@ class BookmarkDB
         return "Incorrect old password"
     end
 
-    def get_security_questions()
-        statement = "SELECT security_question FROM security_question"
-        retStatement = @db.execute statement
-        return retStatement
-
-    end
-
-
-
-    def add_security_questions(username, sec_question, sec_answer)
-        
-    end
-    
-    def get_login_attempts(owner_id)
-        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
-        retStatement = @db.execute statement, owner_id
-        return retStatement[0]
-    end
-    
     def display_users
         statement = "SELECT * FROM users"
         retStatement = @db.execute statement
-            puts "user_id, username, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
+        puts "user_id, username, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
         for row in retStatement
             counter=0
             for item in row
@@ -149,17 +131,39 @@ class BookmarkDB
                     print item.to_s + "|"
                 end
                 counter+=1
-                    
+
             end
         end
     end
+
+    def get_login_attempts(owner_id)
+        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
+        retStatement = @db.execute statement, owner_id
+        return retStatement[0]
+    end
+
+    #security questions
+
+    def get_security_questions(username)
+        statement = "SELECT security_question FROM security_question"
+        retStatement = @db.execute statement
+        return retStatement[0]
+
+    end
+
+
+    def add_security_questions(username, sec_question, sec_answer)
+        
+    end
+
+    #bookmarks
     
     def add_bookmark(bookmarkName, url, owner_id)
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
     end
-    
+
     def get_all_bookmarks
         # Only gets enabled bookmarks
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE enabled = 1"
@@ -208,7 +212,10 @@ class BookmarkDB
         db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
         db.upgrade_account_to_admin("Lujain")
     end
-    
+
+
+    #Security functions
+
     def generate_hash(password, salt="")
         if salt == ""
             salt = OpenSSL::Random.random_bytes(16)
@@ -259,6 +266,15 @@ class BookmarkDB
             return true
         end
         puts "bad email"
+        return false
+    end
+
+    def plain_text_check(name)
+        if name.downcase.match? /[a-z]/
+            puts "plaintext"
+            return true
+        end
+        puts "not plaintext"
         return false
     end
     
