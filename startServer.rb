@@ -19,13 +19,20 @@ get "/" do
     erb :index
 end
 
-post "/" do
-    session[:user] = params[:username]
+get "/dashboard" do
+    # Need validation here for login
+    erb :dashboard
+end
+
+post "/login" do
+    session[:user] = params[:email]
     session[:pass] = params[:password]
+    puts session[:user]
+    puts session[:pass]
     if @db.try_login(session[:user], session[:pass])
         redirect "/loggedin"
     else
-        redirect "/"
+        redirect "/login"
     end
 end
 
@@ -35,6 +42,7 @@ end
 
 get "/register" do
     @passwordNotMatch = false
+    @accountExists = false
     erb :register
 end
 
@@ -42,8 +50,16 @@ end
 
 
 post "/register" do
-    if params[:password] == params[:retry-password] # Checks to make sure the
-        
+    puts params
+    if params[:password] == params[:passwordrepeat] # Checks to make sure the
+        if !@db.check_account_exists(params[:email])
+#             @db.create_account(username, password, first_name, last_name, email) # Change for username removal
+#             @db.add_security_questions(params[:email], params[:question], params[:answer])
+            erb :login
+        else
+            accountExists = true
+            erb :register
+        end
     else
         passwordNotMatch = true
         erb :register
