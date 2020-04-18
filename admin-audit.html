@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bookmarks - Admin</title>
+    <!-- Required meta tags -->
+    <meta name="description" content="Bookmark application" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+
+    <!-- Font Awesome -->
+    <link href="assets/css/fontawesome/all.min.css" rel="stylesheet" />
+    <!--load all styles -->
+    <link href="assets/css/fontawesome/brands.min.css" rel="stylesheet" />
+    <!--load all styles -->
+
+    <!-- Stylesheet CSS -->
+    <link rel="stylesheet" href="assets/css/style.min.css" />
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+            <a class="navbar-brand" href="index.html"><i class="far fa-bookmark"></i> Acme corp</a>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                <ul class="navbar-nav ml-lg-auto align-items-lg-center">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="admin-bookmarks.html">BOOKMARKS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-user.html">USERS</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="admin-audit.html">AUDIT<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fa fa-user mr-2"></i> LOGOUT
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- modal-section -->
+
+    <!-- dashboard section -->
+    <section class="dashboard-section container py-5">
+        <div class="saved-bookmarks">
+            <div class="mb-3">
+                <h4>Audit Log</h4>
+            </div>
+            <div class="d-flex align-items-end mb-3 flex-wrap">
+                <div class="mb-3 mb-md-0 mr-3">
+                    <label for="">From Date</label>
+                    <input type="date" class="form-control" />
+                </div>
+                <div class="mb-3 mb-md-0 mr-3">
+                    <label for="">To Date</label>
+                    <input type="date" class="form-control" />
+                </div>
+                <div class="mb-3 mb-md-0">
+                    <select name="" id="" class="form-control">
+						<option value="">Sort By</option>
+						<option value="">Ascending</option>
+						<option value="">Descending</option>
+					</select>
+                </div>
+                <div class="ml-md-auto">
+                    <button class="btn btn-info">
+						EXPORT TO EXCEL
+					</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bookmark">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Log</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-left">
+                                <p class="mb-0">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas eum, omnis officiis corporis vitae nihil unde ut modi sit.
+                                </p>
+                            </td>
+                            <td>
+                                01:55 PM 01/02/2020
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <p class="mb-0">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas eum, omnis officiis corporis vitae nihil unde ut modi sit.
+                                </p>
+                            </td>
+                            <td>
+                                01:55 PM 01/02/2020
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <p class="mb-0">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas eum, omnis officiis corporis vitae nihil unde ut modi sit.
+                                </p>
+                            </td>
+                            <td>
+                                01:55 PM 01/02/2020
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <p class="mb-0">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas eum, omnis officiis corporis vitae nihil unde ut modi sit.
+                                </p>
+                            </td>
+                            <td>
+                                01:55 PM 01/02/2020
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <p class="mb-0">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas eum, omnis officiis corporis vitae nihil unde ut modi sit.
+                                </p>
+                            </td>
+                            <td>
+                                01:55 PM 01/02/2020
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
+                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries 5 of 25</p>
+                <ul class="pagination mb-md-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="page-item ">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <footer class="mt-5 mt-md-0 py-3 border-top">
+        <div class="container">
+            <div class="footer-flex">
+                <div>
+                    <div><i class="far fa-bookmark mb-2"></i> Acme corp</div>
+                    <small class="d-block mb-3 text-muted">© 2020</small>
+                </div>
+                <div>
+                    <ul class="footer-list text-small">
+                        <li><a class="text-muted" href="#">Contact</a></li>
+                        <li><a class="text-muted" href="#">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/common.js"></script>
+</body>
+
+</html>
