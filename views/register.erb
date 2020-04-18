@@ -26,10 +26,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp<span class="sr-only">(current)</span>
-            </a>
+					<span class="navbar-toggler-icon"></span>
+			</button>
+            <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp<span class="sr-only">(current)</span></a>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav ml-lg-auto align-items-lg-center">
                     <li class="nav-item">
@@ -39,40 +38,67 @@
                         <a class="nav-link" href="#">CONTACT</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/register">
-                            <button class="btn btn-light">REGISTER</button>
+                        <a class="nav-link" href="/login">
+                            <button class="btn btn-outline-light">LOGIN</button>
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <!-- login section -->
-    <section class="login-section container py-5">
+    <!-- signup section -->
+    <section class="signup-section container py-5">
         <div class="row align-items-center justify-content-between">
-            <form class="col-md-6" action="login" method="post">
+            <form class="col-md-6" method="post" action="/register">
                 <div class="mb-4 mb-md-0">
                     <h1 class="text-info mb-4">
                         <i class="far fa-bookmark"></i> Acme corp
                     </h1>
+                    
                     <div class="form-group">
-                        <label for="">Email Address<span class="text-danger">*</span></label>
-                        <input name="email" type="text" class="form-control" placeholder="john@doe.com" />
+                        <label for="fname">First Name<span class="text-danger">*</span></label>
+                        <input name="fname" type="text" class="form-control" placeholder="john" required/>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lname">Last Name<span class="text-danger">*</span></label>
+                        <input name="lname" type="text" class="form-control" placeholder="doe" required/>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address<span class="text-danger">*</span></label>
+                        <input name="email" type="text" class="form-control" placeholder="john@doe.com" required/>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password<span class="text-danger">*</span></label>
+                        <input name="password" type="password" class="form-control" placeholder="********" required/>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="passwordrepeat">Repeat Password<span class="text-danger">*</span></label>
+                        <input name="passwordrepeat" type="password" class="form-control" placeholder="********" required/>
                     </div>
                     <div class="form-group">
-                        <label for="">Password<span class="text-danger">*</span></label>
-                        <input name="password" type="password" class="form-control" placeholder="********" />
+                        <label for="question">Security Question<span class="text-danger">*</span></label>
+                        <select name="question" id="" class="form-control" required>
+								<option value="">Select Option</option>
+								<option value="1">What is the name of your best friend?</option>
+								<option value="2">What is your middle name?</option>
+								<option value="3">What is your first pet's name?</option>
+								<option value="4">Where was your Mother or Father born?</option>
+						</select>
+                    </div>
+                    <div class="form-group">
+                        <label for="answer">Security Answer<span class="text-danger">*</span></label>
+                        <input name="answer" type="text" class="form-control" placeholder="Answer" required/>
                     </div>
                 </div>
-                <div class="mb-4">
-                    <a>
-                        <button type="submit" class="btn btn-info">LOGIN</button>
-                    </a>
-                    <div>
-                        <a href="#" class="font-sm">Forgot Password?</a>
-                    </div>
-                </div>
-                <p>Don't have an account? <a href="/register">Register</a></p>
+                <button class="btn btn-info mb-4">REGISTER</button>
+                <p>Already have an account? <a href="/login">Login</a></p>
+                <p>
+                    By clicking on register, you agree to our terms &amp; conditions.
+                </p>
             </form>
             <div class="col-md-6">
                 <img src="https://placeimg.com/640/480/tech" alt="" class="img-fluid" />
@@ -99,6 +125,7 @@
         </div>
     </footer>
 
+    <script src="js/main.js"></script>
     <script src="js/common.js"></script>
 </body>
 
