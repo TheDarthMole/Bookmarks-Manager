@@ -8,28 +8,27 @@ class BookmarkDB
         @time = Time.new
     end
 
-    #Account stuff
     def check_account_enabled(user_id)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
-        retStatement = @db.execute statement, username
+        retStatement = @db.execute statement username
         if retStatement[0][0] == 1
             return true
         end
         return false
     end
     
-    def check_account_exists(username)
+    def check_account_exists(email)
         # If get_account_id returns something, there's an account
         # Else return false because no account
-        if get_account_id(username)
+        if get_account_id(email)
             return true
         end
         return false
     end
     
-    def get_account_id(username)
-        statement = "SELECT user_id FROM users WHERE username = ?"
-        retStatement = @db.execute statement, username
+    def get_account_id(email)
+        statement = "SELECT user_id FROM users WHERE email = ?"
+        retStatement = @db.execute statement, email
         return retStatement[0]
     end
 
@@ -39,14 +38,14 @@ class BookmarkDB
         return retStatement[0]
     end
     
-    def try_login(username, password)
-        if check_account_exists(username) 
-            statement = "SELECT password, salt FROM users WHERE username = ?"
-            retStatement = @db.execute(statement, username)[0]
-            if not password or not username
+    def try_login(email, password)
+        if check_account_exists(email) 
+            statement = "SELECT password, salt FROM users WHERE email = ?"
+            retStatement = @db.execute(statement, email)[0]
+            if not password or not email
                 puts "Returning early..."
                 puts "try_login password: " + password
-                puts "try_login username: " + username
+                puts "try_login username: " + email
                 return false
             end
             hash = generate_hash(password,salt=retStatement[1])
@@ -67,39 +66,35 @@ class BookmarkDB
         return retStatement[0]
     end
     
-    def create_account(username, password, first_name, last_name, email) # Doesn't need account type, seperate function to update
+    def create_account(email, password, first_name, last_name) # Doesn't need account type, seperate function to update
         if not password_check(password)
             return "Insecure password"
         end
         if not email_check(email)
             return "Incorrect Email"
         end
-        if not get_account_id(username)
-            if not get_username_email(email) ## unique username and email
-                hash = generate_hash(password,salt="")
-                
-                statement = "INSERT INTO users (username, password, salt, first_name, last_name, email) VALUES (?, ?, ?, ?, ?, ?)"
-                retStatement = @db.execute statement, username, hash[0], hash[1], first_name, last_name, email
-                puts retStatement
-                return "successful"
-            end
-            puts "User tried to make an account with duplicate email #{email}"
-            return "fail-email"
+        if not get_account_id(email)
+            hash = generate_hash(password,salt="")
+
+            statement = "INSERT INTO users (email, password, salt, first_name, last_name) VALUES (?, ?, ?, ?, ?)"
+            retStatement = @db.execute statement, email, hash[0], hash[1], first_name, last_name
+            puts retStatement
+            return "successful"
         end
-        puts "User tried to make an account with duplicate username #{username}"
-        return "fail-username"
+        puts "User tried to make an account with duplicate email #{email}"
+        return "fail-email"
     end
     
-    def upgrade_account_to_admin(username)
-        if check_account_exists(username)
-            statement = "UPDATE users SET role = 2 WHERE username = ?"
-            @db.execute statement, username
+    def upgrade_account_to_admin(email)
+        if check_account_exists(email)
+            statement = "UPDATE users SET role = 2 WHERE email = ?"
+            @db.execute statement, email
         else
-            puts "Error upgrading #{username} to admin"
+            puts "Error upgrading #{email} to admin"
         end
     end
     
-    def change_password(username, oldPassword, newPassword, newPasswordCheck)
+    def change_password(email, oldPassword, newPassword, newPasswordCheck)
         if newPassword != newPasswordCheck
             return "Passwords do not match"
         end
@@ -109,21 +104,31 @@ class BookmarkDB
         if not password_check(newPassword)
             return "Insecure password"
         end
-        if try_login(username, oldPassword)
+        if try_login(email, oldPassword)
             hash = generate_hash(newPassword,salt="")
             puts hash[0]
             puts hash[1]
-            statement = "UPDATE users SET password = ?, salt = ? WHERE username = ?"
-            puts @db.execute statement, hash[0], hash[1], username
+            statement = "UPDATE users SET password = ?, salt = ? WHERE email = ?"
+            puts @db.execute statement, hash[0], hash[1], email
             return "Successful"
         end
         return "Incorrect old password"
     end
-
+    
+    def add_security_questions(email, sec_question, sec_answer)
+        
+    end
+    
+    def get_login_attempts(owner_id)
+        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
+        retStatement = @db.execute statement, owner_id
+        return retStatement[0]
+    end
+    
     def display_users
         statement = "SELECT * FROM users"
         retStatement = @db.execute statement
-        puts "user_id, username, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
+            puts "user_id, username, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
         for row in retStatement
             counter=0
             for item in row
@@ -131,39 +136,18 @@ class BookmarkDB
                     print item.to_s + "|"
                 end
                 counter+=1
-
+                    
             end
+            puts
         end
     end
-
-    def get_login_attempts(owner_id)
-        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
-        retStatement = @db.execute statement, owner_id
-        return retStatement[0]
-    end
-
-    #security questions
-
-    def get_security_questions(username)
-        statement = "SELECT security_question FROM security_question"
-        retStatement = @db.execute statement
-        return retStatement[0]
-
-    end
-
-
-    def add_security_questions(username, sec_question, sec_answer)
-        
-    end
-
-    #bookmarks
     
     def add_bookmark(bookmarkName, url, owner_id)
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
     end
-
+    
     def get_all_bookmarks
         # Only gets enabled bookmarks
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE enabled = 1"
@@ -212,10 +196,7 @@ class BookmarkDB
         db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
         db.upgrade_account_to_admin("Lujain")
     end
-
-
-    #Security functions
-
+    
     def generate_hash(password, salt="")
         if salt == ""
             salt = OpenSSL::Random.random_bytes(16)
@@ -266,15 +247,6 @@ class BookmarkDB
             return true
         end
         puts "bad email"
-        return false
-    end
-
-    def plain_text_check(name)
-        if name.downcase.match? /[a-z]/
-            puts "plaintext"
-            return true
-        end
-        puts "not plaintext"
         return false
     end
     
