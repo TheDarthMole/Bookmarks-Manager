@@ -8,9 +8,9 @@ class BookmarkDB
         @time = Time.new
     end
 
-    def check_account_enabled(user_id)
+    def check_account_enabled(email)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
-        retStatement = @db.execute statement username
+        retStatement = @db.execute statement, email
         if retStatement[0][0] == 1
             return true
         end
@@ -32,8 +32,8 @@ class BookmarkDB
         return retStatement[0]
     end
 
-    def get_account_username(user_id)
-        statement = "SELECT user_id FROM users where user_id=?"
+    def get_account_email(user_id)
+        statement = "SELECT email FROM users where user_id=?"
         retStatement = @db.execute statement, user_id
         return retStatement[0]
     end
@@ -58,12 +58,6 @@ class BookmarkDB
         else
             return false
         end
-    end
-    
-    def get_username_email(email)
-        statement = "SELECT username FROM users WHERE email = ?"
-        retStatement = @db.execute statement, email
-        return retStatement[0]
     end
     
     def create_account(email, password, first_name, last_name) # Doesn't need account type, seperate function to update
@@ -119,16 +113,16 @@ class BookmarkDB
         
     end
     
-    def get_login_attempts(owner_id)
-        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
-        retStatement = @db.execute statement, owner_id
+    def get_login_attempts(user_id)
+        statement = "SELECT login_attempts FROM users WHERE user_id = ?"
+        retStatement = @db.execute statement, user_id
         return retStatement[0]
     end
     
     def display_users
         statement = "SELECT * FROM users"
         retStatement = @db.execute statement
-            puts "user_id, username, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
+            puts "user_id, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
         for row in retStatement
             counter=0
             for item in row
@@ -140,6 +134,44 @@ class BookmarkDB
             end
             puts
         end
+    end
+
+
+    #BOOKMARKS AND TAGS
+
+    def search_tag(tag_name)
+        statement = "SELECT tag_id FROM tags WHERE name=?"
+        retStatement = @db.execute statement,tag_name
+        return retStatement[0]
+    end
+
+    def get_tag_id(tag_name)
+        return @db.execute("SELECT tag_id FROM tags WHERE name=?", tag_name)
+    end
+
+
+    def add_tag_bookmark(tag_name, bookmark_id)
+        #check if tag exists
+        if not get_tag_id(tag_name)
+            @db.execute("INSERT INTO tags(name) VALUES (?)", tag_name)
+            tag_id = get_tag_id(tag_name)
+        end
+        statement = "INSERT INTO bookmark_tags (?,?)"
+        retStatement = @db.execute statement, tag_name, bookmark_id
+        return retStatement
+    end
+
+
+    def remove_tag(tag_name, bookmark_id)
+        tag_id = get_tag_id(tag_name)
+        statement = "DELETE FROM tags WHERE tag_ID=? AND bookmark_ID =?"
+        @db.execute statement,tag_id,bookmark_id
+    end
+
+
+
+    def search_bookmarks(tags, url, owner)
+
     end
     
     def add_bookmark(bookmarkName, url, owner_id)
