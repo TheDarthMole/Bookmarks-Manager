@@ -17,6 +17,15 @@ class BookmarkDB
         return false
     end
     
+    def is_admin(accountID)
+        statement = "SELECT role FROM users WHERE user_id = ?"
+        retStatement = @db.execute statement accountID
+        if retStatement[0][0] == 2
+            return true
+        end
+        return false
+    end
+    
     def check_account_exists(email)
         # If get_account_id returns something, there's an account
         # Else return false because no account
@@ -32,8 +41,8 @@ class BookmarkDB
         return retStatement[0]
     end
 
-    def get_account_username(user_id)
-        statement = "SELECT user_id FROM users where user_id=?"
+    def get_account_email(user_id)
+        statement = "SELECT email FROM users where user_id=?"
         retStatement = @db.execute statement, user_id
         return retStatement[0]
     end

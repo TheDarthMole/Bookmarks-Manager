@@ -15,13 +15,25 @@ configure do
     enable :sessions
 end
 
+get "/admin" do
+    erb :adminuser
+end
+
 get "/" do
     erb :index
 end
 
 get "/dashboard" do
-    # Need validation here for login
-    erb :dashboard
+    if session[:user] == "" or session[:pass] == ""
+        redirect "/login"
+    else
+        if @db.try_login(session[:user],session[:pass])
+            erb :dashboard
+        else
+            redirect "/login"
+        end
+    end
+
 end
 
 post "/login" do
@@ -30,7 +42,7 @@ post "/login" do
     puts session[:user]
     puts session[:pass]
     if @db.try_login(session[:user], session[:pass])
-        redirect "/loggedin"
+        redirect "/dashboard"
     else
         redirect "/login"
     end
