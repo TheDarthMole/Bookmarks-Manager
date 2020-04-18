@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Acme corp - Bookmarks</title>
+    <!-- Required meta tags -->
+    <meta name="description" content="Bookmark application" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+
+    <!-- Font Awesome -->
+    <link href="css/fontawesome/all.min.css" rel="stylesheet" />
+    <!--load all styles -->
+    <link href="css/fontawesome/brands.min.css" rel="stylesheet" />
+    <!--load all styles -->
+
+    <!-- Stylesheet CSS -->
+    <link rel="stylesheet" href="css/style.min.css" />
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+            <a class="navbar-brand" href="index.html"><i class="far fa-bookmark"></i> Acme corp<span
+					class="sr-only">(current)</span></a>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                <ul class="navbar-nav ml-lg-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fa fa-user mr-2"></i> LOGOUT
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- modal-section -->
+    <div class="modal" tabindex="-1" role="dialog" id="add-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">TITLE</label>
+                        <input type="text" class="form-control" placeholder="Bookmark Title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">URL</label>
+                        <input type="text" class="form-control" placeholder="Bookmark URL" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">NOTES</label>
+                        <textarea class="form-control" rows="3" placeholder="Add Notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">LIST</label>
+                        <select class="form-control">
+							<option value="">None</option>
+						</select>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="stick" id="sticky" />
+                        <label for="sticky">STICKY</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">
+						CANCEL
+					</button>
+                    <button type="button" class="btn btn-info">SAVE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="edit-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">TITLE</label>
+                        <input type="text" class="form-control" value="Home" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">URL</label>
+                        <input type="text" class="form-control" value="http://google.com" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">NOTES</label>
+                        <textarea class="form-control" rows="3" placeholder="Add Notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">LIST</label>
+                        <select class="form-control">
+							<option value="">None</option>
+						</select>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="stick" id="sticky" />
+                        <label for="sticky">STICKY</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">
+						CANCEL
+					</button>
+                    <button type="button" class="btn btn-info">SAVE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="delete-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">TITLE</label>
+                        <input type="text" class="form-control" value="Home" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">URL</label>
+                        <input type="text" class="form-control" value="http://google.com" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">NOTES</label>
+                        <textarea class="form-control" rows="3" placeholder="Add Notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">LIST</label>
+                        <select class="form-control">
+							<option value="">None</option>
+						</select>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="stick" id="sticky" />
+                        <label for="sticky">STICKY</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">
+						CANCEL
+					</button>
+                    <button type="button" class="btn btn-danger">DELETE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- dashboard section -->
+    <section class="dashboard-section container py-5">
+        <div>
+            <div class="input-group mb-3">
+                <input type="search" class="form-control" placeholder="Search bookmark" />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button">
+						Search
+					</button>
+                </div>
+            </div>
+        </div>
+        <div class="mb-5">
+            <p class="font-sm">
+                You haven't saved anything yet - just type xyz.io/ in front of a url to get started or enter a url below
+            </p>
+        </div>
+        <div class="saved-bookmarks">
+            <div class="d-flex justify-content-between mb-3">
+                <h4>Saved Bookmarks</h4>
+                <button class="btn btn-info" data-toggle="modal" data-target="#add-bookmark">
+					ADD NEW
+				</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bookmark">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Title</th>
+                            <th>URL</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td width="50">
+                                <div>
+                                    <input type="checkbox" name="" id="" />
+                                    <label for=""></label>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="">Home</a>
+                            </td>
+                            <td>
+                                <a href="http://google.com" target="blank">http://google.com</a>
+                            </td>
+                            <td width="100">
+                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50">
+                                <div>
+                                    <input type="checkbox" name="" id="" />
+                                    <label for=""></label>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="">Home</a>
+                            </td>
+                            <td>
+                                <a href="http://google.com" target="blank">http://google.com</a>
+                            </td>
+                            <td width="100">
+                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50">
+                                <div>
+                                    <input type="checkbox" name="" id="" />
+                                    <label for=""></label>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="">Home</a>
+                            </td>
+                            <td>
+                                <a href="http://google.com" target="blank">http://google.com</a>
+                            </td>
+                            <td width="100">
+                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50">
+                                <div>
+                                    <input type="checkbox" name="" id="" />
+                                    <label for=""></label>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="">Home</a>
+                            </td>
+                            <td>
+                                <a href="http://google.com" target="blank">http://google.com</a>
+                            </td>
+                            <td width="100">
+                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50">
+                                <div>
+                                    <input type="checkbox" name="" id="" />
+                                    <label for=""></label>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="">Home</a>
+                            </td>
+                            <td>
+                                <a href="http://google.com" target="blank">http://google.com</a>
+                            </td>
+                            <td width="100">
+                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
+                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries 5 of 25</p>
+                <ul class="pagination mb-md-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="page-item ">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <footer class="mt-5 mt-md-0 py-3 border-top">
+        <div class="container">
+            <div class="footer-flex">
+                <div>
+                    <div><i class="far fa-bookmark mb-2"></i> Acme corp</div>
+                    <small class="d-block mb-3 text-muted">© 2020</small>
+                </div>
+                <div>
+                    <ul class="footer-list text-small">
+                        <li><a class="text-muted" href="#">Contact</a></li>
+                        <li><a class="text-muted" href="#">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/common.js"></script>
+</body>
+
+</html>
