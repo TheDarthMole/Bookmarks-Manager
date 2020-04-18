@@ -176,12 +176,12 @@ class BookmarkDB
         #saves array of bookmarks with tag_ID
         bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
 
+        bookmark_list=[]
         #goes through bookmark ID
         for i in bookmark_id_list
-            bookmark_list =+ get_bookmark(bookmark_id_list[i])
+            bookmark_list[i] = get_bookmark(bookmark_id_list[i])
         end
         puts bookmark_list
-
         return bookmark_list
 
     end
