@@ -5,7 +5,7 @@ require 'openssl'
 require_relative 'controller'
 
 set :bind, '0.0.0.0'
-
+set :public_folder, 'public'
 
 before do
     @db = BookmarkDB.new
@@ -16,7 +16,7 @@ configure do
 end
 
 get "/" do
-    erb :loginPage
+    erb :index
 end
 
 post "/" do
