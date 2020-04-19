@@ -9,16 +9,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
 
     <!-- Font Awesome -->
-    <link href="css/fontawesome/all.min.css" rel="stylesheet" />
+    <link href="/css/fontawesome/all.min.css" rel="stylesheet" />
     <!--load all styles -->
-    <link href="css/fontawesome/brands.min.css" rel="stylesheet" />
+    <link href="/css/fontawesome/brands.min.css" rel="stylesheet" />
     <!--load all styles -->
 
     <!-- Stylesheet CSS -->
-    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="/css/style.min.css" />
 </head>
 
 <body>
@@ -33,10 +33,26 @@
 
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav ml-lg-auto align-items-lg-center">
+                   
+                    <% if check_admin(session[:user]) %>
+                    <li class="nav-item ">
+                        <a class="nav-link active" href="/dashboard">DASHBOARD<span
+								class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/admin/bookmarks">BOOKMARKS</a>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="fa fa-user mr-2"></i> LOGOUT
-                        </a>
+                        <a class="nav-link" href="/admin/users">USERS</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/admin/audit">AUDIT<span class="sr-only">(current)</span></a>
+                    </li>
+                    <% end %>
+                    
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="fa fa-user mr-2"></i> LOGOUT</a>
                     </li>
                 </ul>
             </div>
@@ -355,8 +371,8 @@
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
-    <script src="js/common.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/common.js"></script>
 </body>
 
 </html>

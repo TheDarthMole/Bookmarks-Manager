@@ -13,13 +13,14 @@ class BookmarkDB
         retStatement = @db.execute statement username
         if retStatement[0][0] == 1
             return true
+        else
+            return false
         end
-        return false
     end
-    
+
     def is_admin(accountID)
         statement = "SELECT role FROM users WHERE user_id = ?"
-        retStatement = @db.execute statement accountID
+        retStatement = @db.execute statement, accountID
         if retStatement[0][0] == 2
             return true
         end
@@ -52,9 +53,6 @@ class BookmarkDB
             statement = "SELECT password, salt FROM users WHERE email = ?"
             retStatement = @db.execute(statement, email)[0]
             if not password or not email
-                puts "Returning early..."
-                puts "try_login password: " + password
-                puts "try_login username: " + email
                 return false
             end
             hash = generate_hash(password,salt=retStatement[1])
@@ -75,7 +73,7 @@ class BookmarkDB
         return retStatement[0]
     end
     
-    def create_account(email, password, first_name, last_name) # Doesn't need account type, seperate function to update
+    def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
         if not password_check(password)
             return "Insecure password"
         end
@@ -85,8 +83,8 @@ class BookmarkDB
         if not get_account_id(email)
             hash = generate_hash(password,salt="")
 
-            statement = "INSERT INTO users (email, password, salt, first_name, last_name) VALUES (?, ?, ?, ?, ?)"
-            retStatement = @db.execute statement, email, hash[0], hash[1], first_name, last_name
+            statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            retStatement = @db.execute statement, email, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
             puts retStatement
             return "successful"
         end
@@ -122,10 +120,6 @@ class BookmarkDB
             return "Successful"
         end
         return "Incorrect old password"
-    end
-    
-    def add_security_questions(email, sec_question, sec_answer)
-        
     end
     
     def get_login_attempts(owner_id)
