@@ -37,6 +37,7 @@ class BookmarkDB
     end
     
     def get_account_id(email)
+        email = email.downcase
         statement = "SELECT user_id FROM users WHERE email = ?"
         retStatement = @db.execute statement, email
         return retStatement[0]
@@ -49,7 +50,8 @@ class BookmarkDB
     end
     
     def try_login(email, password)
-        if check_account_exists(email) 
+        email = email.downcase
+        if check_account_exists(email)
             statement = "SELECT password, salt FROM users WHERE email = ?"
             retStatement = @db.execute(statement, email)[0]
             if not password or not email
@@ -84,7 +86,7 @@ class BookmarkDB
             hash = generate_hash(password,salt="")
 
             statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            retStatement = @db.execute statement, email, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
+            retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
             puts retStatement
             return "successful"
         end
