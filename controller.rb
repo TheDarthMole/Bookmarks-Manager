@@ -8,9 +8,9 @@ class BookmarkDB
         @time = Time.new
     end
 
-    def check_account_enabled(user_id)
+    def check_account_enabled(email)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
-        retStatement = @db.execute statement username
+        retStatement = @db.execute statement, email
         if retStatement[0][0] == 1
             return true
         else
@@ -131,7 +131,7 @@ class BookmarkDB
     def display_users
         statement = "SELECT * FROM users"
         retStatement = @db.execute statement
-            puts "user_id, username, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
+            puts "user_id, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
         for row in retStatement
             counter=0
             for item in row
@@ -144,6 +144,72 @@ class BookmarkDB
             puts
         end
     end
+
+
+    #BOOKMARKS AND TAGS
+
+    def search_tag(tag_name)
+        statement = "SELECT tag_id FROM tags WHERE name=?"
+        retStatement = @db.execute statement,tag_name
+        return retStatement[0]
+    end
+
+    def get_tag_id(tag_name)
+        return @db.execute("SELECT tag_id FROM tags WHERE name=?", tag_name)
+    end
+
+
+    def add_tag_bookmark(tag_name, bookmark_id)
+        #check if tag exists
+        if not get_tag_id(tag_name)
+            @db.execute("INSERT INTO tags(name) VALUES (?)", tag_name)
+        end
+        tag_id = get_tag_id(tag_name)
+        statement = "INSERT INTO bookmark_tags (?,?)"
+        retStatement = @db.execute statement, tag_id, bookmark_id
+        return retStatement
+    end
+
+
+    def remove_tag(tag_name, bookmark_id)
+        tag_id = get_tag_id(tag_name)
+        statement = "DELETE FROM tags WHERE tag_ID=? AND bookmark_ID =?"
+        @db.execute statement,tag_id,bookmark_id
+    end
+
+    def search_tags_bookmarks(tag_name)
+        #gets tag_id based on name
+        tag_id = get_tag_id(tag_name)
+        #saves array of bookmarks with tag_ID
+        bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
+        #debug code
+        p bookmark_id_list
+        bookmark_list=[]
+        #goes through bookmark ID
+        bookmark_id_list.each { |i|
+            bookmark_list.append(get_bookmark(i))
+        }
+        #debug code
+        p bookmark_list
+        return bookmark_list
+    end
+
+    def search_owner_bookmarks(owner)
+        #gets user_id based on name
+        owner_id = @db.execute("SELECT user_id FROM users WHERE first_name=? OR last_name=?", owner)
+        bookmark_list=[]
+        owner_id.each do
+            |i|
+            bookmark_list.append(get_user_bookmark(i))
+        end
+        return bookmark_list
+    end
+
+
+    def search_bookmarks(tags, url, owner)
+
+
+    end
     
     def add_bookmark(bookmarkName, url, owner_id)
         currentTime = @time.strftime("%s")
@@ -155,6 +221,12 @@ class BookmarkDB
         # Only gets enabled bookmarks
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE enabled = 1"
         return @db.execute statement
+    end
+
+    def get_bookmark(bookmark_id)
+        statement = "SELECT bookmark_name,url, owner_id, creation_time FROM bookmarks WHERE enabled=1 AND bookmark_id=?"
+        retStatment = @db.execute statement, bookmark_id
+        return retStatment[0]
     end
 
     def update_bookmark(bookmark_id, bookmark_name, url)
@@ -257,5 +329,5 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-
+db.search_tags_bookmarks("hello")
 
