@@ -49,10 +49,11 @@ get "/" do
 end
 
 get "/dashboard" do
-    if session[:user] == "" or session[:pass] == ""
+    if check_empty_session
         redirect "/login"
     else
         if @db.try_login(session[:user],session[:pass])
+            @bookmarks = @db.get_all_bookmarks
             erb :dashboard
         else
             redirect "/login"
@@ -62,8 +63,8 @@ get "/dashboard" do
 end
 
 post "/login" do
-    if @db.try_login(params[:email], params[:password])
-        session[:user] = params[:email]
+    if @db.try_login(params[:email].downcase, params[:password])
+        session[:user] = params[:email].downcase
         session[:pass] = params[:password]
         redirect "/dashboard"
     else
@@ -106,20 +107,6 @@ post "/register" do
     
 end
 
-get "/loggedin" do
-    if not @db.try_login(session[:user], session[:pass])
-        redirect "/"
-    else
-        @bookmarks = @db.get_all_bookmarks
-    end
-    if not @db.try_login(session[:user], session[:pass])
-        redirect "/"
-    else
-        @bookmarks = @db.get_all_bookmarks
-        erb :bookmarks
-    end
-end
-
 get "/change-password" do
     if session[:user]
         erb :changePassword
@@ -142,6 +129,13 @@ def check_admin(email)
         if @db.is_admin(@db.get_account_id(session[:user]))
             return true
         end
+    end
+    return false
+end
+
+def check_empty_session()
+    if ([nil, ""].include? session[:user]) or ([nil, ""].include? session[:pass])
+        return true
     end
     return false
 end
