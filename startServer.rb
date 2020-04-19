@@ -82,8 +82,6 @@ get "/login" do
 end
 
 get "/register" do
-    @passwordNotMatch = false
-    @accountExists = false
     erb :register
 end
 
@@ -92,19 +90,24 @@ post "/register" do
     puts params
     if params[:password] == params[:passwordrepeat] # Checks to make sure the
         if !@db.check_account_exists(params[:email])
-            @db.create_account(params[:email], params[:password], params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
-            erb :login
+            response = @db.create_account(params[:email], params[:password], params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
+            p response
+            if response == "successful"
+                erb :login
+            else
+                redirect "/register"
+            end
         else
-            accountExists = true
-            erb :register
+#             response = "Account already exists!"
+#             p response
+            redirect "/register"
         end
     else
-        passwordNotMatch = true
+#         response = "Passwords do not match!"
+#         p response
         erb :register
         # Use a ruby variable to show an error on the erb
     end
-            
-    
 end
 
 get "/change-password" do
