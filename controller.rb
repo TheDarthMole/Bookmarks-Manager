@@ -231,7 +231,9 @@ class BookmarkDB
     #
     #
     def default_search(term,page,results)
-        i_min = (page-1)*results
+        results = results.to_i
+        page = page.to_i
+        i_min = (page - 1)*results
         i_max = page*results
 
         search = '%'+term+'%'
