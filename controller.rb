@@ -152,7 +152,7 @@ class BookmarkDB
         end
         return "Incorrect old password"
     end
-    
+    #
     def add_security_questions(email, sec_question, sec_answer)
         
     end
