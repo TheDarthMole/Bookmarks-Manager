@@ -232,8 +232,10 @@ class BookmarkDB
     #
     def default_search(term)
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time, tags.name FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID) OR bookmarks.url LIKE ?"
-        return @db.execute retStatment,search
+        retStatment = "SELECT distinct bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?"
+        sql = @db.execute retStatment,search,search,search
+        p sql
+        return sql
     end
 
     def search_tags_bookmarks(tag_name)
@@ -422,5 +424,5 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.display_bookmarks(db.search_url_bookmarks("go"),2,2)
+db.default_search("a")
 
