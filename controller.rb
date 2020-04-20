@@ -43,6 +43,50 @@ class BookmarkDB
         return retStatement[0]
     end
 
+    def get_user_role_ID(user_id)
+        statement = "SELECT role FROM users WHERE user_id=?"
+        retStatement = @db.execute statement, user_id
+        return retStatement[0]
+    end
+
+    def get_user_role_name(role_id)
+        statement = "SELECT role_name FROM permissions WHERE permission_ID=?"
+        retStatemnt = @db.execute statement,role_id
+        return retStatemnt[0]
+    end
+
+    def can_user_perform_action(user_ID,action)
+        #pulls user_id role
+        role = get_user_role_ID(user_ID)
+
+        #Checks if user can add bookmarks
+        if action == "add"
+            return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can edit
+        if action == "edit"
+            return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can create
+        if action == "create"
+            return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can manage
+        if action == "manage"
+            return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can create_admin
+        if action == "create_admin"
+            return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can upgrade_guest
+        if action == "upgrade_guest"
+            return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
+        end
+        puts "NO WORKABLE ACTION"
+        return false
+    end
+
     def get_account_email(user_id)
         statement = "SELECT email FROM users where user_id=?"
         retStatement = @db.execute statement, user_id
@@ -123,10 +167,14 @@ class BookmarkDB
         end
         return "Incorrect old password"
     end
+    #
+    def add_security_questions(email, sec_question, sec_answer)
+        
+    end
     
-    def get_login_attempts(owner_id)
-        statement = "SELECT login_attempts FROM users WHERE owner_id = ?"
-        retStatement = @db.execute statement, owner_id
+    def get_login_attempts(user_id)
+        statement = "SELECT login_attempts FROM users WHERE user_id = ?"
+        retStatement = @db.execute statement, user_id
         return retStatement[0]
     end
     
@@ -148,7 +196,7 @@ class BookmarkDB
     end
 
 
-    #BOOKMARKS AND TAGS
+    #TAGS
 
     def search_tag(tag_name)
         statement = "SELECT tag_id FROM tags WHERE name=?"
@@ -178,6 +226,8 @@ class BookmarkDB
         statement = "DELETE FROM tags WHERE tag_ID=? AND bookmark_ID =?"
         @db.execute statement,tag_id,bookmark_id
     end
+
+    #SEARCH AND DISPLAY
 
     def search_tags_bookmarks(tag_name)
         #gets tag_id based on name
@@ -210,8 +260,9 @@ class BookmarkDB
     def search_url_bookmarks(url)
         #makes it a wildcard search
         search = '%'+url+'%'
-        statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ?"
+        statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ? AND enabled=1"
         retStatement = @db.execute statement,search
+        #debug
         p retStatement
         return retStatement
     end
@@ -219,16 +270,22 @@ class BookmarkDB
     #creates an array to display based on page number
     def display_bookmarks(array, page_number, number_results)
         i_max = page_number * number_results
-        i_min = page_number-1 * number_results
+        i_min = (page_number-1) * number_results
         results = []
         while i_min != i_max
             results.append(array[i_min])
-            i_min =+ 1
+            i_min = 1 + i_min
+            #debug
+            p i_min
+            p i_max
+            p results
         end
         return results
     end
 
 
+
+    #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
@@ -263,6 +320,7 @@ class BookmarkDB
         return @db.execute statement, owner_id
     end
 
+
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
@@ -289,7 +347,9 @@ class BookmarkDB
         db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
         db.upgrade_account_to_admin("Lujain")
     end
-    
+
+
+    #SECURITY
     def generate_hash(password, salt="")
         if salt == ""
             salt = OpenSSL::Random.random_bytes(16)
@@ -347,5 +407,5 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.search_url_bookmarks("go")
+db.display_bookmarks(db.search_url_bookmarks("go"),2,2)
 
