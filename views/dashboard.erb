@@ -226,7 +226,6 @@
                         <% else %>
                             <% books = get_bookmarks_page("", params[:page], 5) %>
                         <% end %>
-                        <%= books %>
                         <% books.each do |item| %>
                             <tr>
                                 <td width="50">
