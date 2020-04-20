@@ -229,6 +229,7 @@ class BookmarkDB
 
     #SEARCH AND DISPLAY
     #
+    #
     def default_search(term)
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time, tags.name FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID) OR bookmarks.url LIKE ?"
