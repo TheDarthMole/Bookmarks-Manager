@@ -15,6 +15,15 @@ configure do
     enable :sessions
 end
 
+helpers do # functions used within erb files
+    def get_bookmarks_page(page_no, items_per_page)
+        bookmarks = @db.get_all_bookmarks
+        first = page_no.to_i * items_per_page.to_i
+        last  = first + items_per_page.to_i - 1
+        return bookmarks[first..last]
+    end
+end
+
 get "/logout" do
     session.clear
     redirect "/"
@@ -59,7 +68,19 @@ get "/dashboard" do
             redirect "/login"
         end
     end
+end
 
+get "/dashboard/:page" do
+        if check_empty_session
+        redirect "/login"
+    else
+        if @db.try_login(session[:user],session[:pass])
+            @bookmarks = @db.get_all_bookmarks
+            erb :dashboard
+        else
+            redirect "/login"
+        end
+    end
 end
 
 post "/login" do

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 #main gems
 gem 'sinatra'
-gem 'sintata-reloader'
+gem 'sinatra-contrib'
 gem 'openssl'
 gem 'sqlite3'
 
