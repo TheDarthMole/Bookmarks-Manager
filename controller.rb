@@ -298,6 +298,17 @@ class BookmarkDB
         return @db.execute statement
     end
 
+    def get_bookmarks(page,result_per_page)
+        result =[]
+        i_min = (page-1)*result_per_page
+        i_max = page*result_per_page
+        while i_min != i_max
+            result.append(@db.execute("SELECT bookmark_name,url,creation_time WHERE bookmark_id=?",i_min))
+            i_min = i_min+1
+        end
+        return result
+    end
+
     def get_bookmark(bookmark_id)
         statement = "SELECT bookmark_name,url, owner_id, creation_time FROM bookmarks WHERE enabled=1 AND bookmark_id=?"
         retStatment = @db.execute statement, bookmark_id
