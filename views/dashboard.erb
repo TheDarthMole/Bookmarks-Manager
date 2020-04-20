@@ -188,14 +188,14 @@
     <!-- dashboard section -->
     <section class="dashboard-section container py-5">
         <div>
-            <div class="input-group mb-3">
-                <input type="search" class="form-control" placeholder="Search bookmark" />
+            <form class="input-group mb-3" action="/dashboard" method="post">
+                <input name="searchterm" type="search" class="form-control" placeholder="Search bookmark" />
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">
+                    <button class="btn btn-outline-secondary" type="submit">
 						Search
 					</button>
                 </div>
-            </div>
+            </form>
         </div>
         <div class="mb-5">
             <p class="font-sm">
@@ -221,9 +221,12 @@
                     </thead>
                     <tbody>
 <!--Start itterating here-->
-                        <% bookmarks = get_bookmarks_page(params[:page], 5)%>
-                        <p><%= bookmarks %></p>
-                        <% bookmarks.each do |item| %>
+                        <% if @bookmarks != nil %>
+                            <% books = @bookmarks %>
+                        <% else %>
+                            <% books = get_bookmarks_page("", params[:page], 5) %>
+                        <% end %>
+                        <% books.each do |item| %>
                             <tr>
                                 <td width="50">
                                     <div>
@@ -246,6 +249,7 @@
                                     </a>
                                 </td>
                             </tr>
+                        <% @bookmarks = nil %>
                         <% end %>
 <!--End itterating here-->
                     </tbody>
