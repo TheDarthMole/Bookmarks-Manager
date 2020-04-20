@@ -16,11 +16,12 @@ configure do
 end
 
 helpers do # functions used within erb files
-    def get_bookmarks_page(page_no, items_per_page)
-        bookmarks = @db.get_all_bookmarks
-        first = page_no.to_i * items_per_page.to_i
-        last  = first + items_per_page.to_i - 1
-        return bookmarks[first..last]
+    def get_bookmarks_page(search, page_no, items_per_page)
+        p page_no
+        p items_per_page
+        a= @db.default_search(search,page_no,items_per_page)
+        p a
+        return a
     end
 end
 
@@ -57,12 +58,16 @@ get "/" do
     erb :index
 end
 
+get "/dashboard/" do
+    redirect "/dashboard"
+end
+
 get "/dashboard" do
     if check_empty_session
         redirect "/login"
     else
         if @db.try_login(session[:user],session[:pass])
-            @bookmarks = @db.get_all_bookmarks
+            params[:page] = 1
             erb :dashboard
         else
             redirect "/login"
@@ -71,11 +76,40 @@ get "/dashboard" do
 end
 
 get "/dashboard/:page" do
-        if check_empty_session
+    if check_empty_session
         redirect "/login"
     else
         if @db.try_login(session[:user],session[:pass])
-            @bookmarks = @db.get_all_bookmarks
+            @bookmarks = get_bookmarks_page("", params[:page], 5)
+            erb :dashboard
+        else
+            redirect "/login"
+        end
+    end
+end
+
+post "/dashboard" do
+    puts params
+    if params[:page] == nil
+        params[:page] = 1
+    end
+    if session[:lim] == nil
+        session[:lim] = 5
+    end
+    if params[:searchterm] == ""
+        redirect "/dashboard"
+    else
+        redirect "/dashboard/search/#{params[:searchterm]}/#{params[:page]}/#{session[:lim]}"
+    end
+end
+
+get "/dashboard/search/:searchterm/:page/:lim" do
+    if check_empty_session
+        redirect "/login"
+    else
+        if @db.try_login(session[:user],session[:pass])
+            session[:lim] = params[:lim]
+            @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
             erb :dashboard
         else
             redirect "/login"
