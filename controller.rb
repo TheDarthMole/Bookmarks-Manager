@@ -208,11 +208,14 @@ class BookmarkDB
     #creates an array to display based on page number
     def display_bookmarks(array, page_number, number_results)
         i_max = page_number * number_results
-        i_min = page_number-1 * number_results
+        i_min = (page_number-1) * number_results
         results = []
         while i_min != i_max
             results.append(array[i_min])
-            i_min =+ 1
+            i_min = 1 + i_min
+            p i_min
+            p i_max
+            p results
         end
         return results
     end
@@ -336,5 +339,5 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.search_url_bookmarks("go")
+db.display_bookmarks(db.search_url_bookmarks("go"),2,2)
 
