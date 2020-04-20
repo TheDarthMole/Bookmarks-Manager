@@ -228,14 +228,19 @@ class BookmarkDB
     end
 
     #SEARCH AND DISPLAY
+    #
+    #
+    def default_search(term)
+        search = '%'+term+'%'
+        retStatment = "SELECT distinct bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time, tags.name FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID) OR bookmarks.url LIKE ?"
+        return @db.execute retStatment,search
+    end
 
     def search_tags_bookmarks(tag_name)
         #gets tag_id based on name
         tag_id = get_tag_id(tag_name)
         #saves array of bookmarks with tag_ID
         bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
-        #debug code
-        p bookmark_id_list
         bookmark_list=[]
         #goes through bookmark ID
         bookmark_id_list.each { |i|
@@ -267,6 +272,16 @@ class BookmarkDB
         return retStatement
     end
 
+    def get_bookmarks(page,result_per_page)
+        result =[]
+        i_min = (page-1)*result_per_page
+        i_max = page*result_per_page
+        while i_min != i_max
+            result.append(@db.execute("SELECT bookmark_name,url,creation_time WHERE bookmark_id=?",i_min))
+            i_min = i_min+1
+        end
+        return result
+    end
     #creates an array to display based on page number
     def display_bookmarks(array, page_number, number_results)
         i_max = page_number * number_results
@@ -296,17 +311,6 @@ class BookmarkDB
         # Only gets enabled bookmarks
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE enabled = 1"
         return @db.execute statement
-    end
-
-    def get_bookmarks(page,result_per_page)
-        result =[]
-        i_min = (page-1)*result_per_page
-        i_max = page*result_per_page
-        while i_min != i_max
-            result.append(@db.execute("SELECT bookmark_name,url,creation_time WHERE bookmark_id=?",i_min))
-            i_min = i_min+1
-        end
-        return result
     end
 
     def get_bookmark(bookmark_id)
