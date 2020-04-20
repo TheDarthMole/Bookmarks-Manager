@@ -220,116 +220,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
+<!--Start itterating here-->
+                        <% bookmarks = get_bookmarks_page(params[:page], 5)%>
+                        <p><%= bookmarks %></p>
+                        <% bookmarks.each do |item| %>
+                            <tr>
+                                <td width="50">
+                                    <div>
+                                        <input type="checkbox" name="" id="" />
+                                        <label for=""></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="<%= item[1] %>"><%= item[0]%></a>
+                                </td>
+                                <td>
+                                    <a href="<%= item[1] %>" target="blank"><%= item[1] %></a>
+                                </td>
+                                <td width="100">
+                                    <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% end %>
+<!--End itterating here-->
                     </tbody>
                 </table>
             </div>
