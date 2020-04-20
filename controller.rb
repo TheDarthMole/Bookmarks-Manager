@@ -198,7 +198,7 @@ class BookmarkDB
 
     def search_owner_bookmarks(owner)
         #gets user_id based on name
-        owner_id = @db.execute("SELECT user_id FROM users WHERE first_name=? OR last_name=?", owner)
+        owner_id = @db.execute("SELECT user_id FROM users WHERE first_name=? OR last_name=?", owner,owner)
         bookmark_list=[]
         owner_id.each do
             |i|
@@ -207,12 +207,28 @@ class BookmarkDB
         return bookmark_list
     end
 
-
-    def search_bookmarks(tags, url, owner)
-
-
+    def search_url_bookmarks(url)
+        #makes it a wildcard search
+        search = '%'+url+'%'
+        statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ?"
+        retStatement = @db.execute statement,search
+        p retStatement
+        return retStatement
     end
-    
+
+    #creates an array to display based on page number
+    def display_bookmarks(array, page_number, number_results)
+        i_max = page_number * number_results
+        i_min = page_number-1 * number_results
+        results = []
+        while i_min != i_max
+            results.append(array[i_min])
+            i_min =+ 1
+        end
+        return results
+    end
+
+
     def add_bookmark(bookmarkName, url, owner_id)
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
@@ -331,5 +347,5 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.search_tags_bookmarks("hello")
+db.search_url_bookmarks("go")
 
