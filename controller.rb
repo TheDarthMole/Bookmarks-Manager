@@ -127,7 +127,7 @@ class BookmarkDB
             return "Incorrect Email"
         end
         if not get_account_id(email)
-            hash = generate_hash(password,salt="")
+            hash = generate_hash(password,salt="") # salt="" means a new one is generated
 
             statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
             retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
