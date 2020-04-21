@@ -4,6 +4,10 @@ require 'rspec'
 require 'simplecov'
 require 'capybara/cucumber'
 
+SimpleCov.start do
+    add_filter 'features/'
+end
+
 #is that file extension alright? 
 require_relative '../../startServer.rb'
 
