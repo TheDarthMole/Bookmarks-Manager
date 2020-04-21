@@ -106,10 +106,8 @@ class BookmarkDB
             end
             hash = generate_hash(password,salt=retStatement[1])
             if hash[0] == retStatement[0]
-                puts "Can login"
                 return true
             end
-            puts "Cant login"
             return false
         end
         return false
@@ -133,7 +131,6 @@ class BookmarkDB
 
             statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
             retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
-            puts retStatement
             return "successful"
         end
         puts "User tried to make an account with duplicate email #{email}"
@@ -161,15 +158,13 @@ class BookmarkDB
         end
         if try_login(email, oldPassword)
             hash = generate_hash(newPassword,salt="")
-            puts hash[0]
-            puts hash[1]
             statement = "UPDATE users SET password = ?, salt = ? WHERE email = ?"
-            puts @db.execute statement, hash[0], hash[1], email
+            @db.execute statement, hash[0], hash[1], email
             return "Successful"
         end
         return "Incorrect old password"
     end
-    #
+    
     def add_security_questions(email, sec_question, sec_answer)
         
     end
@@ -191,7 +186,6 @@ class BookmarkDB
                     print item.to_s + "|"
                 end
                 counter+=1
-                    
             end
             puts
         end
@@ -200,6 +194,7 @@ class BookmarkDB
 
     #TAGS
 
+    
     def search_tag(tag_name)
         statement = "SELECT tag_id FROM tags WHERE name=?"
         retStatement = @db.execute statement,tag_name
@@ -230,20 +225,25 @@ class BookmarkDB
     end
 
     #SEARCH AND DISPLAY
-    #
-    #
+
+    
     def default_search(term,page,results)
         page = page.to_i
         results = results.to_i
-
         i_min = (page-1)*results
-        i_max = page*results
-
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
-        sql = @db.execute retStatment,search,search,search,i_min,i_max
+        sql = @db.execute retStatment,search,search,search,i_min,results
         return sql
     end
+    
+    def get_total_results(search)
+        term = '%'+search+'%'
+        retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?"
+        sql = @db.execute retStatment, term, term, term
+        return sql[0][0]
+    end
+    
     #Uses results array to pull tag_names
     def get_bookmark_tags(array)
         i_max = array.length
@@ -459,5 +459,4 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.get_bookmark_tags(db.default_search("%",1,10))
-
+db.get_total_results("google")
