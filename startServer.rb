@@ -17,8 +17,11 @@ end
 
 helpers do # functions used within erb files
     def get_bookmarks_page(search, page_no, items_per_page)
-        a= @db.default_search(search,page_no,items_per_page)
-        return a
+        return @db.default_search(search,page_no,items_per_page)
+    end
+    
+    def get_total_items(search)
+        return @db.get_total_results search
     end
 end
 
@@ -65,6 +68,9 @@ get "/dashboard" do
     else
         if @db.try_login(session[:user],session[:pass])
             params[:page] = 1
+            if session[:lim].nil?
+                session[:lim] = 5
+            end
             erb :dashboard
         else
             redirect "/login"
@@ -78,6 +84,7 @@ get "/dashboard/:page" do
     else
         if @db.try_login(session[:user],session[:pass])
             @bookmarks = get_bookmarks_page("", params[:page], 5)
+            @total = get_total_items("")
             erb :dashboard
         else
             redirect "/login"
@@ -87,10 +94,10 @@ end
 
 post "/dashboard" do
     puts params
-    if params[:page] == nil
+    if params[:page].nil?
         params[:page] = 1
     end
-    if session[:lim] == nil
+    if session[:lim].nil?
         session[:lim] = 5
     end
     if params[:searchterm] == ""
@@ -107,6 +114,7 @@ get "/dashboard/search/:searchterm/:page/:lim" do
         if @db.try_login(session[:user],session[:pass])
             session[:lim] = params[:lim]
             @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
+            @total = get_total_items(params[:searchterm])
             erb :dashboard
         else
             redirect "/login"
@@ -138,6 +146,7 @@ end
 
 post "/createbookmark" do
     puts params
+    
 end
 
 
