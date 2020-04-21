@@ -94,6 +94,9 @@ class BookmarkDB
     end
     
     def try_login(email, password)
+        if email.nil? or password.nil?
+            return false
+        end
         email = email.downcase
         if check_account_exists(email)
             statement = "SELECT password, salt FROM users WHERE email = ?"
@@ -108,9 +111,8 @@ class BookmarkDB
             end
             puts "Cant login"
             return false
-        else
-            return false
         end
+        return false
     end
     
     def get_username_email(email)
@@ -240,7 +242,6 @@ class BookmarkDB
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,i_max
-        p sql
         return sql
     end
     #Uses results array to pull tag_names
