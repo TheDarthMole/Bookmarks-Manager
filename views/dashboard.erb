@@ -228,13 +228,9 @@
                             <% books = get_bookmarks_page("", params[:page], 5) %>
                             <% total = get_total_items("") %>
                         <% end %>
-                        <% displayedAmount = session[:lim].to_i %>
                         <% total = total.to_i %>
-                        <% if session[:lim].to_i >= total %>
-                            <% displayedAmount = total.to_i %>
-                        <% end %>   
-                        <% cubes = (total / session[:lim].to_i).ceil %>
-                        
+                        <% cubes = (total/session[:lim].to_f).ceil %>
+
                         <% books.each do |item| %>
                             <tr>
                                 <td width="50">
@@ -266,17 +262,17 @@
                 </table>
             </div>
             <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%= displayedAmount %> of <%= total %></p>
+                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%= books.length %> of <%= total %></p>
                 <ul class="pagination mb-md-0">
                     <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
-                        <a class="page-link" href="/dashboard/search/<%= params[:searchterm] %>/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>" tabindex="-1">Previous</a>
+                        <a class="page-link" href="/dashboard/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
                     </li>
 <!--                    <li class="page-item active">
                         <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
                     </li> -->
-                <% [*1..cubes+1].each do |item| %>
+                <% [*1..cubes].each do |item| %>
                     <li class="page-item <%= if params[:page].to_i == item then 'active' else '' end %>">
-                        <a class="page-link" href="/dashboard/search/<%= params[:searchterm] %>/<%= item %>/<%= session[:lim] %>"><%= item %>
+                        <a class="page-link" href="/dashboard/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %>"><%= item %>
                         <% if params[:page].to_i %>
                             <span class="sr-only">(current)</span>
                         <% end %>
@@ -285,7 +281,7 @@
                 <% end %>
 <!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
                     <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
-                        <a class="page-link" href="/dashboard/search/<%= params[:searchterm] %>/<%= (params[:page].to_i + 1) %>/<%= session[:lim] %>">Next</a>
+                        <a class="page-link" href="/dashboard/<%= (params[:page].to_i + 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>">Next</a>
                     </li>
                 </ul>
             </nav>
