@@ -440,6 +440,19 @@ class BookmarkDB
         puts "bad email"
         return false
     end
+
+    def plain_text_check(name)
+        if name.length > 30
+            puts "long name"
+            return false
+        end
+
+        if name.match? /[a-z]/ or name.match? /[A-Z]/
+            return true
+        end
+
+        return false
+    end
     
 end
 
