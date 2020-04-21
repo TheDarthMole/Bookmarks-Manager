@@ -164,7 +164,7 @@ class BookmarkDB
         end
         return "Incorrect old password"
     end
-    #
+    
     def add_security_questions(email, sec_question, sec_answer)
         
     end
@@ -194,6 +194,7 @@ class BookmarkDB
 
     #TAGS
 
+    
     def search_tag(tag_name)
         statement = "SELECT tag_id FROM tags WHERE name=?"
         retStatement = @db.execute statement,tag_name
@@ -224,14 +225,12 @@ class BookmarkDB
     end
 
     #SEARCH AND DISPLAY
-    #
-    #
+
+    
     def default_search(term,page,results)
         page = page.to_i
         results = results.to_i
-
         i_min = (page-1)*results
-
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,results
@@ -244,6 +243,7 @@ class BookmarkDB
         sql = @db.execute retStatment, term, term, term
         return sql[0][0]
     end
+    
     #Uses results array to pull tag_names
     def get_bookmark_tags(array)
         i_max = array.length
