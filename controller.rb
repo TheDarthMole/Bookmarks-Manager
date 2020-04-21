@@ -231,16 +231,30 @@ class BookmarkDB
     #
     #
     def default_search(term,page,results)
-        results = results.to_i
         page = page.to_i
-        i_min = (page - 1)*results
+        results = results.to_i
+
+        i_min = (page-1)*results
         i_max = page*results
 
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,i_max
         p sql
         return sql
+    end
+    #Uses results array to pull tag_names
+    def get_bookmark_tags(array)
+        i_max = array.length
+        i_min = 0
+        retStatment = "SELECT bookmark_ID,tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
+        tags = []
+        while i_min != i_max
+            tags.append(@db.execute(retStatment,array[i_min][0]))
+            i_min= 1 + i_min
+        end
+        p tags
+        return tags
     end
 
     def search_tags_bookmarks(tag_name)
@@ -418,10 +432,25 @@ class BookmarkDB
     #checks if email is valid
     def email_check(email)
         if email.match? /\A[a-z0-9\+\-_\.]+@[a-z\d\-.]+\.[a-z]+\z/i
-            puts "Valid email"
-            return true
+            if email.length <= 100
+                puts "Valid email"
+                return true
+            end
         end
         puts "bad email"
+        return false
+    end
+
+    def plain_text_check(name)
+        if name.length > 30
+            puts "long name"
+            return false
+        end
+
+        if name.match? /[a-z]/ or name.match? /[A-Z]/
+            return true
+        end
+
         return false
     end
     
@@ -429,5 +458,5 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.default_search("a",2,2)
+db.get_bookmark_tags(db.default_search("%",1,10))
 
