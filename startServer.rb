@@ -17,11 +17,16 @@ end
 
 helpers do # functions used within erb files
     def get_bookmarks_page(search, page_no, items_per_page)
+<<<<<<< HEAD
         return @db.default_search(search,page_no,items_per_page)
     end
     
     def get_total_items(search)
         return @db.get_total_results search
+=======
+        a= @db.default_search(search,page_no,items_per_page)
+        return a
+>>>>>>> b0f2ae4de9280d0f14d275d4efe79c19c4e42a73
     end
 end
 
@@ -93,12 +98,31 @@ get "/dashboard/:page/:lim" do
     end
 end
 
+<<<<<<< HEAD
 get "/dashboard/:page/:lim/" do
     redirect "/dashboard/#{params[:page]}/#{params[:lim]}"
 end
 
 post "/dashboard" do
     if params[:page].nil?
+=======
+get "/test" do
+if check_empty_session
+        redirect "/login"
+    else
+        if @db.try_login(session[:user],session[:pass])
+            session[:lim] = params[:lim]
+            @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
+            erb :dashboard
+        else
+            redirect "/login"
+        end
+    end
+end
+
+post "/dashboard" do
+    if params[:page] == nil
+>>>>>>> b0f2ae4de9280d0f14d275d4efe79c19c4e42a73
         params[:page] = 1
     end
     if session[:lim].nil?
@@ -155,11 +179,9 @@ end
 
 
 post "/register" do
-    puts params
     if params[:password] == params[:passwordrepeat] # Checks to make sure the
         if !@db.check_account_exists(params[:email])
             response = @db.create_account(params[:email], params[:password], params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
-            p response
             if response == "successful"
                 erb :login
             else
@@ -167,12 +189,10 @@ post "/register" do
             end
         else
 #             response = "Account already exists!"
-#             p response
             redirect "/register"
         end
     else
 #         response = "Passwords do not match!"
-#         p response
         erb :register
         # Use a ruby variable to show an error on the erb
     end
@@ -189,9 +209,7 @@ end
 post "/change-password" do
     puts params 
     puts session[:user]
-    puts params[:password]
     session[:changePassMessage] = @db.change_password(session[:user], params[:oldpassword], params[:password], params[:passwordconfirm])
-    puts @error
     redirect "/change-password"
 end
 

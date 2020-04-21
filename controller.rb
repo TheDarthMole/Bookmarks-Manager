@@ -106,10 +106,8 @@ class BookmarkDB
             end
             hash = generate_hash(password,salt=retStatement[1])
             if hash[0] == retStatement[0]
-                puts "Can login"
                 return true
             end
-            puts "Cant login"
             return false
         end
         return false
@@ -133,7 +131,6 @@ class BookmarkDB
 
             statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
             retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
-            puts retStatement
             return "successful"
         end
         puts "User tried to make an account with duplicate email #{email}"
@@ -161,10 +158,8 @@ class BookmarkDB
         end
         if try_login(email, oldPassword)
             hash = generate_hash(newPassword,salt="")
-            puts hash[0]
-            puts hash[1]
             statement = "UPDATE users SET password = ?, salt = ? WHERE email = ?"
-            puts @db.execute statement, hash[0], hash[1], email
+            @db.execute statement, hash[0], hash[1], email
             return "Successful"
         end
         return "Incorrect old password"
@@ -191,7 +186,6 @@ class BookmarkDB
                     print item.to_s + "|"
                 end
                 counter+=1
-                    
             end
             puts
         end
@@ -239,8 +233,13 @@ class BookmarkDB
         i_min = (page-1)*results
 
         search = '%'+term+'%'
+<<<<<<< HEAD
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,results
+=======
+        retStatment = "SELECT distinct bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
+        sql = @db.execute retStatment,search,search,search,i_min,i_max
+>>>>>>> b0f2ae4de9280d0f14d275d4efe79c19c4e42a73
         return sql
     end
     
