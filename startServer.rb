@@ -78,11 +78,12 @@ get "/dashboard" do
     end
 end
 
-get "/dashboard/:page" do
+get "/dashboard/:page/:lim" do
     if check_empty_session
         redirect "/login"
     else
         if @db.try_login(session[:user],session[:pass])
+            session[:lim] = params[:lim]
             @bookmarks = get_bookmarks_page("", params[:page], 5)
             @total = get_total_items("")
             erb :dashboard
@@ -92,8 +93,11 @@ get "/dashboard/:page" do
     end
 end
 
+get "/dashboard/:page/:lim/" do
+    redirect "/dashboard/#{params[:page]}/#{params[:lim]}"
+end
+
 post "/dashboard" do
-    puts params
     if params[:page].nil?
         params[:page] = 1
     end
@@ -103,11 +107,11 @@ post "/dashboard" do
     if params[:searchterm] == ""
         redirect "/dashboard"
     else
-        redirect "/dashboard/search/#{params[:searchterm]}/#{params[:page]}/#{session[:lim]}"
+        redirect "/dashboard/#{params[:page]}/#{session[:lim]}/#{params[:searchterm]}"
     end
 end
 
-get "/dashboard/search/:searchterm/:page/:lim" do
+get "/dashboard/:page/:lim/:searchterm" do
     if check_empty_session
         redirect "/login"
     else
