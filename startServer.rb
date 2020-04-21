@@ -17,10 +17,7 @@ end
 
 helpers do # functions used within erb files
     def get_bookmarks_page(search, page_no, items_per_page)
-        p page_no
-        p items_per_page
         a= @db.default_search(search,page_no,items_per_page)
-        p a
         return a
     end
 end
@@ -128,8 +125,7 @@ post "/login" do
 end
 
 get "/login" do
-    if session[:user] != nil and session[:pass] != nil and
-        @db.try_login(session[:user], session[:pass])
+    if @db.try_login(session[:user], session[:pass])
             redirect "/dashboard"
     else
         erb :login
@@ -138,6 +134,10 @@ end
 
 get "/register" do
     erb :register
+end
+
+post "/createbookmark" do
+    puts params
 end
 
 
