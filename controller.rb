@@ -195,7 +195,6 @@ class BookmarkDB
         end
     end
 
-
     #Audit_log
     #
     def add_to_admin_log(user_id,bookmark_id,action)
@@ -370,16 +369,24 @@ class BookmarkDB
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
-        unless plain_text_check(bookmarkName,30)
+        unless plain_text_check(bookmarkName)
             return "Please use less than 30 characters"
+        end
+        unless url.match? /https?:\/\/[\S]+/
+            return "Please start the url with http:// or https://"
         end
         if check_if_exists(url)
             p "hello"
             return "URL already added"
         end
+        unless plain_text_check(url, 150)
+            return "URL too long, please make less than 150 characters"
+        end
+        url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+        return "Successfully added bookmark!"
     end
 
     def check_if_exists(url)
@@ -423,7 +430,7 @@ class BookmarkDB
 
 
 
-=begin TEST CODE
+
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
@@ -450,7 +457,7 @@ class BookmarkDB
         db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
         db.upgrade_account_to_admin("Lujain")
     end
-=end
+
 
     #SECURITY
     def generate_hash(password, salt="")
@@ -507,9 +514,10 @@ class BookmarkDB
         return false
     end
 
-    def plain_text_check(name,length)
-        if name.length > length
-            puts "too long name"
+    def plain_text_check(name, *length) # Optional argument length to check for
+        lengthcheck = unless length[0].nil? then length[0] else 30 end
+        if name.length > lengthcheck
+            puts "long name"
             return false
         end
 
@@ -523,7 +531,5 @@ class BookmarkDB
 end
 
 # This section is for testing the database
+
 db = BookmarkDB.new
-db.add_to_admin_log(1,1,"add")
-db.add_to_admin_log(1,1,"delete")
-db.view_audit_log(1,2)
