@@ -120,21 +120,22 @@ class BookmarkDB
     end
     
     def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
-        if not password_check(password)
-            return "Insecure password"
+        password_reason = password_check(password)
+        unless password_reason == true
+            return password_reason
         end
-        if not email_check(email)
-            return "Incorrect Email"
+        unless email_check(email)
+            return "Invalid email format"
         end
-        if not get_account_id(email)
+        email = email.downcase
+        unless check_account_exists(email)
             hash = generate_hash(password,salt="") # salt="" means a new one is generated
-
             statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
             retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
-            return "successful"
+            return "Successfully created account!"
         end
         puts "User tried to make an account with duplicate email #{email}"
-        return "fail-email"
+        return "Account with that email already exists!"
     end
     
     def upgrade_account_to_admin(email)
@@ -410,22 +411,21 @@ class BookmarkDB
                 if password.match? /[A-Z]/
                     if password.match? /[0-9]/
                         if password.match? /[$&+,:;=?@#|'<>.^*()%!-]/
-                            puts "pass"
                             return true
                         else
-                            puts "No special chars: $ & + , : ; = ? @ # | ' < > . ^ * ( ) % ! - "
+                            return "No special chars: $ & + , : ; = ? @ # | ' < > . ^ * ( ) % ! - "
                         end
                     else
-                        puts "No numbers in password"
+                        return "No numbers in password"
                     end
                 else
-                    puts "No upper letters"
+                    return "No upper letters"
                 end
             else
-                puts "No lower case letters"
+                return "No lower case letters"
             end
         else
-            puts "password is not long enough"
+            return "password is not long enough"
         end
         return false
     end
