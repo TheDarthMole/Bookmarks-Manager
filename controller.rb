@@ -321,12 +321,21 @@ class BookmarkDB
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
+        
         unless plain_text_check(bookmarkName)
             return "Please use less than 30 characters"
         end
+        unless url.match? /https?:\/\/[\S]+/
+            return "Please start the url with http:// or https://"
+        end
+        unless plain_text_check(url, 150)
+            return "URL too long, please make less than 150 characters"
+        end
+        url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+        return "Successfully added bookmark!"
     end
     
     def get_all_bookmarks
@@ -441,8 +450,9 @@ class BookmarkDB
         return false
     end
 
-    def plain_text_check(name)
-        if name.length > 30
+    def plain_text_check(name, *length) # Optional argument length to check for
+        lengthcheck = unless length[0].nil? then length[0] else 30 end
+        if name.length > lengthcheck
             puts "long name"
             return false
         end
@@ -458,7 +468,3 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.get_total_results("google")
-p db.plain_text_check("Hey")
-p db.plain_text_check("hey123")
-p db.plain_text_check("Hey123!")

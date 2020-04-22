@@ -63,6 +63,11 @@ get "/dashboard" do
     if session[:lim].nil?
         session[:lim] = 5
     end
+    p @reply
+    p :locals
+    unless session[:reply]
+        session[:reply] = nil
+    end
     erb :dashboard
 end
 
@@ -71,6 +76,9 @@ get "/dashboard/:page/:lim" do
     session[:lim] = params[:lim]
     @bookmarks = get_bookmarks_page("", params[:page], 5)
     @total = get_total_items("")
+    unless session[:reply]
+        session[:reply] = nil
+    end
     erb :dashboard
 end
 
@@ -143,6 +151,9 @@ end
 
 post "/createbookmark" do
     puts params
+    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]))
+    session[:reply] = reply
+    redirect "/dashboard"
 end
 
 post "/register" do
