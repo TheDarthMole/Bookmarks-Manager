@@ -470,24 +470,20 @@ class BookmarkDB
         return false
     end
 
-    def plain_text_check(name)
-        if name.length > 30
-            puts "long name"
+    def plain_text_check(name,length)
+        if name.length > length
+            puts "too long name"
             return false
         end
 
         if name.match? /[a-z]/ or name.match? /[A-Z]/
             return true
         end
-
         return false
     end
+
     
 end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.get_total_results("google")
-p db.plain_text_check("Hey")
-p db.plain_text_check("hey123")
-p db.plain_text_check("Hey123!")
