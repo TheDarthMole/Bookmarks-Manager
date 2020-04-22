@@ -348,7 +348,7 @@ class BookmarkDB
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
-        unless plain_text_check(bookmarkName)
+        unless plain_text_check(bookmarkName,30)
             return "Please use less than 30 characters"
         end
         currentTime = @time.strftime("%s")
