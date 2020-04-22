@@ -31,27 +31,18 @@ get "/logout" do
 end
 
 get "/admin/audit" do
-    if check_admin session[:user]
-        erb :adminaudit
-    else
-        redirect "/dashboard"
-    end
+    adminauthenticate
+    erb :adminaudit
 end
 
 get "/admin/bookmarks" do
-    if check_admin session[:user]
-        erb :adminbookmarks
-    else
-        redirect "/dashboard"
-    end
+    adminauthenticate
+    erb :adminbookmarks
 end
 
 get "/admin/users" do
-    if check_admin session[:user]
-        erb :adminuser
-    else
-        redirect "/dashboard"
-    end
+    adminauthenticate
+    erb :adminuser
 end
 
 get "/" do
@@ -63,34 +54,20 @@ get "/dashboard/" do
 end
 
 get "/dashboard" do
-    if check_empty_session
-        redirect "/login"
-    else
-        if @db.try_login(session[:user],session[:pass])
-            params[:page] = 1
-            if session[:lim].nil?
-                session[:lim] = 5
-            end
-            erb :dashboard
-        else
-            redirect "/login"
-        end
+    authenticate
+    params[:page] = 1
+    if session[:lim].nil?
+        session[:lim] = 5
     end
+    erb :dashboard
 end
 
 get "/dashboard/:page/:lim" do
-    if check_empty_session
-        redirect "/login"
-    else
-        if @db.try_login(session[:user],session[:pass])
-            session[:lim] = params[:lim]
-            @bookmarks = get_bookmarks_page("", params[:page], 5)
-            @total = get_total_items("")
-            erb :dashboard
-        else
-            redirect "/login"
-        end
-    end
+    authenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page("", params[:page], 5)
+    @total = get_total_items("")
+    erb :dashboard
 end
 
 get "/dashboard/:page/:lim/" do
@@ -112,24 +89,28 @@ post "/dashboard" do
 end
 
 get "/dashboard/:page/:lim/:searchterm" do
-    if check_empty_session
-        redirect "/login"
-    else
-        if @db.try_login(session[:user],session[:pass])
-            session[:lim] = params[:lim]
-            @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
-            @total = get_total_items(params[:searchterm])
-            erb :dashboard
-        else
-            redirect "/login"
-        end
-    end
+    authenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :dashboard
+
+end
+
+get "/admin/bookmarks/:lim/:searchterm" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :adminbookmarks
+
 end
 
 post "/login" do
     if @db.try_login(params[:email].downcase, params[:password])
         session[:user] = params[:email].downcase
         session[:pass] = params[:password]
+        session[:loggedin] = true
         redirect "/dashboard"
     else
         redirect "/login"
@@ -137,11 +118,10 @@ post "/login" do
 end
 
 get "/login" do
-    if @db.try_login(session[:user], session[:pass])
-            redirect "/dashboard"
-    else
-        erb :login
+    unless session[:loggedin]
+        session[:loggedin] = false
     end
+    erb :login
 end
 
 get "/register" do
@@ -150,7 +130,6 @@ end
 
 post "/createbookmark" do
     puts params
-    
 end
 
 
@@ -189,18 +168,15 @@ post "/change-password" do
     redirect "/change-password"
 end
 
-def check_admin(email)
-    if session[:user] != nil
-        if @db.is_admin(@db.get_account_id(session[:user]))
-            return true
-        end
+def authenticate
+    unless session[:loggedin]
+        redirect "/login"
     end
-    return false
 end
 
-def check_empty_session()
-    if ([nil, ""].include? session[:user]) or ([nil, ""].include? session[:pass])
-        return true
+def adminauthenticate
+    authenticate
+    unless @db.is_admin(@db.get_account_id(session[:user]))
+        redirect "/dashboard"
     end
-    return false
 end
