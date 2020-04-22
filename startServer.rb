@@ -113,7 +113,7 @@ get "/admin/bookmarks/:page/:lim" do
     session[:lim] = params[:lim]
     @bookmarks = get_bookmarks_page("", params[:page], 5)
     @total = get_total_items("")
-    erb :dashboard
+    erb :adminbookmarks
 end
 
 post "/login" do
