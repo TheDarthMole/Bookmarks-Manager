@@ -351,7 +351,8 @@ class BookmarkDB
         unless plain_text_check(bookmarkName,30)
             return "Please use less than 30 characters"
         end
-        unless check_if_exists(url)
+        if check_if_exists(url)
+            p "hello"
             return "URL already added"
         end
         currentTime = @time.strftime("%s")
@@ -361,7 +362,8 @@ class BookmarkDB
 
     def check_if_exists(url)
         statement="SELECT bookmark_name,url FROM bookmarks WHERE url=?"
-        return @db.execute(statement,url)
+        retStatment = @db.execute(statement,url)
+        return retStatment
     end
     
     def get_all_bookmarks
@@ -495,4 +497,4 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.default_search("%",1,10)
+db.add_bookmark("hi","https://google.com",2)
