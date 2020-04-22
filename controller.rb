@@ -200,7 +200,7 @@ class BookmarkDB
     #Audit_log
     #
     def add_to_admin_log(user_id,action,*bookmark_id)
-        if bookmark_id = nil
+        if bookmark_id == nil
             bookmark_id = 0
         end
         statement = "INSERT INTO audit_log(user_id,bookmark_id,time,action) VALUES(?,?,?,?)"
