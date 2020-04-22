@@ -23,37 +23,9 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-            <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp</a>
-
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                <ul class="navbar-nav ml-lg-auto align-items-lg-center">
-                    <li class="nav-item ">
-                        <a class="nav-link" href="/dashboard">DASHBOARD</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/admin/bookmarks">BOOKMARKS<span
-								class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/users">USERS</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/audit">AUDIT</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">
-                            <i class="fa fa-user mr-2"></i> LOGOUT
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    
+    <%= erb :header %>
+    
     <!-- modal-section -->
     <div class="modal" tabindex="-1" role="dialog" id="add-bookmark">
         <div class="modal-dialog" role="document">
@@ -213,7 +185,44 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+<!--Start itterating here -->
+                        <% if @bookmarks != nil %>
+                            <% books = @bookmarks %>
+                            <% total = @total %>
+                        <% else %>
+                            <% books = get_bookmarks_page("", params[:page], 5) %>
+                            <% total = get_total_items("") %>
+                        <% end %>
+                        <% total = total.to_i %>
+                        <% cubes = (total/session[:lim].to_f).ceil %>
+
+                        <% books.each do |item| %>
+                            <tr>
+                                <td width="50">
+                                    <div>
+                                        <input type="checkbox" name="" id="" />
+                                        <label for=""></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="<%= item[2] %>"><%= item[1]%></a>
+                                </td>
+                                <td>
+                                    <a href="<%= item[2] %>" target="blank"><%= item[2] %></a>
+                                </td>
+                                <td width="100">
+                                    <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% @bookmarks = nil %>
+                        <% @total = nil %>
+                        <% end %>
+<!--                         <tr>
                             <td width="50">
                                 <div>
                                     <input type="checkbox" name="" id="" />
@@ -300,69 +309,38 @@
                                     <i class="fa fa-times"></i>
                                 </a>
                             </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
             <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries 5 of 25</p>
+                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%= books.length %> of <%= total %></p>
                 <ul class="pagination mb-md-0">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
+                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
                     </li>
-                    <li class="page-item active">
+<!--                    <li class="page-item active">
                         <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
+                    </li> -->
+                <% [*1..cubes].each do |item| %>
+                    <li class="page-item <%= if params[:page].to_i == item then 'active' else '' end %>">
+                        <a class="page-link" href="/admin/bookmarks/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %>"><%= item %>
+                        <% if params[:page].to_i %>
+                            <span class="sr-only">(current)</span>
+                        <% end %>
+                        </a>
                     </li>
-                    <li class="page-item ">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
+                <% end %>
+<!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
+                    <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
+                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i + 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>">Next</a>
                     </li>
                 </ul>
             </nav>
         </div>
     </section>
 
-    <footer class="mt-5 mt-md-0 py-3 border-top">
-        <div class="container">
-            <div class="footer-flex">
-                <div>
-                    <div><i class="far fa-bookmark mb-2"></i> Acme corp</div>
-                    <small class="d-block mb-3 text-muted">© 2020</small>
-                </div>
-                <div>
-                    <ul class="footer-list text-small">
-                        <li><a class="text-muted" href="#">Contact</a></li>
-                        <li><a class="text-muted" href="#">Privacy</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <%= erb :footer %>
 
     <script src="/js/main.js"></script>
     <script src="/js/common.js"></script>
