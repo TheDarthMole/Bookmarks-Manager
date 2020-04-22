@@ -54,6 +54,12 @@
                     <h1 class="text-info mb-4">
                         <i class="far fa-bookmark"></i> Acme corp
                     </h1>
+                    <% if session[:reason] %>
+                    <div class="alert alert-warning" role="alert">
+                        <%= session[:reason] %>
+                    </div>
+                    <% end %>
+                    <% session[:reason] = nil %>
                     <div class="form-group">
                         <label for="fname">First Name<span class="text-danger">*</span></label>
                         <input name="fname" type="text" class="form-control" placeholder="john" required/>
