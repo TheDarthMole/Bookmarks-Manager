@@ -23,6 +23,10 @@ helpers do # functions used within erb files
     def get_total_items(search)
         return @db.get_total_results search
     end
+    
+    def check_admin(email)
+        return @db.is_admin(@db.get_account_id(email))
+    end
 end
 
 get "/logout" do
