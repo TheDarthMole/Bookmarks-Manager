@@ -2,7 +2,8 @@
 <html lang="en">
 
 <!-- Avoiding Duplication -->
-    <%= erb :headinclude %>
+    
+    <%= erb :headinclude, :locals => {:title => "Acme corp - Login"}%>
 
 <body>
     <!-- Navbar -->
