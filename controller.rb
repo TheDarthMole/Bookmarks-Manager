@@ -93,6 +93,9 @@ class BookmarkDB
     end
     
     def try_login(email, password)
+        if email.nil? or password.nil?
+            return false
+        end
         email = email.downcase
         if check_account_exists(email)
             statement = "SELECT password, salt FROM users WHERE email = ?"
@@ -102,14 +105,11 @@ class BookmarkDB
             end
             hash = generate_hash(password,salt=retStatement[1])
             if hash[0] == retStatement[0]
-                puts "Can login"
                 return true
             end
-            puts "Cant login"
-            return false
-        else
             return false
         end
+        return false
     end
 
     
@@ -120,22 +120,22 @@ class BookmarkDB
     end
     
     def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
-        if not password_check(password)
-            return "Insecure password"
+        password_reason = password_check(password)
+        unless password_reason == true
+            return password_reason
         end
-        if not email_check(email)
-            return "Incorrect Email"
+        unless email_check(email)
+            return "Invalid email format"
         end
-        if not get_account_id(email)
+        email = email.downcase
+        unless check_account_exists(email)
             hash = generate_hash(password,salt="") # salt="" means a new one is generated
-
             statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
             retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
-            puts retStatement
-            return "successful"
+            return "Successfully created account!"
         end
         puts "User tried to make an account with duplicate email #{email}"
-        return "fail-email"
+        return "Account with that email already exists!"
     end
     
     def upgrade_account_to_admin(email)
@@ -159,17 +159,11 @@ class BookmarkDB
         end
         if try_login(email, oldPassword)
             hash = generate_hash(newPassword,salt="")
-            puts hash[0]
-            puts hash[1]
             statement = "UPDATE users SET password = ?, salt = ? WHERE email = ?"
-            puts @db.execute statement, hash[0], hash[1], email
+            @db.execute statement, hash[0], hash[1], email
             return "Successful"
         end
         return "Incorrect old password"
-    end
-    #
-    def add_security_questions(email, sec_question, sec_answer)
-        
     end
     
     def get_login_attempts(user_id)
@@ -189,7 +183,6 @@ class BookmarkDB
                     print item.to_s + "|"
                 end
                 counter+=1
-                    
             end
             puts
         end
@@ -198,6 +191,7 @@ class BookmarkDB
 
     #TAGS
 
+    
     def search_tag(tag_name)
         statement = "SELECT tag_id FROM tags WHERE name=?"
         retStatement = @db.execute statement,tag_name
@@ -228,21 +222,25 @@ class BookmarkDB
     end
 
     #SEARCH AND DISPLAY
-    #
-    #
+
+    
     def default_search(term,page,results)
         page = page.to_i
         results = results.to_i
-
         i_min = (page-1)*results
-        i_max = page*results
-
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
-        sql = @db.execute retStatment,search,search,search,i_min,i_max
-        p sql
+        sql = @db.execute retStatment,search,search,search,i_min,results
         return sql
     end
+    
+    def get_total_results(search)
+        term = '%'+search+'%'
+        retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?"
+        sql = @db.execute retStatment, term, term, term
+        return sql[0][0]
+    end
+    
     #Uses results array to pull tag_names
     def get_bookmark_tags(array)
         i_max = array.length
@@ -323,6 +321,9 @@ class BookmarkDB
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
+        unless plain_text_check(bookmarkName)
+            return "Please use less than 30 characters"
+        end
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
@@ -409,22 +410,21 @@ class BookmarkDB
                 if password.match? /[A-Z]/
                     if password.match? /[0-9]/
                         if password.match? /[$&+,:;=?@#|'<>.^*()%!-]/
-                            puts "pass"
                             return true
                         else
-                            puts "No special chars: $ & + , : ; = ? @ # | ' < > . ^ * ( ) % ! - "
+                            return "No special chars: $ & + , : ; = ? @ # | ' < > . ^ * ( ) % ! - "
                         end
                     else
-                        puts "No numbers in password"
+                        return "No numbers in password"
                     end
                 else
-                    puts "No upper letters"
+                    return "No upper letters"
                 end
             else
-                puts "No lower case letters"
+                return "No lower case letters"
             end
         else
-            puts "password is not long enough"
+            return "password is not long enough"
         end
         return false
     end
@@ -458,5 +458,7 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.get_bookmark_tags(db.default_search("%",1,10))
-
+db.get_total_results("google")
+p db.plain_text_check("Hey")
+p db.plain_text_check("hey123")
+p db.plain_text_check("Hey123!")

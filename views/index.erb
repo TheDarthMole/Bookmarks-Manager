@@ -1,25 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>Acme Corp - Bookmarks</title>
-    <!-- Required meta tags -->
-    <meta name="description" content="Bookmark application" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-
-    <!-- Font Awesome -->
-    <link href="/css/fontawesome/all.min.css" rel="stylesheet" />
-    <!--load all styles -->
-    <link href="/css/fontawesome/brands.min.css" rel="stylesheet" />
-    <!--load all styles -->
-
-    <!-- Stylesheet CSS -->
-    <link rel="stylesheet" href="/css/style.min.css" />
-</head>
+<!-- Avoiding duplication -->
+    <%= erb :headinclude, :locals => {:title => "Acme corp - Index"} %>
 
 <body>
     <!-- Navbar -->
@@ -119,24 +102,7 @@
 			</div>
 		</section>
 
-		<footer class="mt-5 mt-md-0 py-3 border-top">
-			<div class="container">
-				<div class="footer-flex">
-					<div>
-						<div><i class="far fa-bookmark mb-2"></i> Acme corp</div>
-						<small class="d-block mb-3 text-muted">© 2020</small>
-					</div>
-					<div>
-						<ul class="footer-list text-small">
-                            <li><a class="text-muted" href="#">Contact</a></li>
-                            <li><a class="text-muted" href="/login">Login</a></li>
-                            <li><a class="text-muted" href="/register">Register</a></li>
-                            <li><a class="text-muted" href="#">Privacy</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
+		<%= erb :footer %>
 
         <script src="/js/common.js"></script>
 </body>
