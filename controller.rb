@@ -89,7 +89,9 @@ class BookmarkDB
             add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
         end
-        puts "NO WORKABLE ACTION"
+
+        add_to_admin_log(user_ID,"NO WORKABLE ACTION")
+        p "NO WORKABLE ACTION"
         return false
     end
 
