@@ -8,6 +8,7 @@ class BookmarkDB
         @time = Time.new
     end
 
+    #ACCOUNTS
     def check_account_enabled(email)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, email
@@ -55,31 +56,37 @@ class BookmarkDB
         return retStatemnt[0]
     end
 
-    def can_user_perform_action(user_ID,action)
+    def can_user_perform_action(user_ID,action,bookmark_id)
         #pulls user_id role
         role = get_user_role_ID(user_ID)
         #Checks if user can add bookmarks
         if action == "add"
+            add_to_admin_log(user_ID,bookmark_id,action)
             return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can edit
         if action == "edit"
+            add_to_admin_log(user_ID,bookmark_id,action)
             return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create
         if action == "create"
+            add_to_admin_log(user_ID,0,action)
             return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can manage
         if action == "manage"
+            add_to_admin_log(user_ID,0,action)
             return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create_admin
         if action == "create_admin"
+            add_to_admin_log(user_ID,0,action)
             return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can upgrade_guest
         if action == "upgrade_guest"
+            add_to_admin_log(user_ID,0,action)
             return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
         end
         puts "NO WORKABLE ACTION"
@@ -186,6 +193,21 @@ class BookmarkDB
             end
             puts
         end
+    end
+
+
+    #Audit_log
+    #
+    def add_to_admin_log(user_id,bookmark_id,action)
+        statement = "INSERT INTO audit_log(user_id,bookmark_id,time,action) VALUES(?,?,?,?)"
+        time = @time.strftime("%s")
+        @db.execute(statement,user_id,bookmark_id,time,action)
+    end
+
+    def view_audit_log(page,limit)
+        statement = "SELECT * FROM audit_log LIMIT ?,?"
+        p @db.execute(statement,page,limit)
+        return @db.execute(statement,page,limit)
     end
 
 
@@ -502,4 +524,6 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.add_bookmark("h","https://google.com1",2)
+db.add_to_admin_log(1,1,"add")
+db.add_to_admin_log(1,1,"delete")
+db.view_audit_log(1,2)
