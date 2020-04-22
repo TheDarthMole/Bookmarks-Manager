@@ -131,6 +131,9 @@ get "/login" do
     unless session[:loggedin]
         session[:loggedin] = false
     end
+    if session[:loggedin]
+        redirect "/dashboard"
+    end
     erb :login
 end
 
