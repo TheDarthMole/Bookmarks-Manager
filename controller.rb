@@ -363,7 +363,12 @@ class BookmarkDB
     def check_if_exists(url)
         statement="SELECT bookmark_name,url FROM bookmarks WHERE url=?"
         retStatment = @db.execute(statement,url)
-        return retStatment
+        if retStatment[0] == nil
+            p url+ " no exist"
+            return false
+        end
+        p url + " exists"
+        return true
     end
     
     def get_all_bookmarks
@@ -497,4 +502,4 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.add_bookmark("hi","https://google.com",2)
+db.add_bookmark("h","https://google.com1",2)
