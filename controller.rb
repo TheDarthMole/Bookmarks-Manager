@@ -58,7 +58,6 @@ class BookmarkDB
     def can_user_perform_action(user_ID,action)
         #pulls user_id role
         role = get_user_role_ID(user_ID)
-
         #Checks if user can add bookmarks
         if action == "add"
             return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
@@ -112,6 +111,7 @@ class BookmarkDB
         end
         return false
     end
+
     
     def get_username_email(email)
         statement = "SELECT username FROM users WHERE email = ?"
@@ -204,6 +204,10 @@ class BookmarkDB
 
 
     def add_tag_bookmark(tag_name, bookmark_id)
+        #Checks tag_length
+        unless plain_text_check(tag_name)
+            return "too long tag name"
+        end
         #check if tag exists
         if not get_tag_id(tag_name)
             @db.execute("INSERT INTO tags(name) VALUES (?)", tag_name)
@@ -255,6 +259,30 @@ class BookmarkDB
         return tags
     end
 
+    def get_user_favourites(user_id,page,limit)
+        page = page.to_i
+        limit = limit.to_i
+        user_id = user_id.to_i
+
+        statement = "SELECT bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM favourites, bookmarks WHERE favourites.user_id =? AND favourites.bookmark_id = bookmarks.bookmark_id LIMIT ?,?"
+        return @db.execute(statement,user_id,page,limit)
+    end
+
+    def add_favourite(user_id, bookmark_id)
+        user_id = user_id.to_i
+        bookmark_id = bookmark_id.to_i
+        statement = "INSERT INTO favourites(user_id,bookmark_id) VALUES(?,?)"
+        return @db.execute(statement,user_id,bookmark_id)
+    end
+
+    def remove_favourite(user_id,bookmark_id)
+        user_id = user_id.to_i
+        bookmark_id = bookmark_id.to_i
+        statement = "DELETE FROM favourites WHERE user_id=? AND bookmark_id =?"
+        return @db.execute(statement,user_id,bookmark_id)
+    end
+
+=begin OLD CODE
     def search_tags_bookmarks(tag_name)
         #gets tag_id based on name
         tag_id = get_tag_id(tag_name)
@@ -315,9 +343,8 @@ class BookmarkDB
             p results
         end
         return results
-    end
-
-
+        end
+=end
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
@@ -356,6 +383,8 @@ class BookmarkDB
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE owner_id=?"
         return @db.execute statement, owner_id
     end
+
+
 
 
     def add_sample_data
