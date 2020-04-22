@@ -3,6 +3,7 @@ require 'cucumber'
 require 'rspec'
 require 'simplecov'
 require 'capybara/cucumber'
+require 'capybara/dsl'
 
 SimpleCov.start do
     add_filter 'features/'

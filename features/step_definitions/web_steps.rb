@@ -21,5 +21,18 @@ Then /^(?:|I ) should see "([^\"]*)"(?: within "([^\"]*)")?$/ do  |text, selecto
     end
 end
             
-            #or click_button(button)
-            #end
+When /^(?:I ) press "([^\"]*)" within "([^\"]*)" do |button, selector|
+    with_scope(selector) do
+        click_button(button)
+    end
+end
+    
+Then /^(?:|I ) should get redirected to "([^\"]*)"$/ do  |path|
+        if page.respond_to? :should
+            current_path.should == path
+        else
+            assert current_path.should == path    
+        end
+    end
+end
+    
