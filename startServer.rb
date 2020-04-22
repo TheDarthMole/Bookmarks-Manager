@@ -132,24 +132,21 @@ post "/createbookmark" do
     puts params
 end
 
-
 post "/register" do
+    session[:reason] = nil
     if params[:password] == params[:passwordrepeat] # Checks to make sure the
-        if !@db.check_account_exists(params[:email])
-            response = @db.create_account(params[:email], params[:password], params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
-            if response == "successful"
-                erb :login
-            else
-                redirect "/register"
-            end
-        else
-#             response = "Account already exists!"
-            redirect "/register"
+        sqlresponse = @db.create_account(params[:email], params[:password], params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
+        if sqlresponse == "Successfully created account!"
+            erb :login
         end
+        session[:reason] = sqlresponse
+        p session[:reason]
+        redirect "/register"
     else
-#         response = "Passwords do not match!"
-        erb :register
-        # Use a ruby variable to show an error on the erb
+        
+        session[:reason] = "Passwords did not match!"
+        p session[:reason]
+        redirect "/register"
     end
 end
 
