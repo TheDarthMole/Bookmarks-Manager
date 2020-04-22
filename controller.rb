@@ -351,9 +351,17 @@ class BookmarkDB
         unless plain_text_check(bookmarkName,30)
             return "Please use less than 30 characters"
         end
+        unless check_if_exists(url)
+            return "URL already added"
+        end
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+    end
+
+    def check_if_exists(url)
+        statement="SELECT bookmark_name,url FROM bookmarks WHERE url=?"
+        return @db.execute(statement,url)
     end
     
     def get_all_bookmarks
