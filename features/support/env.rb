@@ -16,6 +16,11 @@ ENV['RACK_ENV'] = 'test'
 
 Capybara.app = Sinatra::Application
 
+
+RSpec.configure do |config|
+  config.include Capybara::DSL
+end
+
 class Sinatra::ApplicationWorld
     include RSpec::Expectations
     include RSpec::Matchers
