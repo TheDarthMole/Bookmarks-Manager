@@ -235,6 +235,14 @@ class BookmarkDB
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,results
+        #Adds the tags into results
+        i_max = sql.length
+        i_min = 0
+        while i_min != i_max
+            sql[i_min].append(get_bookmark_tags(sql[i_min][0]))
+            i_min= 1 + i_min
+        end
+        p sql
         return sql
     end
     
@@ -246,17 +254,9 @@ class BookmarkDB
     end
     
     #Uses results array to pull tag_names
-    def get_bookmark_tags(array)
-        i_max = array.length
-        i_min = 0
-        retStatment = "SELECT bookmark_ID,tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
-        tags = []
-        while i_min != i_max
-            tags.append(@db.execute(retStatment,array[i_min][0]))
-            i_min= 1 + i_min
-        end
-        p tags
-        return tags
+    def get_bookmark_tags(bookmark_id)
+        retStatment = "SELECT tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
+        return @db.execute(retStatment,bookmark_id)
     end
 
     def get_user_favourites(user_id,page,limit)
@@ -487,3 +487,4 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
+db.default_search("%",1,10)
