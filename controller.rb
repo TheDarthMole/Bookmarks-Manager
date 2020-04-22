@@ -58,7 +58,6 @@ class BookmarkDB
     def can_user_perform_action(user_ID,action)
         #pulls user_id role
         role = get_user_role_ID(user_ID)
-
         #Checks if user can add bookmarks
         if action == "add"
             return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
@@ -112,6 +111,7 @@ class BookmarkDB
             return false
         end
     end
+
     
     def get_username_email(email)
         statement = "SELECT username FROM users WHERE email = ?"
@@ -257,6 +257,7 @@ class BookmarkDB
         return tags
     end
 
+=begin OLD CODE
     def search_tags_bookmarks(tag_name)
         #gets tag_id based on name
         tag_id = get_tag_id(tag_name)
@@ -317,9 +318,8 @@ class BookmarkDB
             p results
         end
         return results
-    end
-
-
+        end
+=end
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
