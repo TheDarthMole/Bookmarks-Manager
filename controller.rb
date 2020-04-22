@@ -205,7 +205,7 @@ class BookmarkDB
 
     def add_tag_bookmark(tag_name, bookmark_id)
         #Checks tag_length
-        unless plain_text_check(tag_name)
+        unless plain_text_check(tag_name,30)
             return "too long tag name"
         end
         #check if tag exists
@@ -253,7 +253,7 @@ class BookmarkDB
         return sql[0][0]
     end
     
-    #Uses results array to pull tag_names
+    #Uses bookmark_id to pull tag_names
     def get_bookmark_tags(bookmark_id)
         retStatment = "SELECT tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
         return @db.execute(retStatment,bookmark_id)
