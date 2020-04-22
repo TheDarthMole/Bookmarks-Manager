@@ -206,109 +206,26 @@
                         <% @bookmarks = nil %>
                         <% @total = nil %>
                         <% end %>
-<!--                         <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50">
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <label for=""></label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="">Home</a>
-                            </td>
-                            <td>
-                                <a href="http://google.com" target="blank">http://google.com</a>
-                            </td>
-                            <td width="100">
-                                <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-                                <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr> -->
                     </tbody>
                 </table>
             </div>
             <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
                 <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%= books.length %> of <%= total %></p>
                 <ul class="pagination mb-md-0">
+                    <% unless params[:searchterm] %>
+                        <% searchterm = "" %>
+                    <% else %>
+                        <% searchterm = "/#{params[:searchterm]}" %>
+                    <% end %>
                     <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
-                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
+                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %><%= searchterm %>" tabindex="-1">Previous</a>
                     </li>
 <!--                    <li class="page-item active">
                         <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
                     </li> -->
                 <% [*1..cubes].each do |item| %>
                     <li class="page-item <%= if params[:page].to_i == item then 'active' else '' end %>">
-                        <a class="page-link" href="/admin/bookmarks/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %>"><%= item %>
+                        <a class="page-link" href="/admin/bookmarks/<%= item %>/<%= session[:lim] %><%= searchterm %>"><%= item %>
                         <% if params[:page].to_i %>
                             <span class="sr-only">(current)</span>
                         <% end %>
@@ -317,7 +234,7 @@
                 <% end %>
 <!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
                     <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
-                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i + 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>">Next</a>
+                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i + 1) %>/<%= session[:lim] %><%= searchterm %>">Next</a>
                     </li>
                 </ul>
             </nav>
