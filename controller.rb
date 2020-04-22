@@ -423,7 +423,7 @@ class BookmarkDB
 
 
 
-
+=begin TEST CODE
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
@@ -450,7 +450,7 @@ class BookmarkDB
         db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
         db.upgrade_account_to_admin("Lujain")
     end
-
+=end
 
     #SECURITY
     def generate_hash(password, salt="")
