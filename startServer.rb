@@ -153,7 +153,6 @@ post "/register" do
         p session[:reason]
         redirect "/register"
     else
-        
         session[:reason] = "Passwords did not match!"
         p session[:reason]
         redirect "/register"
