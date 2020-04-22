@@ -282,7 +282,7 @@ class BookmarkDB
         return @db.execute(statement,user_id,bookmark_id)
     end
 
-=begin OLD CODE
+
     def search_tags_bookmarks(tag_name)
         #gets tag_id based on name
         tag_id = get_tag_id(tag_name)
@@ -343,21 +343,24 @@ class BookmarkDB
             p results
         end
         return results
-        end
-=end
+    end
 
     #BOOKMAKRS
-    def add_bookmark(bookmarkName, url, owner_id)
-        unless plain_text_check(bookmarkName,30)
+    def add_bookmark(bookmarkName, url, owner_id)        
+        unless plain_text_check(bookmarkName)
             return "Please use less than 30 characters"
         end
-        if check_if_exists(url)
-            p "hello"
-            return "URL already added"
+        unless url.match? /https?:\/\/[\S]+/
+            return "Please start the url with http:// or https://"
         end
+        unless plain_text_check(url, 150)
+            return "URL too long, please make less than 150 characters"
+        end
+        url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+        return "Successfully added bookmark!"
     end
 
     def check_if_exists(url)
@@ -485,9 +488,10 @@ class BookmarkDB
         return false
     end
 
-    def plain_text_check(name,length)
-        if name.length > length
-            puts "too long name"
+    def plain_text_check(name, *length) # Optional argument length to check for
+        lengthcheck = unless length[0].nil? then length[0] else 30 end
+        if name.length > lengthcheck
+            puts "long name"
             return false
         end
 
@@ -496,10 +500,8 @@ class BookmarkDB
         end
         return false
     end
-
-    
 end
 
 # This section is for testing the database
+
 db = BookmarkDB.new
-db.add_bookmark("h","https://google.com1",2)
