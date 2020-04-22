@@ -166,10 +166,6 @@ class BookmarkDB
         return "Incorrect old password"
     end
     
-    def add_security_questions(email, sec_question, sec_answer)
-        
-    end
-    
     def get_login_attempts(user_id)
         statement = "SELECT login_attempts FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, user_id
@@ -325,6 +321,9 @@ class BookmarkDB
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
+        unless plain_text_check(bookmarkName)
+            return "Please use less than 30 characters"
+        end
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
@@ -460,3 +459,6 @@ end
 # This section is for testing the database
 db = BookmarkDB.new
 db.get_total_results("google")
+p db.plain_text_check("Hey")
+p db.plain_text_check("hey123")
+p db.plain_text_check("Hey123!")
