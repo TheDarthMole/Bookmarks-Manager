@@ -98,16 +98,22 @@ get "/dashboard/:page/:lim/:searchterm" do
     @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
     @total = get_total_items(params[:searchterm])
     erb :dashboard
-
 end
 
-get "/admin/bookmarks/:lim/:searchterm" do
+get "/admin/bookmarks/:page/:lim/:searchterm" do
     adminauthenticate
     session[:lim] = params[:lim]
     @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
     @total = get_total_items(params[:searchterm])
     erb :adminbookmarks
+end
 
+get "/admin/bookmarks/:page/:lim" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page("", params[:page], 5)
+    @total = get_total_items("")
+    erb :dashboard
 end
 
 post "/login" do
