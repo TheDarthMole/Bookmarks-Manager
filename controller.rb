@@ -56,40 +56,42 @@ class BookmarkDB
         return retStatemnt[0]
     end
 
-    def can_user_perform_action(user_ID,action,bookmark_id)
+    def can_user_perform_action(user_ID,action,*bookmark_id)
         #pulls user_id role
         role = get_user_role_ID(user_ID)
         #Checks if user can add bookmarks
         if action == "add"
-            add_to_admin_log(user_ID,bookmark_id,action)
+            add_to_admin_log(user_ID,action,bookmark_id)
             return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can edit
         if action == "edit"
-            add_to_admin_log(user_ID,bookmark_id,action)
+            add_to_admin_log(user_ID,action,bookmark_id)
             return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create
         if action == "create"
-            add_to_admin_log(user_ID,0,action)
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can manage
         if action == "manage"
-            add_to_admin_log(user_ID,0,action)
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create_admin
         if action == "create_admin"
-            add_to_admin_log(user_ID,0,action)
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can upgrade_guest
         if action == "upgrade_guest"
-            add_to_admin_log(user_ID,0,action)
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
         end
-        puts "NO WORKABLE ACTION"
+
+        add_to_admin_log(user_ID,"NO WORKABLE ACTION")
+        p "NO WORKABLE ACTION"
         return false
     end
 
@@ -197,7 +199,10 @@ class BookmarkDB
 
     #Audit_log
     #
-    def add_to_admin_log(user_id,bookmark_id,action)
+    def add_to_admin_log(user_id,action,*bookmark_id)
+        if bookmark_id == nil
+            bookmark_id = 0
+        end
         statement = "INSERT INTO audit_log(user_id,bookmark_id,time,action) VALUES(?,?,?,?)"
         time = @time.strftime("%s")
         @db.execute(statement,user_id,bookmark_id,time,action)
@@ -430,7 +435,7 @@ class BookmarkDB
 
 
 
-
+=begin
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
@@ -457,7 +462,7 @@ class BookmarkDB
         db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
         db.upgrade_account_to_admin("Lujain")
     end
-
+=end
 
     #SECURITY
     def generate_hash(password, salt="")
