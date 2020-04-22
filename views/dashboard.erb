@@ -2,8 +2,8 @@
 <html lang="en">
 
 <!--Avoiding Duplicated code -->
-    <% @title = "Acme corp - Bookmarks" %>
-    <%= erb :headinclude %>
+    
+    <%= erb :headinclude, :locals => {:title => "Acme corp - Bookmarks"} %>
 
 <body>
     <!-- Navbar -->
