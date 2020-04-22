@@ -205,7 +205,7 @@ class BookmarkDB
 
     def add_tag_bookmark(tag_name, bookmark_id)
         #Checks tag_length
-        unless plain_text_check(tag_name)
+        unless plain_text_check(tag_name,30)
             return "too long tag name"
         end
         #check if tag exists
@@ -253,7 +253,7 @@ class BookmarkDB
         return sql[0][0]
     end
     
-    #Uses results array to pull tag_names
+    #Uses bookmark_id to pull tag_names
     def get_bookmark_tags(bookmark_id)
         retStatment = "SELECT tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
         return @db.execute(retStatment,bookmark_id)
@@ -348,12 +348,22 @@ class BookmarkDB
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
-        unless plain_text_check(bookmarkName)
+        unless plain_text_check(bookmarkName,30)
             return "Please use less than 30 characters"
+        end
+        if check_if_exists(url)
+            p "hello"
+            return "URL already added"
         end
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+    end
+
+    def check_if_exists(url)
+        statement="SELECT bookmark_name,url FROM bookmarks WHERE url=?"
+        retStatment = @db.execute(statement,url)
+        return retStatment
     end
     
     def get_all_bookmarks
@@ -487,4 +497,4 @@ end
 
 # This section is for testing the database
 db = BookmarkDB.new
-db.default_search("%",1,10)
+db.add_bookmark("hi","https://google.com",2)
