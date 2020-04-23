@@ -57,6 +57,11 @@ helpers do # functions used within erb files
     def add_to_audit_log(action)
         return @db.add_to_admin_log(@db.get_account_id(session[:user]),action, params[:id].to_i)
     end
+    def view_audit_log(page)
+        statement = @db.view_audit_log(page.to_i,10)
+        p statement
+        return statement
+    end 
 end
 
 get "/logout" do
