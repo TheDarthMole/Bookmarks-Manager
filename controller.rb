@@ -209,6 +209,17 @@ class BookmarkDB
         p retStatement
         return retStatement
     end
+        
+    def count_users_search(perm,enabled)
+        if perm == "*"
+            statement ="SELECT COUNT(ALL)FROM users WHERE enabled = ? "
+            retStatement = @db.execute statement,enabled.to_i
+        else
+            statement = "SELECT COUNT(ALL) FROM users WHERE role=? AND enabled = ?"
+            retStatement = @db.execute statement,perm.to_i,enabled.to_i
+        end
+        return retStatement[0][0]
+    end
 
     #Audit_log
     #
