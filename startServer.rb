@@ -25,22 +25,18 @@ helpers do # functions used within erb files
     end
 
     def display_users(perm,page,limit,enabled)
-        statement = @db.display_users(perm,page,limit,enabled)
-        p statement
+        statement = @db.display_users(perm,page.to_i,limit.to_i,enabled)
         return statement
     end
     def total_users(perm,enabled)
         statement = @db.total_user(perm,enabled)
-        p statement
         return statement
     end
     def upgrade_account_to_user(id)
-        p id
         id = id.to_i
         return @db.upgrade_account_to_user(id)
     end
     def downgrade_account_to_user(id)
-        p id
         id = id.to_i
         return @db.downgrade_account_to_user(id)
     end
@@ -52,10 +48,6 @@ helpers do # functions used within erb files
     def unsuspend_user(id)
         id = id.to_i
         return @db.unsuspend_user(id)
-    end
-    
-    def get_total_users(perm, enabled)
-        return @db.count_users_search(perm, enabled)
     end
     
     def check_admin(email)
@@ -80,9 +72,8 @@ end
 
 get "/admin/users" do
     adminauthenticate
-    unless session[:lim]
-        session[:lim] = 5
-    end
+    session[:lim] = 5
+    params[:page] = 1
     erb :adminuser
 end
 
@@ -133,8 +124,6 @@ get "/dashboard" do
     if session[:lim].nil?
         session[:lim] = 5
     end
-    p @reply
-    p :locals
     unless session[:reply]
         session[:reply] = nil
     end
@@ -157,6 +146,7 @@ get "/dashboard/:page/:lim/" do
 end
 
 post "/dashboard" do
+    authenticate
     if params[:page].nil?
         params[:page] = 1
     end
@@ -234,11 +224,9 @@ post "/register" do
             erb :login
         end
         session[:reason] = sqlresponse
-        p session[:reason]
         redirect "/register"
     else
         session[:reason] = "Passwords did not match!"
-        p session[:reason]
         redirect "/register"
     end
 end
