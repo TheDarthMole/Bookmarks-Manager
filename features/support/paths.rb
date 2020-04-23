@@ -4,21 +4,20 @@ module NavigationHelpers
 def path_to(page_name)
     case page_name
     
-        
-        
-        "/change-password"
-        "/register"
-        "/createbookmark"
-        "/login"
-        "/admin/users"
-        "/admin/bookmarks"
-        "/admin/audit"
-        "/logout"
-        
-        "/dashboard"
-        "/dashboard/:page"
-        "/dashboard/search/:searchterm/:page/:lim"
-        
+        when /the admin-bookmarks page/
+            "/admin/bookmarks"
+        when /the dashboard page/
+            "/dashboard"
+        when /the register page/
+            "/register"
+        when /the change-password page/
+            "/change-password"
+        when /the createbookmark page/
+            "/createbookmark"
+        when /the admin-users page/
+            "/admin/users"
+        when /the admin-audit page/
+            "/admin/audit"
         when /the home\s?page/
             '/'
         when /the login page/

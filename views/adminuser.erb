@@ -25,6 +25,20 @@
                 <a class="nav-link" id="pending-users-tab" data-toggle="tab" href="#pending-users" role="tab" aria-controls="pending-users" aria-selected="false">Pending</a>
             </li>
         </ul>
+
+
+
+
+
+
+
+                      <!----- ACTIVE USERS  --->
+
+
+
+
+
+
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="active-users" role="tabpanel" aria-labelledby="active-users-tab">
                 <div class="users-section">
@@ -45,22 +59,6 @@
 								ADD USER
 							</button>
                         </div>
-
-
-
-
-
-
-                      <!----- ACTIVE USERS  --->
-
-
-
-
-
-
-
-
-
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bookmark">
@@ -74,8 +72,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <%= total = total_users("*",1)[0][0] %>
-                            <% users = display_users( "*", 0,5,1) %>
+                            <% users = display_users( "*", params[:page],session[:lim],1) %>
+                            <% utotal = total_users("*",1) %>
+                            <% cubes = (utotal/session[:lim].to_f).ceil %>
                             <% users.each do |item| %>
                               <tr>
                                 <td>
@@ -112,20 +111,28 @@
 
                             </tbody>
                         </table>
+                        <% if session[:reply] %>
+                            <div class="alert alert-warning" role="alert">
+                        <%= session[:reply] %>
+                            </div>
+                        <% end %>
+                        <% session[:reply] = nil %>
                     </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total %></p>
+                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total_users("*",1) %></p>
                         <ul class="pagination mb-md-0">
-                            <li class="page-item disabled">
+                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>
                             </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
+                            <% [*1..cubes].each do |item| %>
+                            <li class="page-item active <%= if params[:page].to_i == item then 'active' else '' end %>">
+                                <a class="page-link" href="/admin/users/<%= item %>/<%= session[:lim] %>"><%= item %>
+                                <% if params[:page].to_i %>
+                                    <span class="sr-only">(current)</span>
+                                <% end %>
+                                    </a>
                             </li>
-                            <li class="page-item ">
-                                <a class="page-link" href="#">2</a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <% end %>
                             <li class="page-item">
                                 <a class="page-link" href="#">Next</a>
                             </li>
@@ -133,6 +140,20 @@
                     </nav>
                 </div>
             </div>
+
+
+
+
+
+
+                  <!----- Suspended  USERS  --->
+
+
+
+
+
+
+
             <div class="tab-pane fade" id="suspended-users" role="tabpanel" aria-labelledby="suspended-users-tab">
                 <div class="users-section">
                     <div class="d-flex align-items-md-center mb-3 flex-wrap">
@@ -148,24 +169,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
-
-
-
-
-
-                  <!----- Suspended  USERS  --->
-
-
-
-
-
-
-
-
-
                   <div class="table-responsive">
                         <table class="table table-bookmark">
                             <thead>
@@ -178,7 +181,10 @@
                                 </tr>
                             </thead>
                             <tbody>
+
                                   <% users = display_users("*", 0,session[:lim],0) %>
+                                  <% utotal = total_users(1,1) %>
+                                  <% cubes = (utotal/session[:lim].to_f).ceil %>
                                   <% users.each do |item| %>
                                    <tr>
                                         <td>
@@ -203,20 +209,28 @@
                                   <% end %>
                             </tbody>
                         </table>
-                    </div>
+                          <% if session[:reply] %>
+                            <div class="alert alert-warning" role="alert">
+                          <%= session[:reply] %>
+                            </div>
+                          <% end %>
+                          <% session[:reply] = nil %>
+                      </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
                         <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total_users("*",0)[0][0] %></p>
                         <ul class="pagination mb-md-0">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>
                             </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
+                            <% [*1..cubes].each do |item| %>
+                            <li class="page-item active <%= if params[:page].to_i == item then 'active' else '' end %>">
+                                <a class="page-link" href="/admin/users/<%= item %>/<%= session[:lim] %>"><%= item %>
+                                <% if params[:page].to_i %>
+                                    <span class="sr-only">(current)</span>
+                                <% end %>
+                                    </a>
                             </li>
-                            <li class="page-item ">
-                                <a class="page-link" href="#">2</a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <% end %>
                             <li class="page-item">
                                 <a class="page-link" href="#">Next</a>
                             </li>
@@ -224,21 +238,7 @@
                     </nav>
                 </div>
             </div>
-            <div class="tab-pane fade" id="pending-users" role="tabpanel" aria-labelledby="pending-users-tab">
-                <div class="users-section">
-                    <div class="d-flex align-items-md-center mb-3 flex-wrap">
-                        <div class="mb-3 mb-md-0">
-                            <h4 class="mb-0">Pending Approval Users</h4>
-                        </div>
-                        <div class="input-group mb-3 mb-md-0 ml-md-auto w-auto">
-                            <input type="search" class="form-control" placeholder="Search Users" />
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-									Search
-								</button>
-                            </div>
-                        </div>
-                    </div>
+
 
 
 
@@ -255,7 +255,21 @@
 
 
 
-
+            <div class="tab-pane fade" id="pending-users" role="tabpanel" aria-labelledby="pending-users-tab">
+                <div class="users-section">
+                    <div class="d-flex align-items-md-center mb-3 flex-wrap">
+                        <div class="mb-3 mb-md-0">
+                            <h4 class="mb-0">Pending Approval Users</h4>
+                        </div>
+                        <div class="input-group mb-3 mb-md-0 ml-md-auto w-auto">
+                            <input type="search" class="form-control" placeholder="Search Users" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                   <div class="table-responsive">
                       <table class="table table-bookmark">
                         <thead>
@@ -269,10 +283,8 @@
                         </thead>
                         <tbody>
                         <% users = display_users(1,0,session[:lim],1) %>
-                        <% utotal = get_total_users(1,1) %>
+                        <% utotal = total_users(1,1) %>
                         <% cubes = (utotal/session[:lim].to_f).ceil %>
-                            <%= cubes %>
-                            <%= utotal %>
                         <% users.each do |item| %>
                           <tr>
                             <td>
