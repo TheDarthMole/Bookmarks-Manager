@@ -158,7 +158,6 @@ class BookmarkDB
 
     def upgrade_account_to_user(userID)
         z = get_user_role_ID(userID)
-        p z
         if z[0] == 1
             statement = "UPDATE users SET role = 3 WHERE user_id = ?"
             @db.execute statement, userID
@@ -169,7 +168,6 @@ class BookmarkDB
 
     def downgrade_account_to_user(userID)
         z = get_user_role_ID(userID)
-        p z
         if z[0] == 3
             statement = "UPDATE users SET role = 1 WHERE user_id = ?"
             @db.execute statement, userID
@@ -234,28 +232,16 @@ class BookmarkDB
         end
     end
 
-    def display_users(perm, page,limit,enabled)
+    def display_users(perm, page, limit, enabled)
+        i_min = (page.to_i - 1) * limit.to_i
         if perm == "*"
             statement ="SELECT user_id,first_name,last_name,email,permissions.role_name FROM users,permissions WHERE enabled = ? AND permissions.permission_id=users.role LIMIT ?,?"
-            retStatement = @db.execute statement,enabled,page,limit
+            retStatement = @db.execute statement,enabled,i_min,limit
         else
             statement = "SELECT user_id,first_name,last_name,email, permissions.role_name FROM users,permissions WHERE role=? AND enabled = ? AND users.role=permissions.permission_id LIMIT ?,?"
-            retStatement = @db.execute statement,perm,enabled,page,limit
+            retStatement = @db.execute statement,perm,enabled,i_min,limit
         end
-
-        p retStatement
         return retStatement
-    end
-        
-    def count_users_search(perm,enabled)
-        if perm == "*"
-            statement ="SELECT COUNT(ALL)FROM users WHERE enabled = ? "
-            retStatement = @db.execute statement,enabled.to_i
-        else
-            statement = "SELECT COUNT(ALL) FROM users WHERE role=? AND enabled = ?"
-            retStatement = @db.execute statement,perm.to_i,enabled.to_i
-        end
-        return retStatement[0][0]
     end
 
     def total_user(perm,enabled)
@@ -266,8 +252,7 @@ class BookmarkDB
             statement = "SELECT COUNT(ALL) FROM users WHERE role=? AND enabled = ?"
             retStatement = @db.execute statement,perm,enabled
         end
-        p retStatement
-        return retStatement
+        return retStatement[0][0]
     end
     #Audit_log
     #
@@ -283,7 +268,6 @@ class BookmarkDB
 
     def view_audit_log(page,limit)
         statement = "SELECT * FROM audit_log LIMIT ?,?"
-        p @db.execute(statement,page,limit)
         return @db.execute(statement,page,limit)
     end
 
@@ -341,7 +325,6 @@ class BookmarkDB
             sql[i_min].append(get_bookmark_tags(sql[i_min][0]))
             i_min= 1 + i_min
         end
-        p sql
         return sql
     end
     
@@ -393,7 +376,6 @@ class BookmarkDB
             bookmark_list.append(get_bookmark(i))
         }
         #debug code
-        p bookmark_list
         return bookmark_list
     end
 
@@ -414,7 +396,6 @@ class BookmarkDB
         statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ? AND enabled=1"
         retStatement = @db.execute statement,search
         #debug
-        p retStatement
         return retStatement
     end
 
@@ -436,10 +417,6 @@ class BookmarkDB
         while i_min != i_max
             results.append(array[i_min])
             i_min = 1 + i_min
-            #debug
-            p i_min
-            p i_max
-            p results
         end
         return results
         end
@@ -454,7 +431,6 @@ class BookmarkDB
             return "Please start the url with http:// or https://"
         end
         if check_if_exists(url)
-            p "hello"
             return "URL already added"
         end
         unless plain_text_check(url, 150)
@@ -611,5 +587,3 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
-db.display_users(2,0,10,1)
-db.total_user(2,1)
