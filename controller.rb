@@ -181,7 +181,7 @@ class BookmarkDB
         return retStatement[0]
     end
     
-    def display_users
+    def display_users_all
         statement = "SELECT * FROM users"
         retStatement = @db.execute statement
             puts "user_id, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
@@ -197,8 +197,18 @@ class BookmarkDB
         end
     end
 
+    def display_users(perm, page,limit,*enabled)
+        if enabled == nul
+            enabled = 1
+        end
+        statement = "SELECT user_id,first_name,last_name,email,role FROM users WHERE role=? AND enabled = ? LIMIT ?,?"
+        retStatement = @db.execute statement,perm,enabled,page,limit
+        return retStatement
+    end
+
     #Audit_log
     #
+
     def add_to_admin_log(user_id,action,*bookmark_id)
         if bookmark_id == nil
             bookmark_id = 0
