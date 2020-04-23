@@ -54,6 +54,10 @@ helpers do # functions used within erb files
         return @db.unsuspend_user(id)
     end
     
+    def get_total_users(perm, enabled)
+        return @db.count_users_search(perm, enabled)
+    end
+    
     def check_admin(email)
         return @db.is_admin(@db.get_account_id(email))
     end
@@ -76,6 +80,18 @@ end
 
 get "/admin/users" do
     adminauthenticate
+    unless session[:lim]
+        session[:lim] = 5
+    end
+    erb :adminuser
+end
+
+get "/admin/users/:page/:lim" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    unless session[:reply]
+        session[:reply] = nil
+    end
     erb :adminuser
 end
 
