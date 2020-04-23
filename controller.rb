@@ -258,13 +258,13 @@ class BookmarkDB
     #Audit_log
     #
 
-    def add_to_admin_log(user_id,action,*bookmark_id)
-        if bookmark_id == nil
-            bookmark_id = 0
+    def add_to_admin_log(user_id,action,*affect_id)
+        if affect_id[0] == nil
+            affect_id = 0
         end
         statement = "INSERT INTO audit_log(user_id,bookmark_id,time,action) VALUES(?,?,?,?)"
         time = @time.strftime("%s")
-        @db.execute(statement,user_id,bookmark_id,time,action)
+        @db.execute(statement,user_id,affect_id,time,action)
     end
 
     def view_audit_log(page,limit)
