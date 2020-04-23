@@ -50,123 +50,40 @@
                         <table class="table table-bookmark">
                             <thead>
                                 <tr>
-                                    <th>Select</th>
                                     <th>User ID</th>
-                                    <th>User Name</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Permission</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Suspend User" class="mr-2">
-                                            <i class="fa fa-ban"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Suspend User" class="mr-2">
-                                            <i class="fa fa-ban"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Suspend User" class="mr-2">
-                                            <i class="fa fa-ban"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Suspend User" class="mr-2">
-                                            <i class="fa fa-ban"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Suspend User" class="mr-2">
-                                            <i class="fa fa-ban"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                            <% users = display_users( "*", 0,10,1) %>
+                            <% users.each do |item| %>
+                              <tr>
+                                <td>
+                                  <a href=""><%= item[0] %></a>
+                                </td>
+                                <td>
+                                  <a href=""><%= item[1] %> <%= item[2]%></a>
+                                </td>
+                                <td>
+                                  <a href=""><%= item[3] %></a>
+                                </td>
+                                <td>
+                                  <a href=""><%= item[4] %></a>
+                                </td>
+                                <td width="100">
+                                  <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
+                                    <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+                                  </a>
+                                  <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
+                                    <i class="fa fa-times"></i>
+                                  </a>
+                                </td>
+
+                              </tr>
+                            <% end %>
 
                             </tbody>
                         </table>
@@ -210,124 +127,40 @@
                         <table class="table table-bookmark">
                             <thead>
                                 <tr>
-                                    <th>Select</th>
                                     <th>User ID</th>
-                                    <th>User Name</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role </th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
-                                            <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
-                                            <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
-                                            <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
-                                            <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
-                                            <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                  <% users = display_users("*", 0,5,0) %>
+                                  <% users.each do |item| %>
+                                   <tr>
+                                        <td>
+                                            <a href=""><%= item[0] %></a>
+                                        </td>
+                                        <td>
+                                            <a href=""><%= item[1] %> <%= item[2]%></a>
+                                        </td>
+                                        <td>
+                                          <a href=""><%= item[3] %></a>
+                                        </td>
+                                        <td>
+                                           <a href=""><%= item[4] %></a>
+                                        </td>
+                                        <td width="100">
+                                            <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
+                                                <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+                                            </a>
+                                            <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </td>
 
+                                   </tr>
+                                  <% end %>
                             </tbody>
                         </table>
                     </div>
@@ -366,131 +199,47 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-bookmark">
-                            <thead>
-                                <tr>
-                                    <th>Select</th>
-                                    <th>User ID</th>
-                                    <th>User Name</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Allow User" class="mr-2">
-                                            <i class="fa fa-check"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Allow User" class="mr-2">
-                                            <i class="fa fa-check"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Allow User" class="mr-2">
-                                            <i class="fa fa-check"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Allow User" class="mr-2">
-                                            <i class="fa fa-check"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="50">
-                                        <div>
-                                            <input type="checkbox" name="" id="" />
-                                            <label for=""></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="">264</a>
-                                    </td>
-                                    <td>
-                                        <a href="">John Doe</a>
-                                    </td>
-                                    <td width="100">
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Allow User" class="mr-2">
-                                            <i class="fa fa-check"></i>
-                                        </a>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                  <div class="table-responsive">
+                      <table class="table table-bookmark">
+                        <thead>
+                        <tr>
+                          <th>User ID</th>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Role </th>
+                          <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% users = display_users(1,0,5,1) %>
+                        <% users.each do |item| %>
+                          <tr>
+                            <td>
+                              <a href=""><%= item[0] %></a>
+                            </td>
+                            <td>
+                              <a href=""><%= item[1] %> <%= item[2]%></a>
+                            </td>
+                            <td>
+                              <a href=""><%= item[3] %></a>
+                            </td>
+                            <td>
+                              <a href=""><%= item[4] %></a>
+                            </td>
+                            <td width="100">
+                              <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
+                                <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+                              </a>
+                              <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
+                                <i class="fa fa-times"></i>
+                              </a>
+                            </td>
 
-                            </tbody>
-                        </table>
-                    </div>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      </table>
+                </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
                         <p class="mb-md-0 font-sm text-muted mr-3">Showing entries 5 of 25</p>
                         <ul class="pagination mb-md-0">

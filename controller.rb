@@ -197,12 +197,16 @@ class BookmarkDB
         end
     end
 
-    def display_users(perm, page,limit,*enabled)
-        if enabled == nul
-            enabled = 1
+    def display_users(perm, page,limit,enabled)
+        if perm == "*"
+            statement ="SELECT user_id,first_name,last_name,email,permissions.role_name FROM users,permissions WHERE enabled = ? AND permissions.permission_id=users.role LIMIT ?,?"
+            retStatement = @db.execute statement,enabled,page,limit
+        else
+            statement = "SELECT user_id,first_name,last_name,email, permissions.role_name FROM users,permissions WHERE role=? AND enabled = ? AND users.role=permissions.permission_id LIMIT ?,?"
+            retStatement = @db.execute statement,perm,enabled,page,limit
         end
-        statement = "SELECT user_id,first_name,last_name,email,role FROM users WHERE role=? AND enabled = ? LIMIT ?,?"
-        retStatement = @db.execute statement,perm,enabled,page,limit
+
+        p retStatement
         return retStatement
     end
 
@@ -548,3 +552,5 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
+db.display_users("*",1,5,1)
+db.display_users(1,1,5,1)
