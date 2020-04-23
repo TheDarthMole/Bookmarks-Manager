@@ -29,6 +29,11 @@ helpers do # functions used within erb files
         p statement
         return statement
     end
+    def total_users(perm,enabled)
+        statement = @db.total_user(perm,enabled)
+        p statement
+        return statement
+    end
     def upgrade_account_to_user(id)
         p id
         id = id.to_i
