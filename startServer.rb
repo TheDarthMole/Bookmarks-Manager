@@ -53,6 +53,10 @@ helpers do # functions used within erb files
     def check_admin(email)
         return @db.is_admin(@db.get_account_id(email))
     end
+
+    def add_to_audit_log(action)
+        return @db.add_to_admin_log(@db.get_account_id(session[:user]),action, params[:id].to_i)
+    end
 end
 
 get "/logout" do
@@ -89,24 +93,28 @@ end
 get "/admin/users/action/:id/upgrade" do
     adminauthenticate
     upgrade_account_to_user(params[:id])
+    add_to_audit_log("Upgrade to user")
     redirect "/admin/users"
 end
 
 get "/admin/users/action/:id/downgrade" do
     adminauthenticate
     downgrade_account_to_user(params[:id])
+    add_to_audit_log("downgrade to user")
     redirect "/admin/users"
 end
 
 get "/admin/users/action/:id/suspend" do
     adminauthenticate
     suspend_user(params[:id])
+    add_to_audit_log("Suspend user")
     redirect "/admin/users"
 end
 
 get "/admin/users/action/:id/unsuspend" do
     adminauthenticate
     unsuspend_user(params[:id])
+    add_to_audit_log("Unsuspend user")
     redirect "/admin/users"
 end
 
