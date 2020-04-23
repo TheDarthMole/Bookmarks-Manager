@@ -147,7 +147,11 @@
     <section class="dashboard-section container py-5">
         <div>
             <form class="input-group mb-3" action="/dashboard" method="post">
+              <% if params[:searchterm] == nil %>
                 <input name="searchterm" type="search" class="form-control" placeholder="Search bookmark" />
+              <%else %>
+                <input name="searchterm" type="search" class="form-control" value="<%= params[:searchterm] %>"  />
+              <%end %>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit">
 						Search
@@ -226,7 +230,8 @@
                 </table>
             </div>
             <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%= books.length %> of <%= total %></p>
+                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
+                  <%= if x <= total then x  end %> <%= if x > total then total end %> of <%= total %></p>
                 <ul class="pagination mb-md-0">
                     <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
                         <a class="page-link" href="/dashboard/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
