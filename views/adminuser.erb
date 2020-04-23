@@ -74,6 +74,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            <%= total = total_users("*",1)[0][0] %>
                             <% users = display_users( "*", 0,5,1) %>
                             <% users.each do |item| %>
                               <tr>
@@ -113,7 +114,7 @@
                         </table>
                     </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total_users("*",1)[0][0] %></p>
+                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total %></p>
                         <ul class="pagination mb-md-0">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>
