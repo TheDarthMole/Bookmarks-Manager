@@ -443,13 +443,6 @@ class BookmarkDB
         url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
-        
-        
-        p "std err:"
-        $stderr.print
-        p "End"
-        
-        
         @db.execute statement, bookmarkName, url, owner_id, currentTime
         bookmark_id = @db.execute "SELECT bookmark_id FROM bookmarks WHERE url = ?", url
         tags_split = tags.downcase.split(" ")
@@ -457,14 +450,8 @@ class BookmarkDB
             tags_split.each do |tag|
                 statement = "INSERT INTO tags (name) SELECT ? WHERE NOT EXISTS (SELECT * FROM tags WHERE name = ?)"
                 @db.execute statement, tag, tag
-                p "std1"
-                $stderr.print
-                p "std 1"
                 statement = "INSERT INTO bookmark_tags (bookmark_id, tag_id) VALUES (?, (SELECT tag_id FROM tags WHERE name = ?) )"
                 @db.execute statement, bookmark_id[0][0], tag
-                p "std2"
-                $stderr.print
-                p "std2"
             end
         rescue
             puts "Something went wrong when creating bookmark with tags: #{tag_split} and bookmark id #{bookmark_id}"
