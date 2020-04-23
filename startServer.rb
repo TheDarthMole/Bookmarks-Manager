@@ -55,7 +55,7 @@ helpers do # functions used within erb files
     end
 
     def add_to_audit_log(action)
-        return @db.add_to_audit_log(session[:user].to_i,action, params[:id].to_i)
+        return @db.add_to_admin_log(@db.get_account_id(session[:user]),action, params[:id].to_i)
     end
 end
 
