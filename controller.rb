@@ -8,9 +8,10 @@ class BookmarkDB
         @time = Time.new
     end
 
-    def check_account_enabled(email)
+    #ACCOUNTS
+    def check_account_enabled(userid)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
-        retStatement = @db.execute statement, email
+        retStatement = @db.execute statement, userid
         if retStatement[0][0] == 1
             return true
         else
@@ -55,35 +56,42 @@ class BookmarkDB
         return retStatemnt[0]
     end
 
-    def can_user_perform_action(user_ID,action)
+    def can_user_perform_action(user_ID,action,*bookmark_id)
         #pulls user_id role
         role = get_user_role_ID(user_ID)
-
         #Checks if user can add bookmarks
         if action == "add"
+            add_to_admin_log(user_ID,action,bookmark_id)
             return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can edit
         if action == "edit"
+            add_to_admin_log(user_ID,action,bookmark_id)
             return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create
         if action == "create"
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can manage
         if action == "manage"
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create_admin
         if action == "create_admin"
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can upgrade_guest
         if action == "upgrade_guest"
+            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
         end
-        puts "NO WORKABLE ACTION"
+
+        add_to_admin_log(user_ID,"NO WORKABLE ACTION")
+        p "NO WORKABLE ACTION"
         return false
     end
 
@@ -112,6 +120,7 @@ class BookmarkDB
         end
         return false
     end
+
     
     def get_username_email(email)
         statement = "SELECT username FROM users WHERE email = ?"
@@ -146,7 +155,42 @@ class BookmarkDB
             puts "Error upgrading #{email} to admin"
         end
     end
-    
+
+    def upgrade_account_to_user(userID)
+        z = get_user_role_ID(userID)
+        if z[0] == 1
+            statement = "UPDATE users SET role = 3 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error upgrading #{userID} to admin"
+        end
+    end
+
+    def downgrade_account_to_user(userID)
+        z = get_user_role_ID(userID)
+        if z[0] == 3
+            statement = "UPDATE users SET role = 1 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error upgrading #{userID} to guest"
+        end
+    end
+    def suspend_user(userID)
+        if check_account_enabled(userID)
+            statement = "UPDATE users SET enabled = 0 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error suspend #{userID}"
+        end
+    end
+    def unsuspend_user(userID)
+        if not check_account_enabled(userID)
+            statement = "UPDATE users SET enabled = 1 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error suspend #{userID}"
+        end
+    end
     def change_password(email, oldPassword, newPassword, newPasswordCheck)
         if newPassword != newPasswordCheck
             return "Passwords do not match"
@@ -166,17 +210,13 @@ class BookmarkDB
         return "Incorrect old password"
     end
     
-    def add_security_questions(email, sec_question, sec_answer)
-        
-    end
-    
     def get_login_attempts(user_id)
         statement = "SELECT login_attempts FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, user_id
         return retStatement[0]
     end
     
-    def display_users
+    def display_users_all
         statement = "SELECT * FROM users"
         retStatement = @db.execute statement
             puts "user_id, first_name, last_name, email, role, security_question, security_answer, login_attempts, enabled"
@@ -190,6 +230,45 @@ class BookmarkDB
             end
             puts
         end
+    end
+
+    def display_users(perm, page, limit, enabled)
+        i_min = (page.to_i - 1) * limit.to_i
+        if perm == "*"
+            statement ="SELECT user_id,first_name,last_name,email,permissions.role_name FROM users,permissions WHERE enabled = ? AND permissions.permission_id=users.role LIMIT ?,?"
+            retStatement = @db.execute statement,enabled,i_min,limit
+        else
+            statement = "SELECT user_id,first_name,last_name,email, permissions.role_name FROM users,permissions WHERE role=? AND enabled = ? AND users.role=permissions.permission_id LIMIT ?,?"
+            retStatement = @db.execute statement,perm,enabled,i_min,limit
+        end
+        return retStatement
+    end
+
+    def total_user(perm,enabled)
+        if perm == "*"
+            statement ="SELECT COUNT(ALL)FROM users WHERE enabled = ? "
+            retStatement = @db.execute statement,enabled
+        else
+            statement = "SELECT COUNT(ALL) FROM users WHERE role=? AND enabled = ?"
+            retStatement = @db.execute statement,perm,enabled
+        end
+        return retStatement[0][0]
+    end
+    #Audit_log
+    #
+
+    def add_to_admin_log(user_id,action,*bookmark_id)
+        if bookmark_id == nil
+            bookmark_id = 0
+        end
+        statement = "INSERT INTO audit_log(user_id,bookmark_id,time,action) VALUES(?,?,?,?)"
+        time = @time.strftime("%s")
+        @db.execute(statement,user_id,bookmark_id,time,action)
+    end
+
+    def view_audit_log(page,limit)
+        statement = "SELECT * FROM audit_log LIMIT ?,?"
+        return @db.execute(statement,page,limit)
     end
 
 
@@ -208,6 +287,10 @@ class BookmarkDB
 
 
     def add_tag_bookmark(tag_name, bookmark_id)
+        #Checks tag_length
+        unless plain_text_check(tag_name,30)
+            return "too long tag name"
+        end
         #check if tag exists
         if not get_tag_id(tag_name)
             @db.execute("INSERT INTO tags(name) VALUES (?)", tag_name)
@@ -235,6 +318,13 @@ class BookmarkDB
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,results
+        #Adds the tags into results
+        i_max = sql.length
+        i_min = 0
+        while i_min != i_max
+            sql[i_min].append(get_bookmark_tags(sql[i_min][0]))
+            i_min= 1 + i_min
+        end
         return sql
     end
     
@@ -245,20 +335,36 @@ class BookmarkDB
         return sql[0][0]
     end
     
-    #Uses results array to pull tag_names
-    def get_bookmark_tags(array)
-        i_max = array.length
-        i_min = 0
-        retStatment = "SELECT bookmark_ID,tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
-        tags = []
-        while i_min != i_max
-            tags.append(@db.execute(retStatment,array[i_min][0]))
-            i_min= 1 + i_min
-        end
-        p tags
-        return tags
+    #Uses bookmark_id to pull tag_names
+    def get_bookmark_tags(bookmark_id)
+        retStatment = "SELECT tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
+        return @db.execute(retStatment,bookmark_id)
     end
 
+    def get_user_favourites(user_id,page,limit)
+        page = page.to_i
+        limit = limit.to_i
+        user_id = user_id.to_i
+
+        statement = "SELECT bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM favourites, bookmarks WHERE favourites.user_id =? AND favourites.bookmark_id = bookmarks.bookmark_id LIMIT ?,?"
+        return @db.execute(statement,user_id,page,limit)
+    end
+
+    def add_favourite(user_id, bookmark_id)
+        user_id = user_id.to_i
+        bookmark_id = bookmark_id.to_i
+        statement = "INSERT INTO favourites(user_id,bookmark_id) VALUES(?,?)"
+        return @db.execute(statement,user_id,bookmark_id)
+    end
+
+    def remove_favourite(user_id,bookmark_id)
+        user_id = user_id.to_i
+        bookmark_id = bookmark_id.to_i
+        statement = "DELETE FROM favourites WHERE user_id=? AND bookmark_id =?"
+        return @db.execute(statement,user_id,bookmark_id)
+    end
+
+=begin OLD CODE
     def search_tags_bookmarks(tag_name)
         #gets tag_id based on name
         tag_id = get_tag_id(tag_name)
@@ -270,7 +376,6 @@ class BookmarkDB
             bookmark_list.append(get_bookmark(i))
         }
         #debug code
-        p bookmark_list
         return bookmark_list
     end
 
@@ -291,7 +396,6 @@ class BookmarkDB
         statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ? AND enabled=1"
         retStatement = @db.execute statement,search
         #debug
-        p retStatement
         return retStatement
     end
 
@@ -313,21 +417,41 @@ class BookmarkDB
         while i_min != i_max
             results.append(array[i_min])
             i_min = 1 + i_min
-            #debug
-            p i_min
-            p i_max
-            p results
         end
         return results
-    end
-
-
+        end
+=end
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id)
+        unless plain_text_check(bookmarkName)
+            return "Please use less than 30 characters"
+        end
+        unless url.match? /https?:\/\/[\S]+/
+            return "Please start the url with http:// or https://"
+        end
+        if check_if_exists(url)
+            return "URL already added"
+        end
+        unless plain_text_check(url, 150)
+            return "URL too long, please make less than 150 characters"
+        end
+        url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+        return "Successfully added bookmark!"
+    end
+
+    def check_if_exists(url)
+        statement="SELECT bookmark_name,url FROM bookmarks WHERE url=?"
+        retStatment = @db.execute(statement,url)
+        if retStatment[0] == nil
+            p url+ " no exist"
+            return false
+        end
+        p url + " exists"
+        return true
     end
     
     def get_all_bookmarks
@@ -359,6 +483,8 @@ class BookmarkDB
     end
 
 
+
+=begin
     def add_sample_data
         add_bookmark("Facebook","https://facebook.com",1)
         add_bookmark("Instagram","https://instagram.com",1)
@@ -385,7 +511,7 @@ class BookmarkDB
         db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
         db.upgrade_account_to_admin("Lujain")
     end
-
+=end
 
     #SECURITY
     def generate_hash(password, salt="")
@@ -442,8 +568,9 @@ class BookmarkDB
         return false
     end
 
-    def plain_text_check(name)
-        if name.length > 30
+    def plain_text_check(name, *length) # Optional argument length to check for
+        lengthcheck = unless length[0].nil? then length[0] else 30 end
+        if name.length > lengthcheck
             puts "long name"
             return false
         end
@@ -451,12 +578,12 @@ class BookmarkDB
         if name.match? /[a-z]/ or name.match? /[A-Z]/
             return true
         end
-
         return false
     end
+
     
 end
 
 # This section is for testing the database
+
 db = BookmarkDB.new
-db.get_total_results("google")

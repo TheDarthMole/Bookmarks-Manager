@@ -23,6 +23,36 @@ helpers do # functions used within erb files
     def get_total_items(search)
         return @db.get_total_results search
     end
+
+    def display_users(perm,page,limit,enabled)
+        statement = @db.display_users(perm,page.to_i,limit.to_i,enabled)
+        return statement
+    end
+    def total_users(perm,enabled)
+        statement = @db.total_user(perm,enabled)
+        return statement
+    end
+    def upgrade_account_to_user(id)
+        id = id.to_i
+        return @db.upgrade_account_to_user(id)
+    end
+    def downgrade_account_to_user(id)
+        id = id.to_i
+        return @db.downgrade_account_to_user(id)
+    end
+
+    def suspend_user(id)
+        id = id.to_i
+        return @db.suspend_user(id)
+    end
+    def unsuspend_user(id)
+        id = id.to_i
+        return @db.unsuspend_user(id)
+    end
+    
+    def check_admin(email)
+        return @db.is_admin(@db.get_account_id(email))
+    end
 end
 
 get "/logout" do
@@ -42,7 +72,42 @@ end
 
 get "/admin/users" do
     adminauthenticate
+    session[:lim] = 5
+    params[:page] = 1
     erb :adminuser
+end
+
+get "/admin/users/:page/:lim" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    unless session[:reply]
+        session[:reply] = nil
+    end
+    erb :adminuser
+end
+
+get "/admin/users/action/:id/upgrade" do
+    adminauthenticate
+    upgrade_account_to_user(params[:id])
+    redirect "/admin/users"
+end
+
+get "/admin/users/action/:id/downgrade" do
+    adminauthenticate
+    downgrade_account_to_user(params[:id])
+    redirect "/admin/users"
+end
+
+get "/admin/users/action/:id/suspend" do
+    adminauthenticate
+    suspend_user(params[:id])
+    redirect "/admin/users"
+end
+
+get "/admin/users/action/:id/unsuspend" do
+    adminauthenticate
+    unsuspend_user(params[:id])
+    redirect "/admin/users"
 end
 
 get "/" do
@@ -59,6 +124,9 @@ get "/dashboard" do
     if session[:lim].nil?
         session[:lim] = 5
     end
+    unless session[:reply]
+        session[:reply] = nil
+    end
     erb :dashboard
 end
 
@@ -67,6 +135,9 @@ get "/dashboard/:page/:lim" do
     session[:lim] = params[:lim]
     @bookmarks = get_bookmarks_page("", params[:page], 5)
     @total = get_total_items("")
+    unless session[:reply]
+        session[:reply] = nil
+    end
     erb :dashboard
 end
 
@@ -75,6 +146,7 @@ get "/dashboard/:page/:lim/" do
 end
 
 post "/dashboard" do
+    authenticate
     if params[:page].nil?
         params[:page] = 1
     end
@@ -94,16 +166,22 @@ get "/dashboard/:page/:lim/:searchterm" do
     @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
     @total = get_total_items(params[:searchterm])
     erb :dashboard
-
 end
 
-get "/admin/bookmarks/:lim/:searchterm" do
+get "/admin/bookmarks/:page/:lim/:searchterm" do
     adminauthenticate
     session[:lim] = params[:lim]
     @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
     @total = get_total_items(params[:searchterm])
     erb :adminbookmarks
+end
 
+get "/admin/bookmarks/:page/:lim" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page("", params[:page], 5)
+    @total = get_total_items("")
+    erb :adminbookmarks
 end
 
 post "/login" do
@@ -121,6 +199,9 @@ get "/login" do
     unless session[:loggedin]
         session[:loggedin] = false
     end
+    if session[:loggedin]
+        redirect "/dashboard"
+    end
     erb :login
 end
 
@@ -130,6 +211,9 @@ end
 
 post "/createbookmark" do
     puts params
+    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]))
+    session[:reply] = reply
+    redirect "/dashboard"
 end
 
 post "/register" do
@@ -140,12 +224,9 @@ post "/register" do
             erb :login
         end
         session[:reason] = sqlresponse
-        p session[:reason]
         redirect "/register"
     else
-        
         session[:reason] = "Passwords did not match!"
-        p session[:reason]
         redirect "/register"
     end
 end
