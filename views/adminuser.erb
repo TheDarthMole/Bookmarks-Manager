@@ -45,6 +45,22 @@
 								ADD USER
 							</button>
                         </div>
+
+
+
+
+
+
+                      <!----- ACTIVE USERS  --->
+
+
+
+
+
+
+
+
+
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bookmark">
@@ -58,26 +74,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <% users = display_users( "*", 0,10,1) %>
+                            <% users = display_users( "*", 0,5,1) %>
                             <% users.each do |item| %>
                               <tr>
                                 <td>
                                   <a href=""><%= item[0] %></a>
                                 </td>
                                 <td>
-                                  <a href=""><%= item[1] %> <%= item[2]%></a>
+                                  <%= item[1] %> <%= item[2]%>
                                 </td>
                                 <td>
-                                  <a href=""><%= item[3] %></a>
+                                  <%= item[3] %>
                                 </td>
                                 <td>
-                                  <a href=""><%= item[4] %></a>
+                                  <b><%= item[4] %></b>
                                 </td>
                                 <td width="100">
-                                  <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
-                                    <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                  </a>
-                                  <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
+                                  <% if  item[4] == "guest"%>
+                                    <a href="/admin/users/action/<%=item[0] %>/upgrade" data-toggle="tooltip" data-placement="top" title="Make User" class="mr-2">
+                                      <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+                                    </a>
+                                  <%end %>
+
+                                  <% if  item[4] == "user"%>
+                                    <a href="/admin/users/action/<%=item[0] %>/downgrade" data-toggle="tooltip" data-placement="top" title="Make guest" class="text-danger">
+                                      <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+                                    </a>
+                                  <%end %>
+                                  <a href="/admin/users/action/<%=item[0] %>/suspend" data-toggle="tooltip" data-placement="top" title="Suspend User" class="text-danger">
                                     <i class="fa fa-times"></i>
                                   </a>
                                 </td>
@@ -89,7 +113,7 @@
                         </table>
                     </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                        <p class="mb-md-0 font-sm text-muted mr-3">Showing entries 5 of 25</p>
+                        <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%=users.length %> of 25</p>
                         <ul class="pagination mb-md-0">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -123,7 +147,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
+
+
+
+
+
+
+
+
+                  <!----- Suspended  USERS  --->
+
+
+
+
+
+
+
+
+
+                  <div class="table-responsive">
                         <table class="table table-bookmark">
                             <thead>
                                 <tr>
@@ -142,20 +184,17 @@
                                             <a href=""><%= item[0] %></a>
                                         </td>
                                         <td>
-                                            <a href=""><%= item[1] %> <%= item[2]%></a>
+                                            <%= item[1] %> <%= item[2]%>
                                         </td>
                                         <td>
-                                          <a href=""><%= item[3] %></a>
+                                          <%= item[3] %>
                                         </td>
                                         <td>
-                                           <a href=""><%= item[4] %></a>
+                                          <b><%= item[4] %></b>
                                         </td>
                                         <td width="100">
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
+                                            <a href="/admin/users/action/<%=item[0] %>/unsuspend" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
                                                 <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                            </a>
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
-                                                <i class="fa fa-times"></i>
                                             </a>
                                         </td>
 
@@ -165,7 +204,7 @@
                         </table>
                     </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                        <p class="mb-md-0 font-sm text-muted mr-3">Showing entries 5 of 25</p>
+                        <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%=users.length %> of 25</p>
                         <ul class="pagination mb-md-0">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -199,6 +238,23 @@
                             </div>
                         </div>
                     </div>
+
+
+
+
+
+
+
+                  <!----- Pending USERS  --->
+
+
+
+
+
+
+
+
+
                   <div class="table-responsive">
                       <table class="table table-bookmark">
                         <thead>
@@ -218,19 +274,19 @@
                               <a href=""><%= item[0] %></a>
                             </td>
                             <td>
-                              <a href=""><%= item[1] %> <%= item[2]%></a>
+                              <%= item[1] %> <%= item[2]%>
                             </td>
                             <td>
-                              <a href=""><%= item[3] %></a>
+                              <%= item[3] %>
                             </td>
                             <td>
-                              <a href=""><%= item[4] %></a>
+                              <b><%= item[4] %></b>
                             </td>
                             <td width="100">
-                              <a href="" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
+                              <a href="/admin/users/action/<%=item[0] %>/upgrade" data-toggle="tooltip" data-placement="top" title="Make User" class="mr-2">
                                 <i class="fa fa-redo-alt fa-flip-horizontal"></i>
                               </a>
-                              <a href="" data-toggle="tooltip" data-placement="top" title="Delete User" class="text-danger">
+                              <a href="/admin/users/action/<%=item[0] %>/suspend" data-toggle="tooltip" data-placement="top" title="Suspend User" class="text-danger">
                                 <i class="fa fa-times"></i>
                               </a>
                             </td>
@@ -241,7 +297,7 @@
                       </table>
                 </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                        <p class="mb-md-0 font-sm text-muted mr-3">Showing entries 5 of 25</p>
+                        <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%=users.length %> of 25</p>
                         <ul class="pagination mb-md-0">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>

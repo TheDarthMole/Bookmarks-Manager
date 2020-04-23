@@ -9,9 +9,9 @@ class BookmarkDB
     end
 
     #ACCOUNTS
-    def check_account_enabled(email)
+    def check_account_enabled(userid)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
-        retStatement = @db.execute statement, email
+        retStatement = @db.execute statement, userid
         if retStatement[0][0] == 1
             return true
         else
@@ -155,7 +155,44 @@ class BookmarkDB
             puts "Error upgrading #{email} to admin"
         end
     end
-    
+
+    def upgrade_account_to_user(userID)
+        z = get_user_role_ID(userID)
+        p z
+        if z[0] == 1
+            statement = "UPDATE users SET role = 3 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error upgrading #{userID} to admin"
+        end
+    end
+
+    def downgrade_account_to_user(userID)
+        z = get_user_role_ID(userID)
+        p z
+        if z[0] == 3
+            statement = "UPDATE users SET role = 1 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error upgrading #{userID} to guest"
+        end
+    end
+    def suspend_user(userID)
+        if check_account_enabled(userID)
+            statement = "UPDATE users SET enabled = 0 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error suspend #{userID}"
+        end
+    end
+    def unsuspend_user(userID)
+        if not check_account_enabled(userID)
+            statement = "UPDATE users SET enabled = 1 WHERE user_id = ?"
+            @db.execute statement, userID
+        else
+            puts "Error suspend #{userID}"
+        end
+    end
     def change_password(email, oldPassword, newPassword, newPasswordCheck)
         if newPassword != newPasswordCheck
             return "Passwords do not match"
