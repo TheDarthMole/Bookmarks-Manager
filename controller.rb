@@ -247,6 +247,17 @@ class BookmarkDB
         return retStatement
     end
 
+    def total_user(perm,enabled)
+        if perm == "*"
+            statement ="SELECT COUNT(ALL)FROM users WHERE enabled = ? "
+            retStatement = @db.execute statement,enabled
+        else
+            statement = "SELECT COUNT(ALL) FROM users WHERE role=? AND enabled = ?"
+            retStatement = @db.execute statement,perm,enabled
+        end
+        p retStatement
+        return retStatement
+    end
     #Audit_log
     #
 
@@ -589,5 +600,5 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
-db.display_users("*",1,5,1)
-db.display_users(1,1,5,1)
+db.display_users(2,0,10,1)
+db.total_user(2,1)
