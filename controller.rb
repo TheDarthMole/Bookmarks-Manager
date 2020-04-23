@@ -57,6 +57,7 @@ class BookmarkDB
     end
 
     def can_user_perform_action(user_ID,action,*bookmark_id)
+        bookmark_id = bookmark_id[0]
         #pulls user_id role
         role = get_user_role_ID(user_ID)
         #Checks if user can add bookmarks
