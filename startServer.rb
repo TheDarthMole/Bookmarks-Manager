@@ -29,6 +29,25 @@ helpers do # functions used within erb files
         p statement
         return statement
     end
+    def upgrade_account_to_user(id)
+        p id
+        id = id.to_i
+        return @db.upgrade_account_to_user(id)
+    end
+    def downgrade_account_to_user(id)
+        p id
+        id = id.to_i
+        return @db.downgrade_account_to_user(id)
+    end
+
+    def suspend_user(id)
+        id = id.to_i
+        return @db.suspend_user(id)
+    end
+    def unsuspend_user(id)
+        id = id.to_i
+        return @db.unsuspend_user(id)
+    end
     
     def check_admin(email)
         return @db.is_admin(@db.get_account_id(email))
@@ -53,6 +72,30 @@ end
 get "/admin/users" do
     adminauthenticate
     erb :adminuser
+end
+
+get "/admin/users/action/:id/upgrade" do
+    adminauthenticate
+    upgrade_account_to_user(params[:id])
+    redirect "/admin/users"
+end
+
+get "/admin/users/action/:id/downgrade" do
+    adminauthenticate
+    downgrade_account_to_user(params[:id])
+    redirect "/admin/users"
+end
+
+get "/admin/users/action/:id/suspend" do
+    adminauthenticate
+    suspend_user(params[:id])
+    redirect "/admin/users"
+end
+
+get "/admin/users/action/:id/unsuspend" do
+    adminauthenticate
+    unsuspend_user(params[:id])
+    redirect "/admin/users"
 end
 
 get "/" do
