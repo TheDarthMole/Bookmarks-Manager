@@ -424,7 +424,7 @@ class BookmarkDB
 =end
 
     #BOOKMAKRS
-    def add_bookmark(bookmarkName, url, owner_id)
+    def add_bookmark(bookmarkName, url, owner_id, tags)
         unless plain_text_check(bookmarkName)
             return "Please use less than 30 characters"
         end
@@ -437,10 +437,28 @@ class BookmarkDB
         unless plain_text_check(url, 150)
             return "URL too long, please make less than 150 characters"
         end
+        
+        unless plain_text_check(tags, 50)
+            return "Please enter tags below 50 characters"
+        end
         url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+        bookmark_id = @db.execute "SELECT bookmark_id FROM bookmarks WHERE url = ?", url
+        tags_split = tags.downcase.split(" ")
+        begin
+            tags_split.each do |tag|
+                statement = "INSERT INTO tags (name) SELECT ? WHERE NOT EXISTS (SELECT * FROM tags WHERE name = ?)"
+                @db.execute statement, tag, tag
+                statement = "INSERT INTO bookmark_tags (bookmark_id, tag_id) VALUES (?, (SELECT tag_id FROM tags WHERE name = ?) )"
+                @db.execute statement, bookmark_id[0][0], tag
+            end
+        rescue
+            puts "Something went wrong when creating bookmark with tags: #{tag_split} and bookmark id #{bookmark_id}"
+            return "Something went wrong!"
+        end
+        
         return "Successfully added bookmark!"
     end
 
