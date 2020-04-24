@@ -33,8 +33,8 @@
     <!-- signup section -->
     <section class="signup-section container py-5">
         <div class="row align-items-center justify-content-between">
-            <form class="col-md-6" method="post" action="/register">
-                <div class="mb-4 mb-md-0">
+            <div class="col-md-6">
+                
                     <h1 class="text-info mb-4">
                         <i class="far fa-bookmark"></i> Acme corp
                     </h1>
@@ -44,51 +44,89 @@
                     </div>
                     <% end %>
                     <% session[:reason] = nil %>
+                    <form name="form" id="form" class="mb-4 mb-md-0">
+                
+                
+                <!-- User name Input -->
                     <div class="form-group">
-                        <label for="fname">First Name<span class="text-danger">*</span></label>
-                        <input name="fname" type="text" class="form-control" placeholder="john" required/>
+                        <label for="username">Username</label>
+                        <input name="username" type="text" class="form-control"  id="username" placeholder="john" />
+                        <i class="fas fa-check-circle"></i>
+						<i class="fas fa-exclamation-circle"></i>
+						<small></small> <!-- where the validation message is displayed -->
+						
                     </div>
                     
-                    <div class="form-group">
-                        <label for="lname">Last Name<span class="text-danger">*</span></label>
-                        <input name="lname" type="text" class="form-control" placeholder="doe" required/>
-                    </div>
+                    <!-- Email Input -->
                     
                     <div class="form-group">
-                        <label for="email">Email Address<span class="text-danger">*</span></label>
-                        <input name="email" type="text" class="form-control" placeholder="john@doe.com" required/>
+                        <label for="email">Email Address</label>
+                        <input name="email" type="text" class="form-control" id="email" placeholder="john@doe.com" />
+                        <i class="fas fa-check-circle"></i>
+						<i class="fas fa-exclamation-circle"></i>
+						<small></small>
+						
                     </div>
                     
-                    <div class="form-group">
-                        <label for="password">Password<span class="text-danger">*</span></label>
-                        <input name="password" type="password" class="form-control" placeholder="********" required/>
-                    </div>
+                    <!-- Password Input -->
                     
                     <div class="form-group">
-                        <label for="passwordrepeat">Repeat Password<span class="text-danger">*</span></label>
-                        <input name="passwordrepeat" type="password" class="form-control" placeholder="********" required/>
+                        <label for="password">Password</label>
+                        <input name="password" type="password" class="form-control" id="password" placeholder="********" />
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <small></small>     
+                        
                     </div>
+                    
+                    <!-- Password Confirmation Input -->
+                    
                     <div class="form-group">
-                        <label for="question">Security Question<span class="text-danger">*</span></label>
-                        <select name="question" id="" class="form-control" required>
+                        <label for="passwordConfirm">Confirm Password</label>
+                        <input name="passwordConfirm" type="password" class="form-control" id="password2" placeholder="********" />
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <small></small>
+                        
+                    </div>
+                    
+                    <!-- Security question selection -->
+                    
+                    <div class="form-group">
+                        <label for="question">Security Question</label>
+                        <select name="question" class="form-control" id="question">
 								<option value="">Select Option</option>
-								<option value="1">What is the name of your best friend?</option>
-								<option value="2">What is your middle name?</option>
-								<option value="3">What is your first pet's name?</option>
-								<option value="4">Where was your Mother or Father born?</option>
+								<option value="1">What's the name of your best friend?</option>
+								<option value="2">What's your middle name?</option>
+								<option value="3">What's your pet's name?</option>
+								<option value="4">In what city or town was your first job?</option>
+								<option value="5">What's a memorable quote?</option>
 						</select>
+						<i class="fas fa-check-circle"></i>
+						<i class="fas fa-exclamation-circle"></i>
+						<small></small>
+						
                     </div>
+                    
+                    
+                    <!-- Security Question Answer Input -->
                     <div class="form-group">
-                        <label for="answer">Security Answer<span class="text-danger">*</span></label>
-                        <input name="answer" type="text" class="form-control" placeholder="Answer" required/>
+                        <label for="answer">Security Answer</label>
+                        <input name="answer" type="password" class="form-control" id="answer" placeholder="Answer" />
+                        <i class="fas fa-check-circle"></i>
+						<i class="fas fa-exclamation-circle"></i>
+						<small></small>
                     </div>
-                </div>
-                <button class="btn btn-info mb-4">REGISTER</button>
-                <p>Already have an account? <a href="/login">Login</a></p>
+                    
+                     <button class="btn btn-info mb-4">REGISTER</button>
+                     
+				</form>
+       
+                <p>Already have an account? <a href="login.html">Login</a></p>
                 <p>
                     By clicking on register, you agree to our terms &amp; conditions.
                 </p>
-            </form>
+            </div>
             <div class="col-md-6">
                 <img src="https://placeimg.com/640/480/tech" alt="" class="img-fluid" />
             </div>
@@ -99,6 +137,7 @@
 
     <script src="/js/main.js"></script>
     <script src="/js/common.js"></script>
+    <script src="/js/validation.js"></script>
 </body>
 
 </html>
