@@ -62,7 +62,11 @@ class BookmarkDB
         #Checks if user can add bookmarks
         hashmap = {"add" => "can_add", "edit" => "can_edit", "create" => "can_create", "manage" => "can_manage", "create_admin" => "can_create_admin", "upgrade_guest" => "can_upgrade_guest"}
         if hashmap.key? action # If the user entered a valid action
-            return @db.execute("SELECT ? FROM permissions WHERE permission_id=?",hashmap[action], role)
+            statement = "SELECT #{hashmap[action]} FROM permissions WHERE permission_id = ?"
+            p @db.execute(statement, role)[0][0]
+            if @db.execute(statement, role)[0][0] == 1
+                return true
+            end
         end
         return false
     end
