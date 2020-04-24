@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--Avoiding Duplicated code -->
+
+    <%= erb :headinclude, :locals => {:title => "Bookmarks - Admin"} %>
+
+<body>
+    <!-- Navbar -->
+    
+    <%= erb :header %>
+    
+    <!-- modal-section -->
+    <div class="modal" tabindex="-1" role="dialog" id="add-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">TITLE</label>
+                        <input type="text" class="form-control" placeholder="Bookmark Title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">URL</label>
+                        <input type="text" class="form-control" placeholder="Bookmark URL" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">NOTES</label>
+                        <textarea class="form-control" rows="3" placeholder="Add Notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">LIST</label>
+                        <select class="form-control">
+							<option value="">None</option>
+						</select>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="stick" id="sticky" />
+                        <label for="sticky">FAVOURITE</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">
+						CANCEL
+					</button>
+                    <button type="button" class="btn btn-info">SAVE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="edit-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">TITLE</label>
+                        <input type="text" class="form-control" value="Home" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">URL</label>
+                        <input type="text" class="form-control" value="http://google.com" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">NOTES</label>
+                        <textarea class="form-control" rows="3" placeholder="Add Notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">LIST</label>
+                        <select class="form-control">
+							<option value="">None</option>
+						</select>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="stick" id="sticky" />
+                        <label for="sticky">FAVOURITE</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">
+						CANCEL
+					</button>
+                    <button type="button" class="btn btn-info">SAVE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="delete-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">TITLE</label>
+                        <input type="text" class="form-control" value="Home" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">URL</label>
+                        <input type="text" class="form-control" value="http://google.com" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">NOTES</label>
+                        <textarea class="form-control" rows="3" placeholder="Add Notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">LIST</label>
+                        <select class="form-control">
+							<option value="">None</option>
+						</select>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="stick" id="sticky" />
+                        <label for="sticky">FAVOURITE</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">
+						CANCEL
+					</button>
+                    <button type="button" class="btn btn-danger">DELETE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- dashboard section -->
+    <section class="dashboard-section container py-5">
+        <div class="saved-bookmarks">
+            <div class="mb-3">
+                <h4>All Bookmarks</h4>
+            </div>
+            <div class="d-flex justify-content-md-end mb-3 flex-wrap">
+                <div class="input-group mb-3 mb-md-0 mr-md-3 w-auto">
+                    <input type="search" class="form-control" placeholder="Search bookmark" />
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button">
+							Search
+						</button>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#add-bookmark">
+						ADD NEW
+					</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bookmark">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Title</th>
+                            <th>URL</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<!--Start itterating here -->
+                        <% if @bookmarks != nil %>
+                            <% books = @bookmarks %>
+                            <% total = @total %>
+                        <% else %>
+                            <% books = get_bookmarks_page("", params[:page], 5) %>
+                            <% total = get_total_items("") %>
+                        <% end %>
+                        <% total = total.to_i %>
+                        <% cubes = (total/session[:lim].to_f).ceil %>
+
+                        <% books.each do |item| %>
+                            <tr>
+                                <td width="50">
+                                    <div>
+                                        <input type="checkbox" name="" id="" />
+                                        <label for=""></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="<%= item[2] %>"><%= item[1]%></a>
+                                </td>
+                                <td>
+                                    <a href="<%= item[2] %>" target="blank"><%= item[2] %></a>
+                                </td>
+                                <td width="100">
+                                    <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% @bookmarks = nil %>
+                        <% @total = nil %>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+            <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
+                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%= books.length %> of <%= total %></p>
+                <ul class="pagination mb-md-0">
+                    <% unless params[:searchterm] %>
+                        <% searchterm = "" %>
+                    <% else %>
+                        <% searchterm = "/#{params[:searchterm]}" %>
+                    <% end %>
+                    <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
+                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %><%= searchterm %>" tabindex="-1">Previous</a>
+                    </li>
+<!--                    <li class="page-item active">
+                        <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
+                    </li> -->
+                <% [*1..cubes].each do |item| %>
+                    <li class="page-item <%= if params[:page].to_i == item then 'active' else '' end %>">
+                        <a class="page-link" href="/admin/bookmarks/<%= item %>/<%= session[:lim] %><%= searchterm %>"><%= item %>
+                        <% if params[:page].to_i %>
+                            <span class="sr-only">(current)</span>
+                        <% end %>
+                        </a>
+                    </li>
+                <% end %>
+<!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
+                    <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
+                        <a class="page-link" href="/admin/bookmarks/<%= (params[:page].to_i + 1) %>/<%= session[:lim] %><%= searchterm %>">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <%= erb :footer %>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/common.js"></script>
+</body>
+
+</html>
