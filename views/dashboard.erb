@@ -32,8 +32,8 @@
                         <input name="url" type="text" class="form-control" pattern="https?://.+" placeholder="Bookmark URL" required/>
                     </div>
                     <div class="form-group">
-                        <label for="notes">Tags</label>
-                        <textarea name="notes" class="form-control" rows="3" placeholder="Add Notes"></textarea>
+                        <label for="tags">Tags - e.g. "Office Productivity Tools Work"</label>
+                        <textarea name="tags" class="form-control" rows="3" placeholder="Add Tags"></textarea>
                     </div>
                     <!-- add tags^^-->
                     
@@ -163,13 +163,15 @@
             </form>
         </div>
         <div class="mb-5">
+            <p class="font-sm">
+                You haven't saved anything yet, favourite a bookmark to make it appear here
+            </p>
         </div>
 
         <div class="saved-bookmarks">
 
             <div class="d-flex justify-content-between mb-3">
                 <h4>Bookmarks</h4>
-
               <% if can_user_do_action("add")[0][0] == 1 %>
                 <button class="btn btn-info" data-toggle="modal" data-target="#add-bookmark">
 					        ADD NEW
@@ -201,6 +203,12 @@
 
                         <% books.each do |item| %>
                             <tr>
+                                <td width="50">
+                                    <div>
+                                        <input type="checkbox" name="" id="" />
+                                        <label for=""></label>
+                                    </div>
+                                </td>
                                 <td>
                                     <a href="<%= item[2] %>"><%= item[1]%></a>
                                 </td>

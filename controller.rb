@@ -294,7 +294,7 @@ class BookmarkDB
         statement = "INSERT INTO tags (name) SELECT ? WHERE NOT EXISTS (SELECT * FROM tags WHERE name = ?)"
         @db.execute statement, tag_name, tag_name
         statement = "INSERT INTO bookmark_tags (bookmark_id, tag_id) VALUES (?, (SELECT tag_id FROM tags WHERE name = ?) )"
-        @db.execute statement, bookmark_id[0][0], tag_name
+        @db.execute statement, bookmark_id, tag_name
     end
 
 
@@ -432,10 +432,29 @@ class BookmarkDB
         unless plain_text_check(url, 150)
             return "URL too long, please make less than 150 characters"
         end
+        unless tags[0]
+            unless plain_text_check(tags, 50)
+                return "Please enter tags below 50 characters"
+            end
+        end
         url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+        bookmark_id = @db.execute "SELECT bookmark_id FROM bookmarks WHERE url = ?", url
+        if tags[0][0]
+            tags_split = tags[0].downcase.split(" ")
+            begin
+                tags_split.each do |tag|
+                    add_tag_bookmark(tag, bookmark_id[0][0])
+                end
+            rescue
+                $stderr.print
+                puts "Something went wrong when creating bookmark with tags: #{tags_split} and bookmark id #{bookmark_id[0][0]}"
+                return "Something went wrong!"
+            end
+        end
+
         return "Successfully added bookmark!"
     end
 
@@ -478,36 +497,6 @@ class BookmarkDB
         return @db.execute statement, owner_id
     end
 
-
-
-=begin
-    def add_sample_data
-        add_bookmark("Facebook","https://facebook.com",1)
-        add_bookmark("Instagram","https://instagram.com",1)
-        add_bookmark("Reddit","https://reddit.com",1)
-        add_bookmark("Messenger","https://messenger.com",1)
-        add_bookmark("Youtube","https://youtube.com",1)
-        add_bookmark("Google","https://google.com",1)
-        add_bookmark("Github","https://github.com",1)
-        db.create_account("Nick","Password","Nick","Ruffles","nruffles1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Nick")
-
-        db.create_account("Jake","Password","Jake","Robison","jrobison1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Jake")
-
-        db.create_account("Anna","Password","Anna","Penny","afpenny1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Anna")
-
-        db.create_account("Stan","Password","Stanislaw","Malinowski","smmalinowski1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Stan")
-
-        db.create_account("Abdul","Password","Abdulrahman","AlTerkait","aalterkait1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Abdul")
-
-        db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Lujain")
-    end
-=end
 
     #SECURITY
     def generate_hash(password, salt="")
@@ -583,4 +572,3 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
-db.add_tag_bookmark("smile",2)
