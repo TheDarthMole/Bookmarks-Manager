@@ -211,6 +211,15 @@ post "/login" do
         session[:loggedin] = true
         redirect "/dashboard"
     else
+        if @db.check_account_exists(params[:email].downcase)
+            p "Account exists!"
+            p @db.check_account_enabled(@db.get_account_id(params[:email].downcase))
+            if not @db.check_account_enabled(@db.get_account_id(params[:email].downcase))
+                session[:reply] = "Your account has been suspended"
+            end
+        else
+            session[:reply] = "You have entered incorrect credentias"
+        end
         redirect "/login"
     end
 end

@@ -104,7 +104,11 @@ class BookmarkDB
             return false
         end
         email = email.downcase
+        
         if check_account_exists(email)
+            unless check_account_enabled(get_account_id(email))
+                return false
+            end
             statement = "SELECT password, salt FROM users WHERE email = ?"
             retStatement = @db.execute(statement, email)[0]
             if not password or not email
