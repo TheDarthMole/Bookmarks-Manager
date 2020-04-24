@@ -61,7 +61,14 @@ helpers do # functions used within erb files
         statement = @db.view_audit_log(page.to_i,10)
         p statement
         return statement
-    end 
+    end
+    def total_audit_results
+        return @db.total_audit_results[0][0]
+    end
+
+    def can_user_do_action(action)
+        return @db.can_user_perform_action(@db.get_account_id(session[:user]),action)
+    end
 end
 
 get "/logout" do
@@ -223,9 +230,10 @@ get "/register" do
 end
 
 post "/createbookmark" do
+    if  can_user_do_action("add") == 0 then redirect "/dashboard" end
     authenticate
     puts params
-    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]), params[:tags])
+    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]))
     session[:reply] = reply
     redirect "/dashboard"
 end
