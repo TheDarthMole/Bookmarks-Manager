@@ -68,6 +68,28 @@ class BookmarkDB
                 return true
             end
         end
+        #checks if user can edit
+        if action == "edit"
+            return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can create
+        if action == "create"
+            return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can manage
+        if action == "manage"
+            return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can create_admin
+        if action == "create_admin"
+            return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
+        end
+        #checks if user can upgrade_guest
+        if action == "upgrade_guest"
+            return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
+        end
+
+        p "NO WORKABLE ACTION"
         return false
     end
 
