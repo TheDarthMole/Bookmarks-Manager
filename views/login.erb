@@ -34,39 +34,56 @@
     <!-- login section -->
     <section class="login-section container py-5">
         <div class="row align-items-center justify-content-between">
-            <form class="col-md-6" action="login" method="post">
-                <div class="mb-4 mb-md-0">
-                    <h1 class="text-info mb-4">
-                        <i class="far fa-bookmark"></i> Acme corp
-                    </h1>
+            <div class="col-md-6">
+            
+            
+              
+				<h1 class="text-info mb-4">
+					<i class="far fa-bookmark"></i> Acme corp
+				</h1>
                     <% if session[:reply] %>
                     <div class="alert alert-<%= if session[:reply].include? 'suspended' then 'danger' else 'warning' end %>" role="alert">
                       <%= session[:reply] %>
                     </div>
                     <% end %>
                     <% session[:reply] = nil %>
+                        <!-- Login Form -->   
+                     
+                     
+                <form name="form" id="form" class="mb-4 mb-md-0">
+
+                    <!-- Email Input -->
+                    
                     <div class="form-group">
-                        <label for="">Email Address<span class="text-danger">*</span></label>
-                        <input name="email" type="text" class="form-control" placeholder="john@doe.com" />
+                        <label for="email">Email Address</label>
+                        <input name="email" type="text" class="form-control" id="email" placeholder="john@doe.com" />
+                        <i class="fas fa-check-circle"></i>
+						<i class="fas fa-exclamation-circle"></i>
+						<small></small>
+						
                     </div>
+                    
+                    <!-- Password Input -->
+                    
                     <div class="form-group">
-                        <label for="">Password<span class="text-danger">*</span></label>
-                        <input name="password" type="password" class="form-control" placeholder="********" />
+                        <label for="password">Enter Password</label>
+                        <input name="password" type="password" class="form-control" id="password" placeholder="********" />
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <small></small>     
+                        
                     </div>
-                </div>
-                <div class="mb-4">
-                    <a>
-                        <button type="submit" class="btn btn-info">LOGIN</button>
-                    </a>
-                    <div>
-                        <a href="#" class="font-sm">Forgot Password?</a>
-                    </div>
-                </div>
-                <p>Don't have an account? <a href="/register">Register</a></p>
-            </form>
+               
+                     <button class="btn btn-info ">LOGIN</button>
+                     
+				</form>
+     
+            </div>
+            
             <div class="col-md-6">
                 <img src="https://placeimg.com/640/480/tech" alt="" class="img-fluid" />
             </div>
+            
         </div>
     </section>
 
