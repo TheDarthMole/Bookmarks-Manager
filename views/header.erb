@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp<span
+                class="sr-only">(current)</span></a>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav ml-lg-auto align-items-lg-center">
+
+                <% if check_admin(session[:user]) %>
+                <li class="nav-item ">
+                    <a class="nav-link active" href="/dashboard">DASHBOARD<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="/admin/bookmarks">BOOKMARKS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/users">USERS</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/admin/audit">AUDIT<span class="sr-only">(current)</span></a>
+                </li>
+                <% end %>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout"><i class="fa fa-user mr-2"></i> LOGOUT</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
