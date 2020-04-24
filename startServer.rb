@@ -231,6 +231,7 @@ end
 
 post "/createbookmark" do
     if  can_user_do_action("add") == 0 then redirect "/dashboard" end
+    authenticate
     puts params
     reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]))
     session[:reply] = reply
