@@ -57,35 +57,13 @@ class BookmarkDB
     end
 
     def can_user_perform_action(user_ID,action)
-        bookmark_id = bookmark_id[0]
         #pulls user_id role
         role = get_user_role_ID(user_ID)
         #Checks if user can add bookmarks
-        if action == "add"
-            return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
+        hashmap = {"add" => "can_add", "edit" => "can_edit", "create" => "can_create", "manage" => "can_manage", "create_admin" => "can_create_admin", "upgrade_guest" => "can_upgrade_guest"}
+        if hashmap.key? action # If the user entered a valid action
+            return @db.execute("SELECT ? FROM permissions WHERE permission_id=?",hashmap[action], role)
         end
-        #checks if user can edit
-        if action == "edit"
-            return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can create
-        if action == "create"
-            return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can manage
-        if action == "manage"
-            return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can create_admin
-        if action == "create_admin"
-            return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can upgrade_guest
-        if action == "upgrade_guest"
-            return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
-        end
-
-        p "NO WORKABLE ACTION"
         return false
     end
 
