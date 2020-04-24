@@ -67,7 +67,7 @@ helpers do # functions used within erb files
     end
 
     def can_user_do_action(action)
-        return @db.can_user_perform_action(@db.get_account_id(session[:user]),action)
+        return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
     end
 end
 

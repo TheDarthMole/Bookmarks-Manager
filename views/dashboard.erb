@@ -11,7 +11,8 @@
     <%= erb :header %>
 
     <!-- modal-section -->
-    <% if can_user_do_action("edit")[0][0] == 1 %>
+    <%= can_user_do_action("add") %>
+    <% if can_user_do_action("edit") %>
 
       <div class="modal" tabindex="-1" role="dialog" id="add-bookmark">
         <div class="modal-dialog" role="document">
@@ -172,7 +173,7 @@
 
             <div class="d-flex justify-content-between mb-3">
                 <h4>Bookmarks</h4>
-              <% if can_user_do_action("add")[0][0] == 1 %>
+              <% if can_user_do_action("add") %>
                 <button class="btn btn-info" data-toggle="modal" data-target="#add-bookmark">
 					        ADD NEW
 				        </button>
@@ -184,7 +185,7 @@
                         <tr>
                             <th>Title</th>
                             <th>URL</th>
-                          <% if can_user_do_action("edit")[0][0] == 1 %>
+                          <% if can_user_do_action("edit") %>
                             <th>Action</th>
                           <% end %>
                         </tr>
@@ -215,7 +216,7 @@
                                 <td>
                                     <a href="<%= item[2] %>" target="blank"><%= item[2] %></a>
                                 </td>
-                              <% if can_user_do_action("edit")[0][0] == 1 %>
+                              <% if can_user_do_action("edit") %>
                                 <td width="100">
                                     <a id="edit-bookmark" data-toggle="modal" data-target="#edit-bookmark" data-id="<%= item[0] %>" class="mr-2">
                                         <i class="fa fa-pencil-alt"></i>
