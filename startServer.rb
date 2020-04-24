@@ -223,6 +223,7 @@ get "/register" do
 end
 
 post "/createbookmark" do
+    authenticate
     puts params
     reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]), params[:tags])
     session[:reply] = reply
