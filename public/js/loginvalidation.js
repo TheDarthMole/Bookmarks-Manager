@@ -60,7 +60,7 @@ function inputValid() {
 	
 	
 	//Email Validation
-	if(emailValue == '') {
+	if(emailValue === '') {
 		setErrorFor(email, 'Email cannot be blank');
 	} 
 	else if (!isEmail(emailValue)) {
@@ -72,7 +72,7 @@ function inputValid() {
 	
 	
 	//Password Validation
-	if(passwordValue == '') {
+	if(passwordValue === '') {
 		setErrorFor(password, 'Password cannot be blank');
 	} 
 	else if (!isPassword(passwordValue)) {
