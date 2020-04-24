@@ -56,42 +56,35 @@ class BookmarkDB
         return retStatemnt[0]
     end
 
-    def can_user_perform_action(user_ID,action,*bookmark_id)
+    def can_user_perform_action(user_ID,action)
         bookmark_id = bookmark_id[0]
         #pulls user_id role
         role = get_user_role_ID(user_ID)
         #Checks if user can add bookmarks
         if action == "add"
-            add_to_admin_log(user_ID,action,bookmark_id)
             return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can edit
         if action == "edit"
-            add_to_admin_log(user_ID,action,bookmark_id)
             return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create
         if action == "create"
-            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can manage
         if action == "manage"
-            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can create_admin
         if action == "create_admin"
-            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
         end
         #checks if user can upgrade_guest
         if action == "upgrade_guest"
-            add_to_admin_log(user_ID,action)
             return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
         end
 
-        add_to_admin_log(user_ID,"NO WORKABLE ACTION")
         p "NO WORKABLE ACTION"
         return false
     end
@@ -148,12 +141,13 @@ class BookmarkDB
         return "Account with that email already exists!"
     end
     
-    def upgrade_account_to_admin(email)
-        if check_account_exists(email)
-            statement = "UPDATE users SET role = 2 WHERE email = ?"
-            @db.execute statement, email
+    def upgrade_account_to_admin(userID)
+        z = get_user_role_ID(userID)
+        if z[0] == 3
+            statement = "UPDATE users SET role = 2 WHERE user_id = ?"
+            @db.execute statement, userID
         else
-            puts "Error upgrading #{email} to admin"
+            puts "Error upgrading #{userID} to admin"
         end
     end
 
@@ -272,6 +266,11 @@ class BookmarkDB
         return @db.execute(statement,page,limit)
     end
 
+    def total_audit_results
+        statement = "SELECT COUNT(*) FROM audit_log"
+        return @db.execute(statement)
+    end
+
 
     #TAGS
 
@@ -292,14 +291,10 @@ class BookmarkDB
         unless plain_text_check(tag_name,30)
             return "too long tag name"
         end
-        #check if tag exists
-        if not get_tag_id(tag_name)
-            @db.execute("INSERT INTO tags(name) VALUES (?)", tag_name)
-        end
-        tag_id = get_tag_id(tag_name)
-        statement = "INSERT INTO bookmark_tags (?,?)"
-        retStatement = @db.execute statement, tag_id, bookmark_id
-        return retStatement
+        statement = "INSERT INTO tags (name) SELECT ? WHERE NOT EXISTS (SELECT * FROM tags WHERE name = ?)"
+        @db.execute statement, tag_name, tag_name
+        statement = "INSERT INTO bookmark_tags (bookmark_id, tag_id) VALUES (?, (SELECT tag_id FROM tags WHERE name = ?) )"
+        @db.execute statement, bookmark_id[0][0], tag_name
     end
 
 
@@ -588,3 +583,4 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
+db.add_tag_bookmark("smile",2)

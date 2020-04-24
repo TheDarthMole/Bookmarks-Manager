@@ -9,9 +9,11 @@
     <!-- Navbar -->
     
     <%= erb :header %>
-    
+
     <!-- modal-section -->
-    <div class="modal" tabindex="-1" role="dialog" id="add-bookmark">
+    <% if can_user_do_action("edit")[0][0] == 1 %>
+
+      <div class="modal" tabindex="-1" role="dialog" id="add-bookmark">
         <div class="modal-dialog" role="document">
             <form class="modal-content" method="post" action="/createbookmark">
                 <div class="modal-header">
@@ -143,6 +145,7 @@
             </form>
         </div>
     </div>
+  <% end %>
     <!-- dashboard section -->
     <section class="dashboard-section container py-5">
         <div>
@@ -160,25 +163,28 @@
             </form>
         </div>
         <div class="mb-5">
-            <p class="font-sm">
-                You haven't saved anything yet - just type xyz.io/ in front of a url to get started or enter a url below
-            </p>
         </div>
+
         <div class="saved-bookmarks">
+
             <div class="d-flex justify-content-between mb-3">
-                <h4>Saved Bookmarks</h4>
+                <h4>Bookmarks</h4>
+
+              <% if can_user_do_action("add")[0][0] == 1 %>
                 <button class="btn btn-info" data-toggle="modal" data-target="#add-bookmark">
-					ADD NEW
-				</button>
+					        ADD NEW
+				        </button>
+              <% end %>
             </div>
             <div class="table-responsive">
                 <table class="table table-bookmark">
                     <thead>
                         <tr>
-                            <th>Select</th>
                             <th>Title</th>
                             <th>URL</th>
+                          <% if can_user_do_action("edit")[0][0] == 1 %>
                             <th>Action</th>
+                          <% end %>
                         </tr>
                     </thead>
                     <tbody>
@@ -195,18 +201,13 @@
 
                         <% books.each do |item| %>
                             <tr>
-                                <td width="50">
-                                    <div>
-                                        <input type="checkbox" name="" id="" />
-                                        <label for=""></label>
-                                    </div>
-                                </td>
                                 <td>
                                     <a href="<%= item[2] %>"><%= item[1]%></a>
                                 </td>
                                 <td>
                                     <a href="<%= item[2] %>" target="blank"><%= item[2] %></a>
                                 </td>
+                              <% if can_user_do_action("edit")[0][0] == 1 %>
                                 <td width="100">
                                     <a id="edit-bookmark" data-toggle="modal" data-target="#edit-bookmark" data-id="<%= item[0] %>" class="mr-2">
                                         <i class="fa fa-pencil-alt"></i>
@@ -215,6 +216,7 @@
                                         <i class="fa fa-times"></i>
                                     </a>
                                 </td>
+                                <% end %>
                             </tr>
                         <% @bookmarks = nil %>
                         <% @total = nil %>
