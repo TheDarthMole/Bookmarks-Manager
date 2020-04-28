@@ -239,8 +239,7 @@ end
 post "/createbookmark" do
     if  can_user_do_action("add") == 0 then redirect "/dashboard" end
     authenticate
-    puts params
-    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]))
+    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]), params[:tags])
     session[:reply] = reply
     redirect "/dashboard"
 end
@@ -248,7 +247,8 @@ end
 post "/register" do
     session[:reason] = nil
     if params[:password] == params[:passwordrepeat] # Checks to make sure the
-        sqlresponse = @db.create_account(params[:email], params[:password], params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
+        sqlresponse = @db.create_account(params[:email], params[:password], 
+            params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
         if sqlresponse == "Successfully created account!"
             erb :login
         end
