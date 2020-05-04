@@ -72,7 +72,7 @@ function inputValid() {
 		setErrorFor(username, 'Username cannot be blank');
 	}
 	else if (usernameValue.length < 5 || usernameValue.length > 20 ) {
-		setErrorFor(username, 'username character must be 5 to 20 character');
+		setErrorFor(username, 'Username character must be 5 to 20 character');
 	}
 	else {
 		setValidFor(username);
@@ -107,7 +107,7 @@ function inputValid() {
 		setErrorFor(password2, 'Password confirmation cannot be blank');
 	} 
 	else if(passwordValue !== password2Value) {
-		setErrorFor(password2, 'Passwords does not match');
+		setErrorFor(password2, 'Passwords do not match');
 	} 
 	else{
 		setValidFor(password2);
