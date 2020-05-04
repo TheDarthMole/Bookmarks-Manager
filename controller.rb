@@ -63,7 +63,6 @@ class BookmarkDB
         hashmap = {"add" => "can_add", "edit" => "can_edit", "create" => "can_create", "manage" => "can_manage", "create_admin" => "can_create_admin", "upgrade_guest" => "can_upgrade_guest"}
         if hashmap.key? action # If the user entered a valid action
             statement = "SELECT #{hashmap[action]} FROM permissions WHERE permission_id = ?"
-            p @db.execute(statement, role)[0][0]
             if @db.execute(statement, role)[0][0] == 1
                 return true
             end
@@ -407,7 +406,6 @@ class BookmarkDB
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id, *tags)
-        p tags
         unless plain_text_check(bookmarkName)
             return "Please use less than 30 characters"
         end

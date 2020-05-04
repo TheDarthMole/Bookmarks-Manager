@@ -59,7 +59,6 @@ helpers do # functions used within erb files
     end
     def view_audit_log(page)
         statement = @db.view_audit_log(page.to_i,10)
-        p statement
         return statement
     end
     def total_audit_results
@@ -214,9 +213,11 @@ post "/login" do
         if @db.check_account_exists(params[:email].downcase)
             if not @db.check_account_enabled(@db.get_account_id(params[:email].downcase))
                 session[:reply] = "Your account has been suspended"
+            else 
+                session[:reply] = "You have entered incorrect credentials"
             end
         else
-            session[:reply] = "You have entered incorrect credentias"
+            session[:reply] = "You have entered incorrect credentials"
         end
         redirect "/login"
     end
