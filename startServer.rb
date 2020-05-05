@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
 require 'openssl'
+include ERB::Util
 require_relative 'controller'
 
 set :bind, '0.0.0.0'
@@ -58,7 +59,7 @@ helpers do # functions used within erb files
         return @db.add_to_admin_log(@db.get_account_id(session[:user]),action, params[:id].to_i)
     end
     def view_audit_log(page)
-        statement = @db.view_audit_log(page.to_i,10)
+        statement = @db.view_audit_log(page,10)
         return statement
     end
     def total_audit_results
@@ -141,7 +142,7 @@ get "/dashboard" do
     authenticate
     params[:page] = 1
     if session[:lim].nil?
-        session[:lim] = 5
+        session[:lim] = 10
     end
     unless session[:reply]
         session[:reply] = nil
@@ -152,7 +153,7 @@ end
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], 5)
+    @bookmarks = get_bookmarks_page("", params[:page], 10)
     @total = get_total_items("")
     unless session[:reply]
         session[:reply] = nil
@@ -214,7 +215,7 @@ post "/login" do
             if not @db.check_account_enabled(@db.get_account_id(params[:email].downcase))
                 session[:reply] = "Your account has been suspended"
             else 
-                session[:reply] = "You have entered incorrect credentials"
+                session[:reply] = "You have entered incorrect credentials, attempts remaining: " + (6 - @db.get_login_attempts(@db.get_account_id(params[:email])).to_i ).to_s
             end
         else
             session[:reply] = "You have entered incorrect credentials"

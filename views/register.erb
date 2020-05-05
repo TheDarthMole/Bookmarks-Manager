@@ -40,7 +40,7 @@
                     </h1>
                     <% if session[:reason] %>
                     <div class="alert alert-warning" role="alert">
-                        <%= session[:reason] %>
+                        <%= h session[:reason] %>
                     </div>
                     <% end %>
                     <% session[:reason] = nil %>
