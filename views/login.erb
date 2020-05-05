@@ -41,7 +41,7 @@
                     </h1>
                     <% if session[:reply] %>
                     <div class="alert alert-<%= if session[:reply].include? 'suspended' then 'danger' else 'warning' end %>" role="alert">
-                      <%= session[:reply] %>
+                      <%= h session[:reply] %>
                     </div>
                     <% end %>
                     <% session[:reply] = nil %>

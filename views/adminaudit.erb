@@ -52,19 +52,19 @@
                             <% log.each do |item| %>
                         <tr>
                             <td>
-                                <%= item[0]%>
+                                <%= h item[0]%>
                             </td>
                             <td>
                                 
-                                <%= item[3]%>
+                                <%= h item[3]%>
                             </td>
                             <td>
                                 
-                                <%= item[1]%>
+                                <%= h item[1]%>
                             </td>
                             <td>
                                 
-                                <%= Time.at(item[2])%>
+                                <%= h Time.at(item[2])%>
                             </td>
                             
                         </tr>
@@ -80,7 +80,7 @@
                      end
                      x = 10*y
                 total = total_audit_results %>
-                  <%= if (x < total) then x else total end%> of <%= total %></p>
+                  <%= h (if (x < total) then x else total end) %> of <%= h total %></p>
                 <ul class="pagination mb-md-0">
                     <li class="page-item disabled">
                         <a class="page-link" href="#" tabindex="-1">Previous</a>
