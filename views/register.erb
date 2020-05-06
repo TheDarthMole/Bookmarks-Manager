@@ -4,6 +4,7 @@
 <!-- Avoiding Duplication -->
 
     <%= erb :headinclude, :locals => {:title => "Acme corp - Register"} %>
+<!--     <link rel="stylesheet" href="/css/register.css" /> -->
 
 <body>
     <!-- Navbar -->
@@ -44,7 +45,7 @@
                     </div>
                     <% end %>
                     <% session[:reason] = nil %>
-                    <form name="form" id="form" class="mb-4 mb-md-0">
+                <form name="form" id="form" class="mb-4 mb-md-0" action="/register" method="post">
                 
                 
                 <!-- User name Input -->
@@ -118,7 +119,7 @@
                         <small></small>
                     </div>
                     
-                     <button class="btn btn-info mb-4">REGISTER</button>
+                     <button class="btn btn-info mb-4" type="submit">REGISTER</button>
                      
 				</form>
        
