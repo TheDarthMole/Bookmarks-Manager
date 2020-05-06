@@ -1,19 +1,24 @@
 <head>
-  <title><%= title %></title>
-  <!-- Required meta tags -->
-  <meta name="description" content="Bookmark application" />
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title><%= h title %></title>
+    <!-- Required meta tags -->
+    <meta name="description" content="Bookmark application" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
 
-  <!-- Font Awesome -->
-  <link href="/css/fontawesome/all.min.css" rel="stylesheet" />
-  <!--load all styles -->
-  <link href="/css/fontawesome/brands.min.css" rel="stylesheet" />
-  <!--load all styles -->
+    <!-- Font Awesome -->
+    <link href="/css/fontawesome/all.min.css" rel="stylesheet" />
+    <!--load all styles -->
+    <link href="/css/fontawesome/brands.min.css" rel="stylesheet" />
+    <!--load all styles -->
 
-  <!-- Stylesheet CSS -->
-  <link rel="stylesheet" href="/css/style.min.css" />
+    <!-- Stylesheet CSS -->
+    <link rel="stylesheet" href="/css/style.min.css" />
+    
+  <% if title == "Reset Password | Acme corp" %>
+    <!-- Password Reset CSS -->
+    <link rel="stylesheet" href="/css/changePassword.css" />
+  <% end %>
 </head>

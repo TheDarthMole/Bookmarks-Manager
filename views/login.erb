@@ -4,7 +4,7 @@
 <!-- Avoiding Duplication -->
     
     <%= erb :headinclude, :locals => {:title => "Acme corp - Login"}%>
-
+<!--     <link rel="stylesheet" href="/css/login.css" /> -->
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
@@ -41,7 +41,7 @@
                     </h1>
                     <% if session[:reply] %>
                     <div class="alert alert-<%= if session[:reply].include? 'suspended' then 'danger' else 'warning' end %>" role="alert">
-                      <%= session[:reply] %>
+                      <%= h session[:reply] %>
                     </div>
                     <% end %>
                     <% session[:reply] = nil %>
