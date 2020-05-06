@@ -195,7 +195,7 @@
           <% books = @bookmarks %>
           <% total = @total %>
         <% else %>
-          <% books = get_bookmarks_page("", params[:page], 5) %>
+          <% books = get_bookmarks_page("", params[:page], 10) %>
           <% total = get_total_items("") %>
         <% end %>
         <% total = total.to_i %>
@@ -204,14 +204,14 @@
         <% books.each do |item| %>
           <tr>
             <td>
-              <a href="<%= item[2] %>"><%= item[1]%></a>
+              <a href="<%= h item[2] %>"><%= h item[1]%></a>
             </td>
             <td>
-              <a href="<%= item[2] %>" target="blank"><%= item[2] %></a>
+              <a href="<%= h item[2] %>" target="blank"><%= h item[2] %></a>
             </td>
             <% if can_user_do_action("edit") == true %>
               <td width="100">
-                <a id="edit-bookmark" data-toggle="modal" data-target="#edit-bookmark" data-id="<%= item[0] %>" class="mr-2">
+                <a id="edit-bookmark" data-toggle="modal" data-target="#edit-bookmark" data-id="<%= h item[0] %>" class="mr-2">
                   <i class="fa fa-pencil-alt"></i>
                 </a>
                 <a href="delete-bookmark" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
@@ -225,7 +225,7 @@
         <% end %>
         <% if session[:reply] %>
           <div class="alert alert-warning" role="alert">
-            <%= session[:reply] %>
+            <%= h session[:reply] %>
           </div>
         <% end %>
         <% session[:reply] = nil %>
@@ -254,7 +254,7 @@
         <% end %>
         <!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
         <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
-          <a class="page-link" href="/dashboard/<%= (params[:page].to_i + 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>">Next</a>
+          <a class="page-link" href="/dashboard/<%= (params[:page].to_i + 1) %>/<%= h session[:lim] %>/<%= params[:searchterm] %>">Next</a>
         </li>
       </ul>
     </nav>
