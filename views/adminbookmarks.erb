@@ -210,7 +210,8 @@
                 </table>
             </div>
             <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <%= books.length %> of <%= h total %></p>
+              <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
+                <%= if x <= total && x!=0 then x else 5 end %> <%= if x > total then total end %> of <%= total %></p>
                 <ul class="pagination mb-md-0">
                     <% unless params[:searchterm] %>
                         <% searchterm = "" %>
