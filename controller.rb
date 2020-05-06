@@ -4,7 +4,7 @@ require "openssl"
 class BookmarkDB
     
     def initialize
-        @db = SQLite3::Database.new "database.db"
+        @db = SQLite3::Database.new "schema.db"
         @time = Time.new
     end
 
@@ -63,7 +63,6 @@ class BookmarkDB
         hashmap = {"add" => "can_add", "edit" => "can_edit", "create" => "can_create", "manage" => "can_manage", "create_admin" => "can_create_admin", "upgrade_guest" => "can_upgrade_guest"}
         if hashmap.key? action # If the user entered a valid action
             statement = "SELECT #{hashmap[action]} FROM permissions WHERE permission_id = ?"
-            p @db.execute(statement, role)[0][0]
             if @db.execute(statement, role)[0][0] == 1
                 return true
             end
@@ -84,18 +83,27 @@ class BookmarkDB
         email = email.downcase
         
         if check_account_exists(email)
-            unless check_account_enabled(get_account_id(email))
+            account_id = get_account_id(email)
+            unless check_account_enabled(account_id)
+                increment_login_attempts(account_id)
+                return false
+            end
+            if get_login_attempts(account_id).to_i > 4
+                suspend_user(account_id, "Login Attempts")
                 return false
             end
             statement = "SELECT password, salt FROM users WHERE email = ?"
             retStatement = @db.execute(statement, email)[0]
             if not password or not email
+                increment_login_attempts(account_id)
                 return false
             end
             hash = generate_hash(password,salt=retStatement[1])
             if hash[0] == retStatement[0]
+                reset_login_attempts(account_id)
                 return true
             end
+            increment_login_attempts(account_id)
             return false
         end
         return false
@@ -152,14 +160,20 @@ class BookmarkDB
         if z[0] == 3
             statement = "UPDATE users SET role = 1 WHERE user_id = ?"
             @db.execute statement, userID
+            
         else
             puts "Error upgrading #{userID} to guest"
         end
     end
-    def suspend_user(userID)
+    def suspend_user(userID, *reason)
         if check_account_enabled(userID)
             statement = "UPDATE users SET enabled = 0 WHERE user_id = ?"
             @db.execute statement, userID
+            if reason[0]
+                add_to_admin_log(userID, "Account Suspended: "+ reason[0])
+            else
+                add_to_admin_log(userID, "Account Suspended")
+            end
         else
             puts "Error suspend #{userID}"
         end
@@ -194,7 +208,18 @@ class BookmarkDB
     def get_login_attempts(user_id)
         statement = "SELECT login_attempts FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, user_id
-        return retStatement[0]
+        return retStatement[0][0]
+    end
+    
+    def increment_login_attempts(user_id)
+        current_attempts = get_login_attempts(user_id)
+        statement = "UPDATE users SET login_attempts = ? WHERE user_id = ?"
+        @db.execute statement, current_attempts + 1, user_id
+    end
+    
+    def reset_login_attempts(user_id)
+        statement = "UPDATE users SET login_attempts = 0 WHERE user_id = ?"
+        @db.execute statement, user_id
     end
     
     def display_users_all
@@ -248,6 +273,7 @@ class BookmarkDB
     end
 
     def view_audit_log(page,limit)
+        page = ((page.to_i) - 1) * limit.to_i
         statement = "SELECT * FROM audit_log LIMIT ?,?"
         return @db.execute(statement,page,limit)
     end
@@ -405,7 +431,7 @@ class BookmarkDB
 =end
 
     #BOOKMAKRS
-    def add_bookmark(bookmarkName, url, owner_id)
+    def add_bookmark(bookmarkName, url, owner_id, *tags)
         unless plain_text_check(bookmarkName)
             return "Please use less than 30 characters"
         end
@@ -440,18 +466,17 @@ class BookmarkDB
                 return "Something went wrong!"
             end
         end
-
+        
         return "Successfully added bookmark!"
     end
+
 
     def check_if_exists(url)
         statement="SELECT bookmark_name,url FROM bookmarks WHERE url=?"
         retStatment = @db.execute(statement,url)
         if retStatment[0] == nil
-            p url+ " no exist"
             return false
         end
-        p url + " exists"
         return true
     end
     
@@ -558,3 +583,5 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
+db.unsuspend_user(db.get_account_id("afpenny1@sheffield.ac.uk"))
+db.reset_login_attempts(db.get_account_id("afpenny1@sheffield.ac.uk"))
