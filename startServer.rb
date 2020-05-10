@@ -248,7 +248,7 @@ end
 
 post "/register" do
     session[:reason] = nil
-    if params[:password] == params[:passwordrepeat] # Checks to make sure the
+    if params[:password] == params[:passwordConfirm] # Checks to make sure the
         sqlresponse = @db.create_account(params[:email], params[:password], 
             params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
         if sqlresponse == "Successfully created account!"
