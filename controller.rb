@@ -4,7 +4,7 @@ require "openssl"
 class BookmarkDB
     
     def initialize
-        @db = SQLite3::Database.new "schema.db"
+        @db = SQLite3::Database.new "database.db"
         @time = Time.new
     end
 
@@ -182,6 +182,7 @@ class BookmarkDB
         if not check_account_enabled(userID)
             statement = "UPDATE users SET enabled = 1 WHERE user_id = ?"
             @db.execute statement, userID
+            reset_login_attempts(userID)
         else
             puts "Error suspend #{userID}"
         end
@@ -203,6 +204,13 @@ class BookmarkDB
             return "Successful"
         end
         return "Incorrect old password"
+    end
+    
+    def set_password(user_id, new_password) # For admin use
+        hash = generate_hash(new_password,salt="")
+        statement = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?"
+        @db.execute statement, hash[0], hash[1], user_id
+        return "Successful"
     end
     
     def get_login_attempts(user_id)
@@ -583,5 +591,7 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
-db.unsuspend_user(db.get_account_id("afpenny1@sheffield.ac.uk"))
-db.reset_login_attempts(db.get_account_id("afpenny1@sheffield.ac.uk"))
+(1..6).each do |account| # Makes sure admins can always login
+    db.unsuspend_user(account)
+#     db.set_password(account,"Password1!")
+end
