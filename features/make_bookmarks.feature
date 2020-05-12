@@ -1,12 +1,21 @@
-Scenario: Made a mistake
+Feature: make bookmarks
 
+Scenario: Made a mistake
+    #what's supposed to happen? containing invalid characters? idk
 
 
 Scenario: Link name empty
-
+    Given I am on the "dashboard" page
+    When I fill in "title" with "secret"
+    When I fill in "url" with "secret"
+    When I fill in "notes" with "secret"
+    When I press "Submit" within "form"
+    When I check "favourites"
+    Then I should see "Link name empty."
 
 Scenario: Link name contains invalid characters
-
+    #Then I should see "Welcome"
+    
 
 Scenario: Link name is too long
 
@@ -39,7 +48,7 @@ Scenario: Link URL not valid
 
 
 
-Scenario: Gues trying to make bookmarks
+Scenario: Guest trying to make bookmarks
 
 
 Scenario: Null input

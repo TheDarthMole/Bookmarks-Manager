@@ -545,7 +545,7 @@ class BookmarkDB
                         return "No numbers in password"
                     end
                 else
-                    return "No upper letters"
+                    return "No upper case letters"
                 end
             else
                 return "No lower case letters"
