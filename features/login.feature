@@ -1,7 +1,8 @@
+Feature: login
 #Scenario: Password entry failed multiple times
 
 Scenario: Correct password entered
-    Given I am on the homepage
+    Given I am on the "home" page
     When I fill in "password" with "secret"
     When I press "Submit" within "form"
     Then I should see "Welcome"
@@ -9,22 +10,30 @@ Scenario: Correct password entered
 
 
 Scenario: Password invalid 
-    Given I am on the homepage
+    Given I am on the "home" page
     When I fill in "password" with "nonsense"
     When I press "Submit" within "form"
     Then I should see "Login"
     Then I should see "Password incorrect."
 
 Scenario: Password forgotten
-    Given I am on the homepage
+    Given I am on the "home" page
     When I fill in "password" with "nonsense"
     When I press "Login" within "nav"
     Then I should see "Login"
     Then I should see "Username"
 
 Scenario: Username invalid 
-    Given I am on the homepage
+    Given I am on the "home" page
     When I fill in "username" with "nonsense"
     When I press "Submit" within "form"
     Then I should see "Login"
     Then I should see "Username incorrect."
+
+
+
+
+
+
+
+

@@ -4,30 +4,31 @@ module NavigationHelpers
 def path_to(page_name)
     case page_name
     
-        when /the admin-bookmarks page/
+        when /admin-bookmarks/
             "/admin/bookmarks"
-        when /the dashboard page/
+        when /dashboard/
+            puts "going to dashboard"
             "/dashboard"
-        when /the register page/
+        when /register/
             "/register"
-        when /the change-password page/
+        when /change-password/
             "/change-password"
-        when /the createbookmark page/
+        when /create-bookmark/
             "/createbookmark"
-        when /the admin-users page/
+        when /admin-users/
             "/admin/users"
-        when /the admin-audit page/
+        when /admin-audit/
             "/admin/audit"
-        when /the home\s?page/
+        when /home/
             '/'
-        when /the login page/
+        when /login/
             '/login'
-        when /the logout page/
+        when /logout/
             '/logout'
     else 
-        raise "Can't find mapping from \"#(page_name)\" to a path. \n" + 
-        
-    end   
+        raise "Can't find mapping from \"#(page_name)\" to a path. \n"
     end
 end
+end
+    
 World (NavigationHelpers)
