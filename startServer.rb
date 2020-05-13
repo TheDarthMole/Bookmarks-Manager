@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
 require 'openssl'
+include ERB::Util
 require_relative 'controller'
 
 set :bind, '0.0.0.0'
@@ -53,6 +54,21 @@ helpers do # functions used within erb files
     def check_admin(email)
         return @db.is_admin(@db.get_account_id(email))
     end
+
+    def add_to_audit_log(action)
+        return @db.add_to_admin_log(@db.get_account_id(session[:user]),action, params[:id].to_i)
+    end
+    def view_audit_log(page)
+        statement = @db.view_audit_log(page,10)
+        return statement
+    end
+    def total_audit_results
+        return @db.total_audit_results[0][0]
+    end
+
+    def can_user_do_action(action)
+        return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
+    end
 end
 
 get "/logout" do
@@ -89,24 +105,28 @@ end
 get "/admin/users/action/:id/upgrade" do
     adminauthenticate
     upgrade_account_to_user(params[:id])
+    add_to_audit_log("Upgrade to user")
     redirect "/admin/users"
 end
 
 get "/admin/users/action/:id/downgrade" do
     adminauthenticate
     downgrade_account_to_user(params[:id])
+    add_to_audit_log("downgrade to user")
     redirect "/admin/users"
 end
 
 get "/admin/users/action/:id/suspend" do
     adminauthenticate
     suspend_user(params[:id])
+    add_to_audit_log("Suspend user")
     redirect "/admin/users"
 end
 
 get "/admin/users/action/:id/unsuspend" do
     adminauthenticate
     unsuspend_user(params[:id])
+    add_to_audit_log("Unsuspend user")
     redirect "/admin/users"
 end
 
@@ -122,7 +142,7 @@ get "/dashboard" do
     authenticate
     params[:page] = 1
     if session[:lim].nil?
-        session[:lim] = 5
+        session[:lim] = 10
     end
     unless session[:reply]
         session[:reply] = nil
@@ -133,7 +153,7 @@ end
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], 5)
+    @bookmarks = get_bookmarks_page("", params[:page], 10)
     @total = get_total_items("")
     unless session[:reply]
         session[:reply] = nil
@@ -191,6 +211,15 @@ post "/login" do
         session[:loggedin] = true
         redirect "/dashboard"
     else
+        if @db.check_account_exists(params[:email].downcase)
+            if not @db.check_account_enabled(@db.get_account_id(params[:email].downcase))
+                session[:reply] = "Your account has been suspended"
+            else 
+                session[:reply] = "You have entered incorrect credentials, attempts remaining: " + (6 - @db.get_login_attempts(@db.get_account_id(params[:email])).to_i ).to_s
+            end
+        else
+            session[:reply] = "You have entered incorrect credentials"
+        end
         redirect "/login"
     end
 end
@@ -210,16 +239,18 @@ get "/register" do
 end
 
 post "/createbookmark" do
-    puts params
-    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]))
+    if  can_user_do_action("add") == 0 then redirect "/dashboard" end
+    authenticate
+    reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]), params[:tags])
     session[:reply] = reply
     redirect "/dashboard"
 end
 
 post "/register" do
     session[:reason] = nil
-    if params[:password] == params[:passwordrepeat] # Checks to make sure the
-        sqlresponse = @db.create_account(params[:email], params[:password], params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
+    if params[:password] == params[:passwordConfirm] # Checks to make sure the
+        sqlresponse = @db.create_account(params[:email], params[:password], 
+            params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
         if sqlresponse == "Successfully created account!"
             erb :login
         end

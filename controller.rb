@@ -56,42 +56,17 @@ class BookmarkDB
         return retStatemnt[0]
     end
 
-    def can_user_perform_action(user_ID,action,*bookmark_id)
+    def can_user_perform_action(user_ID,action)
         #pulls user_id role
         role = get_user_role_ID(user_ID)
         #Checks if user can add bookmarks
-        if action == "add"
-            add_to_admin_log(user_ID,action,bookmark_id)
-            return @db.execute("SELECT can_add FROM permissions WHERE permission_id=?",role)
+        hashmap = {"add" => "can_add", "edit" => "can_edit", "create" => "can_create", "manage" => "can_manage", "create_admin" => "can_create_admin", "upgrade_guest" => "can_upgrade_guest"}
+        if hashmap.key? action # If the user entered a valid action
+            statement = "SELECT #{hashmap[action]} FROM permissions WHERE permission_id = ?"
+            if @db.execute(statement, role)[0][0] == 1
+                return true
+            end
         end
-        #checks if user can edit
-        if action == "edit"
-            add_to_admin_log(user_ID,action,bookmark_id)
-            return @db.execute("SELECT can_edit FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can create
-        if action == "create"
-            add_to_admin_log(user_ID,action)
-            return @db.execute("SELECT can_create FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can manage
-        if action == "manage"
-            add_to_admin_log(user_ID,action)
-            return @db.execute("SELECT can_manage FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can create_admin
-        if action == "create_admin"
-            add_to_admin_log(user_ID,action)
-            return @db.execute("SELECT can_create_admin FROM permissions WHERE permission_id=?",role)
-        end
-        #checks if user can upgrade_guest
-        if action == "upgrade_guest"
-            add_to_admin_log(user_ID,action)
-            return @db.execute("SELECT can_upgrade_guest FROM permissions WHERE permission_id=?",role)
-        end
-
-        add_to_admin_log(user_ID,"NO WORKABLE ACTION")
-        p "NO WORKABLE ACTION"
         return false
     end
 
@@ -106,16 +81,29 @@ class BookmarkDB
             return false
         end
         email = email.downcase
+        
         if check_account_exists(email)
+            account_id = get_account_id(email)
+            unless check_account_enabled(account_id)
+                increment_login_attempts(account_id)
+                return false
+            end
+            if get_login_attempts(account_id).to_i > 4
+                suspend_user(account_id, "Login Attempts")
+                return false
+            end
             statement = "SELECT password, salt FROM users WHERE email = ?"
             retStatement = @db.execute(statement, email)[0]
             if not password or not email
+                increment_login_attempts(account_id)
                 return false
             end
             hash = generate_hash(password,salt=retStatement[1])
             if hash[0] == retStatement[0]
+                reset_login_attempts(account_id)
                 return true
             end
+            increment_login_attempts(account_id)
             return false
         end
         return false
@@ -147,12 +135,13 @@ class BookmarkDB
         return "Account with that email already exists!"
     end
     
-    def upgrade_account_to_admin(email)
-        if check_account_exists(email)
-            statement = "UPDATE users SET role = 2 WHERE email = ?"
-            @db.execute statement, email
+    def upgrade_account_to_admin(userID)
+        z = get_user_role_ID(userID)
+        if z[0] == 3
+            statement = "UPDATE users SET role = 2 WHERE user_id = ?"
+            @db.execute statement, userID
         else
-            puts "Error upgrading #{email} to admin"
+            puts "Error upgrading #{userID} to admin"
         end
     end
 
@@ -171,14 +160,20 @@ class BookmarkDB
         if z[0] == 3
             statement = "UPDATE users SET role = 1 WHERE user_id = ?"
             @db.execute statement, userID
+            
         else
             puts "Error upgrading #{userID} to guest"
         end
     end
-    def suspend_user(userID)
+    def suspend_user(userID, *reason)
         if check_account_enabled(userID)
             statement = "UPDATE users SET enabled = 0 WHERE user_id = ?"
             @db.execute statement, userID
+            if reason[0]
+                add_to_admin_log(userID, "Account Suspended: "+ reason[0])
+            else
+                add_to_admin_log(userID, "Account Suspended")
+            end
         else
             puts "Error suspend #{userID}"
         end
@@ -187,6 +182,7 @@ class BookmarkDB
         if not check_account_enabled(userID)
             statement = "UPDATE users SET enabled = 1 WHERE user_id = ?"
             @db.execute statement, userID
+            reset_login_attempts(userID)
         else
             puts "Error suspend #{userID}"
         end
@@ -210,10 +206,28 @@ class BookmarkDB
         return "Incorrect old password"
     end
     
+    def set_password(user_id, new_password) # For admin use
+        hash = generate_hash(new_password,salt="")
+        statement = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?"
+        @db.execute statement, hash[0], hash[1], user_id
+        return "Successful"
+    end
+    
     def get_login_attempts(user_id)
         statement = "SELECT login_attempts FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, user_id
-        return retStatement[0]
+        return retStatement[0][0]
+    end
+    
+    def increment_login_attempts(user_id)
+        current_attempts = get_login_attempts(user_id)
+        statement = "UPDATE users SET login_attempts = ? WHERE user_id = ?"
+        @db.execute statement, current_attempts + 1, user_id
+    end
+    
+    def reset_login_attempts(user_id)
+        statement = "UPDATE users SET login_attempts = 0 WHERE user_id = ?"
+        @db.execute statement, user_id
     end
     
     def display_users_all
@@ -257,18 +271,24 @@ class BookmarkDB
     #Audit_log
     #
 
-    def add_to_admin_log(user_id,action,*bookmark_id)
-        if bookmark_id == nil
-            bookmark_id = 0
+    def add_to_admin_log(user_id,action,*affect_id)
+        if affect_id[0] == nil
+            affect_id = 0
         end
         statement = "INSERT INTO audit_log(user_id,bookmark_id,time,action) VALUES(?,?,?,?)"
         time = @time.strftime("%s")
-        @db.execute(statement,user_id,bookmark_id,time,action)
+        @db.execute(statement,user_id,affect_id,time,action)
     end
 
     def view_audit_log(page,limit)
+        page = ((page.to_i) - 1) * limit.to_i
         statement = "SELECT * FROM audit_log LIMIT ?,?"
         return @db.execute(statement,page,limit)
+    end
+
+    def total_audit_results
+        statement = "SELECT COUNT(*) FROM audit_log"
+        return @db.execute(statement)
     end
 
 
@@ -291,14 +311,10 @@ class BookmarkDB
         unless plain_text_check(tag_name,30)
             return "too long tag name"
         end
-        #check if tag exists
-        if not get_tag_id(tag_name)
-            @db.execute("INSERT INTO tags(name) VALUES (?)", tag_name)
-        end
-        tag_id = get_tag_id(tag_name)
-        statement = "INSERT INTO bookmark_tags (?,?)"
-        retStatement = @db.execute statement, tag_id, bookmark_id
-        return retStatement
+        statement = "INSERT INTO tags (name) SELECT ? WHERE NOT EXISTS (SELECT * FROM tags WHERE name = ?)"
+        @db.execute statement, tag_name, tag_name
+        statement = "INSERT INTO bookmark_tags (bookmark_id, tag_id) VALUES (?, (SELECT tag_id FROM tags WHERE name = ?) )"
+        @db.execute statement, bookmark_id, tag_name
     end
 
 
@@ -423,7 +439,7 @@ class BookmarkDB
 =end
 
     #BOOKMAKRS
-    def add_bookmark(bookmarkName, url, owner_id)
+    def add_bookmark(bookmarkName, url, owner_id, *tags)
         unless plain_text_check(bookmarkName)
             return "Please use less than 30 characters"
         end
@@ -436,21 +452,39 @@ class BookmarkDB
         unless plain_text_check(url, 150)
             return "URL too long, please make less than 150 characters"
         end
+        unless tags[0]
+            unless plain_text_check(tags, 50)
+                return "Please enter tags below 50 characters"
+            end
+        end
         url = url.downcase
         currentTime = @time.strftime("%s")
         statement = "INSERT INTO bookmarks (bookmark_name, url, owner_id, creation_time, enabled) VALUES (?,?,?,?,1)"
         @db.execute statement, bookmarkName, url, owner_id, currentTime
+        bookmark_id = @db.execute "SELECT bookmark_id FROM bookmarks WHERE url = ?", url
+        if tags[0][0]
+            tags_split = tags[0].downcase.split(" ")
+            begin
+                tags_split.each do |tag|
+                    add_tag_bookmark(tag, bookmark_id[0][0])
+                end
+            rescue
+                $stderr.print
+                puts "Something went wrong when creating bookmark with tags: #{tags_split} and bookmark id #{bookmark_id[0][0]}"
+                return "Something went wrong!"
+            end
+        end
+        
         return "Successfully added bookmark!"
     end
+
 
     def check_if_exists(url)
         statement="SELECT bookmark_name,url FROM bookmarks WHERE url=?"
         retStatment = @db.execute(statement,url)
         if retStatment[0] == nil
-            p url+ " no exist"
             return false
         end
-        p url + " exists"
         return true
     end
     
@@ -482,36 +516,6 @@ class BookmarkDB
         return @db.execute statement, owner_id
     end
 
-
-
-=begin
-    def add_sample_data
-        add_bookmark("Facebook","https://facebook.com",1)
-        add_bookmark("Instagram","https://instagram.com",1)
-        add_bookmark("Reddit","https://reddit.com",1)
-        add_bookmark("Messenger","https://messenger.com",1)
-        add_bookmark("Youtube","https://youtube.com",1)
-        add_bookmark("Google","https://google.com",1)
-        add_bookmark("Github","https://github.com",1)
-        db.create_account("Nick","Password","Nick","Ruffles","nruffles1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Nick")
-
-        db.create_account("Jake","Password","Jake","Robison","jrobison1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Jake")
-
-        db.create_account("Anna","Password","Anna","Penny","afpenny1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Anna")
-
-        db.create_account("Stan","Password","Stanislaw","Malinowski","smmalinowski1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Stan")
-
-        db.create_account("Abdul","Password","Abdulrahman","AlTerkait","aalterkait1@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Abdul")
-
-        db.create_account("Lujain","Password","Lujain","Hawsawi","lhawsawi2@sheffield.ac.uk")
-        db.upgrade_account_to_admin("Lujain")
-    end
-=end
 
     #SECURITY
     def generate_hash(password, salt="")
@@ -587,3 +591,7 @@ end
 # This section is for testing the database
 
 db = BookmarkDB.new
+(1..6).each do |account| # Makes sure admins can always login
+    db.unsuspend_user(account)
+#     db.set_password(account,"Password1!")
+end

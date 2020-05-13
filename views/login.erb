@@ -4,7 +4,7 @@
 <!-- Avoiding Duplication -->
     
     <%= erb :headinclude, :locals => {:title => "Acme corp - Login"}%>
-
+<!--     <link rel="stylesheet" href="/css/login.css" /> -->
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
@@ -39,12 +39,12 @@
                     <h1 class="text-info mb-4">
                         <i class="far fa-bookmark"></i> Acme corp
                     </h1>
-                    <% if session[:reason] %>
-                    <div class="alert alert-success" role="alert">
-                      <%= session[:reason] %>
+                    <% if session[:reply] %>
+                    <div class="alert alert-<%= if session[:reply].include? 'suspended' then 'danger' else 'warning' end %>" role="alert">
+                      <%= h session[:reply] %>
                     </div>
                     <% end %>
-                    <% session[:reason] = nil %>
+                    <% session[:reply] = nil %>
                     <div class="form-group">
                         <label for="">Email Address<span class="text-danger">*</span></label>
                         <input name="email" type="text" class="form-control" placeholder="john@doe.com" />
