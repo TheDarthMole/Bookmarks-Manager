@@ -12,6 +12,8 @@ class BookmarkDB
     def check_account_enabled(userid)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, userid
+        p userid
+        p retStatement
         if retStatement[0][0] == 1
             return true
         else
@@ -184,7 +186,7 @@ class BookmarkDB
             @db.execute statement, userID
             reset_login_attempts(userID)
         else
-            puts "Error suspend #{userID}"
+            puts "Error unsuspend, not suspended #{userID}"
         end
     end
     def change_password(email, oldPassword, newPassword, newPasswordCheck)
@@ -351,13 +353,14 @@ class BookmarkDB
         return sql[0][0]
     end
 
-    def sort_asc(term,page,results,asc)
+
+    def sort_asc(term,page,results)
         page = page.to_i
         results = results.to_i
         i_min = (page-1)*results
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,? ORDER BY bookmarks.bookmark_name ?"
-        sql = @db.execute retStatment,search,search,search,i_min,results,asc
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? ORDER BY bookmarks.bookmark_name ASC LIMIT ?,?"
+        sql = @db.execute retStatment,search,search,search,page,results
         #Adds the tags into results
         i_max = sql.length
         i_min = 0
@@ -367,7 +370,24 @@ class BookmarkDB
         end
         return sql
     end
-    
+
+    def sort_desc(term,page,results)
+        page = page.to_i
+        results = results.to_i
+        i_min = (page-1)*results
+        search = '%'+term+'%'
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? ORDER BY bookmarks.bookmark_name DESC LIMIT ?,?"
+        sql = @db.execute retStatment,search,search,search,page,results
+        #Adds the tags into results
+        i_max = sql.length
+        i_min = 0
+        while i_min != i_max
+            sql[i_min].append(get_bookmark_tags(sql[i_min][0]))
+            i_min= 1 + i_min
+        end
+        return sql
+    end
+
     #Uses bookmark_id to pull tag_names
     def get_bookmark_tags(bookmark_id)
         retStatment = "SELECT tags.name FROM tags,bookmark_tags WHERE bookmark_ID = ? AND tags.tag_id=bookmark_tags.tag_ID"
@@ -613,4 +633,6 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
-p db.sort_asc("g",1,10,"ASC")
+p db.sort_asc(".com",1,10)
+p "------------------"
+p db.sort_desc(".com",1,10)
