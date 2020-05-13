@@ -26,6 +26,12 @@ When /^(?:I) check "([^\"]*)"?$/ do |field|
     check(field)
 end
 
+When /^(?:I) pick "([^\"]*)" within "([^\"]*)"?$/ do |value, selector|
+    with_scope(selector) do
+        find("option[value='value'']").click
+    end
+end
+
             
 #when I press
 #generally login or submit
