@@ -1,5 +1,5 @@
 <head>
-    <title><%= title %></title>
+    <title><%= h title %></title>
     <!-- Required meta tags -->
     <meta name="description" content="Bookmark application" />
     <meta charset="utf-8" />
@@ -16,4 +16,9 @@
 
     <!-- Stylesheet CSS -->
     <link rel="stylesheet" href="/css/style.min.css" />
+    
+  <% if title == "Reset Password | Acme corp" %>
+    <!-- Password Reset CSS -->
+    <link rel="stylesheet" href="/css/changePassword.css" />
+  <% end %>
 </head>
