@@ -3,8 +3,8 @@
 
 <!-- Avoiding Duplication -->
 
-    <%= erb :headinclude, :locals => {:title => "Register"} %>
-<!--     <link rel="stylesheet" href="/css/register.css" /> -->
+    <%= erb :headinclude, :locals => {:title => "Acme corp - Register"} %>
+    <link rel="stylesheet" href="/css/changePassword.css" />
 
 <body>
     <!-- Navbar -->
@@ -116,7 +116,7 @@
                     <!-- Security Question Answer Input -->
                     <div class="form-group">
                         <label for="answer">Security Answer</label>
-                        <input name="answer" type="password" class="form-control" id="answer" placeholder="Answer"/>
+                        <input name="answer" class="form-control" id="answer" placeholder="Answer"/>
 						<i class="fas fa-check-circle"></i>
 						<i class="fas fa-exclamation-circle"></i>
                         <small></small>
