@@ -26,6 +26,7 @@ Scenario: Link name is too long
 #"URL already added"
 
 
+#URL
 Scenario: Link URl empty
 
 
@@ -48,6 +49,8 @@ Scenario: Link URL not valid
 Scenario: Null input
 
 
+
+#tags
 Scenario: Link has no tags
 
 
@@ -58,8 +61,6 @@ Scenario: Link tags do not match the preset
 
 
 Scenario: Link tags field has uneven number of "#s"
-
-
 
 
 Scenario: Tag input is null / nil / 0
