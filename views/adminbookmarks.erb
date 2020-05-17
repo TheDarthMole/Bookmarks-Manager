@@ -177,6 +177,23 @@
         </div>
     </div>
     
+    <div class="modal" tabindex="-1" role="dialog" id="rate-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rate Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="">RATE BOOKMARK</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
     <!-- dashboard section -->
     <section class="dashboard-section container py-5">
         <div class="saved-bookmarks">
@@ -234,7 +251,7 @@
                                 <td>
                                     <a href="<%= h item[2] %>" target="blank"><%= h item[2] %></a>
                                 </td>
-                                <td width="150">
+                                <td width="200">
                                     <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
                                         <i class="fa fa-pencil-alt"></i>
                                     </a>
@@ -243,6 +260,9 @@
                                     </a>
                                     <a href="" data-toggle="modal" data-target="#report-bookmark">
                                         <i class="fa fa-flag"></i>
+                                    </a>
+                                    <a href="" data-toggle="modal" data-target="#rate-bookmark">
+                                        <i class="fa fa-star"></i>
                                     </a>
                                 </td>
                             </tr>
