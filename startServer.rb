@@ -130,6 +130,14 @@ get "/admin/users/action/:id/unsuspend" do
     redirect "/admin/users"
 end
 
+######
+get "/about" do
+    erb :about
+end 
+
+
+######
+
 get "/" do
     erb :index
 end
