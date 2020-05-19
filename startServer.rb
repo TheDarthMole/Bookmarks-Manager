@@ -33,6 +33,10 @@ helpers do # functions used within erb files
         statement = @db.total_user(perm,enabled)
         return statement
     end
+    def upgrade_account_to_admin(id)
+        id = id.to_i
+        return @db.upgrade_account_to_admin(id)
+    end
     def upgrade_account_to_user(id)
         id = id.to_i
         return @db.upgrade_account_to_user(id)
@@ -59,7 +63,7 @@ helpers do # functions used within erb files
         return @db.add_to_admin_log(@db.get_account_id(session[:user]),action, params[:id].to_i)
     end
     def view_audit_log(page)
-        statement = @db.view_audit_log(page,10)
+        statement = @db.view_audit_log(page,1000)
         return statement
     end
     def total_audit_results
@@ -68,6 +72,31 @@ helpers do # functions used within erb files
 
     def can_user_do_action(action)
         return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
+    end
+
+    #SHOW comments FOR ID
+    def show_comment(bookmark_id,page,limit)
+        bookmark_id = bookmark_id.to_i
+        page = page.to_i
+        limit = limit.to_i
+        return @db.get_comments_for_bookmark(bookmark_id, page,limit)
+    end
+    #SHOW DISABLED COMMENTS
+    def view_disabled_comment(page)
+        page = page.to_i
+        return @db.get_comments_for_bookmark("*",page,10)
+    end
+
+    #ENABLE COMMENT
+    def enable_comment(id)
+        id = id.to_i
+        return @db.enable_disable_comment(id,1)
+    end
+
+    #DISABLE COMMENT
+    def disable_comment(id)
+        id = id.to_i
+        return @db.enable_disable_comment(id,0)
     end
 end
 
@@ -114,6 +143,13 @@ get "/admin/users/action/:id/downgrade" do
     downgrade_account_to_user(params[:id])
     add_to_audit_log("downgrade to user")
     redirect "/admin/users"
+end
+
+get "/admin/users/action/:id/toadmin" do
+  adminauthenticate
+  upgrade_account_to_admin(params[:id])
+  add_to_audit_log("Upgrade to admin")
+  redirect "/admin/users"
 end
 
 get "/admin/users/action/:id/suspend" do
@@ -236,6 +272,19 @@ end
 
 get "/register" do
     erb :register
+end
+
+#COMMENTS SECTION
+get "/admin/audit/comments" do
+    adminauthenticate
+    erb :admincomments
+end
+
+get "/admin/comments/action/:id/show" do
+  adminauthenticate
+  enable_comment(params[:id])
+  add_to_audit_log("Re-enable comment")
+  redirect "/admin/audit/comments"
 end
 
 post "/createbookmark" do
