@@ -671,13 +671,18 @@ class BookmarkDB
 
     def get_bookmark_reports(page, per_page)
         i_min = (page.to_i - 1) * per_page.to_i
-        statement ="SELECT reporting_bookmarks.bookmark_id,user_id,bookmarks.bookmark_name FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id LIMIT ?,?"
+        statement = "SELECT reporting_bookmarks.bookmark_id,user_id,bookmarks.bookmark_name FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id LIMIT ?,?"
         return @db.execute statement, i_min, per_page
     end
 
     def report_comment(comment_id, user_id, reason_id)
         statement = "REPLACE INTO reporting_comments (user_id, comment_id, reason_id) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM reporting_comments WHERE user_id = ? AND comment_id = ? LIMIT 1)"
-        @db.execute statement, user_id, comment_id, reason_id, user_id, bookmark_id
+        @db.execute statement, user_id, comment_id, reason_id, user_id, comment_id
+    end
+
+    def remove_report_comment(comment_id, user_id)
+        statement = "DELETE FROM reporting_bookmarks WHERE comment_id = ? AND user_id = ?"
+        @db.execute statement, comment_id, user_id, reason_id
     end
     
 end
@@ -689,8 +694,3 @@ db = BookmarkDB.new
     db.unsuspend_user(account)
 #     db.set_password(account,"Password1!")
 end
-
-p db.add_comment(1,3,"Hello smelly comment")
-p db.get_comments_for_bookmark(1,1,10)
-p db.enable_disable_comment(1,0)
-p db.get_comments_for_bookmark("*",1,10)
