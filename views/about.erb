@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <!-- Header -->
+    <%= erb :headinclude, :locals => {:title => "About"} %>
+    
+    <body>
+        
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp<span class="sr-only">(Current)</span></a>
+                
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav ml-lg-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about">ABOUT</a>
+                        </li>
+                       <li class="nav-item">
+                           <a class="nav-link" href="#">CONTACT</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">GUEST</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">
+                                <button class="btn btn-outline-light">
+                                    LOGIN
+                                </button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">
+                                <button class="btn btn-light">
+                                    REGISTER
+                                </button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="page-header">
+            <h1>About the Acme Corp Bookmark Web Application !!PLACEHOLDER!!</h1>
+        </div>
+        
+        <%= erb :footer %>
+        
+    </body>
+</html>
