@@ -244,9 +244,7 @@ end
 
 get "/reportBookmark/:id" do
     authenticate
-    p @db.exec("SELECT * FROM reporting_bookmarks")
     @db.report_bookmark(params[:id], @db.get_account_id(session[:user]), 10)
-    p @db.exec("SELECT * FROM reporting_bookmarks")
     redirect back
 end
 

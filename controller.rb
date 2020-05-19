@@ -337,7 +337,6 @@ class BookmarkDB
             sql[i_min].append(get_bookmark_tags(sql[i_min][0]))
             i_min= 1 + i_min
         end
-        p sql
         return sql
     end
     
