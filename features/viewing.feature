@@ -3,6 +3,7 @@ Feature: view
 
 Scenario: No boxes selected
 
+#I guess not needed
 
 Scenario: Invalid date format entered
 #where can I find date in dashboard.erb?

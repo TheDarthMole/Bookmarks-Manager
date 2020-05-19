@@ -12,13 +12,12 @@ class BookmarkDB
     def check_account_enabled(userid)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, userid
-        p userid
-        p retStatement
-        if retStatement[0][0] == 1
-            return true
-        else
-            return false
+        if retStatement[0] != nil
+            if retStatement[0][0] == 1
+                return true
+            end
         end
+        return false
     end
 
     def is_admin(accountID)
@@ -148,13 +147,8 @@ class BookmarkDB
     end
 
     def upgrade_account_to_user(userID)
-        z = get_user_role_ID(userID)
-        if z[0] == 1
             statement = "UPDATE users SET role = 3 WHERE user_id = ?"
-            @db.execute statement, userID
-        else
-            puts "Error upgrading #{userID} to admin"
-        end
+            return @db.execute statement, userID
     end
 
     def downgrade_account_to_user(userID)
@@ -350,6 +344,7 @@ class BookmarkDB
         term = '%'+search+'%'
         retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?"
         sql = @db.execute retStatment, term, term, term
+
         return sql[0][0]
     end
 
@@ -394,24 +389,27 @@ class BookmarkDB
         return @db.execute(retStatment,bookmark_id)
     end
 
-    def get_user_favourites(user_id,page,limit)
-        page = page.to_i
-        limit = limit.to_i
-        user_id = user_id.to_i
+    #FAVS
+    def get_user_favourites(user_id,x,y)
+        statement = "SELECT bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM favourites, bookmarks WHERE favourites.user_id =? AND favourites.bookmark_id = bookmarks.bookmark_id"
+        return @db.execute(statement,user_id)
+    end
 
-        statement = "SELECT bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM favourites, bookmarks WHERE favourites.user_id =? AND favourites.bookmark_id = bookmarks.bookmark_id LIMIT ?,?"
-        return @db.execute(statement,user_id,page,limit)
+    def is_user_favourite(user_id,bookmark_id)
+        statement = "SELECT favourite_id FROM favourites WHERE user_id=? AND bookmark_id=?"
+        reStatement = @db.execute statement,user_id,bookmark_id
+        if reStatement[0] != nil
+            return true
+        end
+        return false
     end
 
     def add_favourite(user_id, bookmark_id)
-        user_id = user_id.to_i
-        bookmark_id = bookmark_id.to_i
         statement = "INSERT INTO favourites(user_id,bookmark_id) VALUES(?,?)"
         return @db.execute(statement,user_id,bookmark_id)
     end
 
     def remove_favourite(user_id,bookmark_id)
-        user_id = user_id.to_i
         bookmark_id = bookmark_id.to_i
         statement = "DELETE FROM favourites WHERE user_id=? AND bookmark_id =?"
         return @db.execute(statement,user_id,bookmark_id)
@@ -543,11 +541,16 @@ class BookmarkDB
         @db.execute statement, bookmark_name,url,currentTime,bookmark_id
     end
 
-    def remove_bookmark(bookmark_id)
-        statement = "DELETE FROM database WHERE bookmark_id =? "
+    def disable_bookmark(bookmark_id)
+        statement = "UPDATE bookmarks SET enabled = 0 WHERE bookmark_id = ?"
         @db.execute statement, bookmark_id
     end
 
+    def enable_bookmark(bookmark_id)
+        statement = "UPDATE bookmarks SET enabled = 1 WHERE bookmark_id = ?"
+        @db.execute statement, bookmark_id
+    end
+        
     def get_user_bookmark(owner_id)
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE owner_id=?"
         return @db.execute statement, owner_id
@@ -609,10 +612,11 @@ class BookmarkDB
         return false
     end
 
+    #checks length on input name, default 30 chars
     def plain_text_check(name, *length) # Optional argument length to check for
         lengthcheck = unless length[0].nil? then length[0] else 30 end
         if name.length > lengthcheck
-            puts "long name"
+            puts "Too long "
             return false
         end
 
@@ -622,6 +626,68 @@ class BookmarkDB
         return false
     end
 
+    #
+    #
+    # Commenting
+    #
+    #
+
+    def add_comment(user_id, bookmark_id, comment)
+        if (plain_text_check(comment,500))
+            statement = "INSERT INTO comments (user_id, bookmark_id, text) VALUES (?,?,?)"
+            @db.execute(statement, user_id, bookmark_id, comment)
+            return "Added comment"
+        end
+        return "Comment too long"
+    end
+
+    #User "*" to get disabled and then the bookmark_id
+    def get_comments_for_bookmark(bookmark_id, page, limit)
+        i_min = (page.to_i - 1) * limit.to_i
+        if bookmark_id == "*"
+            statement ="SELECT comments.user_id,comments.comment_id,comments.text,comments.bookmark_id,bookmarks.bookmark_name FROM comments,bookmarks WHERE comments.enabled = 0 AND bookmarks.bookmark_id=comments.bookmark_id LIMIT ?,?"
+            retStatement = @db.execute statement,i_min,limit
+        else
+            statement = "SELECT user_id,comment_id,text FROM comments WHERE bookmark_id=? AND enabled = 1 LIMIT ?,?"
+            retStatement = @db.execute statement,bookmark_id,i_min,limit
+        end
+        return retStatement
+    end
+
+    #Set comment to be disable or disabled
+    def enable_disable_comment(comment_id,enable)
+        statement = "UPDATE comments SET enabled = ? WHERE comment_id = ?"
+        return @db.execute statement, enable, comment_id
+    end
+
+
+    # Reporting
+    
+    def report_bookmark(bookmark_id, user_id, reason_id)
+        statement = "REPLACE INTO reporting_bookmarks (user_id, bookmark_id, reason_id) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM reporting_bookmarks WHERE user_id = ? AND bookmark_id = ? LIMIT 1)"
+        @db.execute statement, user_id, bookmark_id, reason_id, user_id, bookmark_id
+    end
+
+    def remove_report_bookmark(bookmark_id, user_id, reason_id)
+        statement = "DELETE FROM reporting_bookmarks WHERE bookmark_id = ? AND user_id = ? AND reason_id = ?"
+        @db.execute statement, bookmark_id, user_id, reason_id
+    end
+
+    def get_bookmark_reports(page, per_page)
+        i_min = (page.to_i - 1) * per_page.to_i
+        statement = "SELECT reporting_bookmarks.bookmark_id,user_id,bookmarks.bookmark_name FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id LIMIT ?,?"
+        return @db.execute statement, i_min, per_page
+    end
+
+    def report_comment(comment_id, user_id, reason_id)
+        statement = "REPLACE INTO reporting_comments (user_id, comment_id, reason_id) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM reporting_comments WHERE user_id = ? AND comment_id = ? LIMIT 1)"
+        @db.execute statement, user_id, comment_id, reason_id, user_id, comment_id
+    end
+
+    def remove_report_comment(comment_id, user_id)
+        statement = "DELETE FROM reporting_bookmarks WHERE comment_id = ? AND user_id = ?"
+        @db.execute statement, comment_id, user_id, reason_id
+    end
     
 end
 
@@ -633,6 +699,3 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
-p db.sort_asc(".com",1,10)
-p "------------------"
-p db.sort_desc(".com",1,10)

@@ -3,7 +3,7 @@
 
 <!--Avoiding Duplicated code -->
 
-<%= erb :headinclude, :locals => {:title => "Bookmarks"} %>
+<%= erb :headinclude, :locals => {:title => "Acme corp - Bookmarks"} %>
 
 <body>
 <!-- Navbar -->
@@ -12,28 +12,7 @@
 
 <!-- modal-section -->
 <% if can_user_do_action("edit") == true %>
-    
-    <!-- REPORT TAG -->
-  <div class="modal" tabindex="-1" role="dialog" id="report-bookmark">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" method="post" action="/reportbookmark">
-            <div class="modal-header">
-                <h5 class="modal-title">Report Bookmark</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="title">COMMENTS</label>
-                    <input name="title" type="text" class="form-control" placeholder="Reason for reporting" required/>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-    
   <div class="modal" tabindex="-1" role="dialog" id="add-bookmark">
     <div class="modal-dialog" role="document">
       <form class="modal-content" method="post" action="/createbookmark">
@@ -166,40 +145,16 @@
       </form>
     </div>
   </div>
-    
-    
 <% end %>
 <!-- dashboard section -->
 <section class="dashboard-section container py-5">
   <div>
-    <form class="input-group mb-3" action="/dashboard" method="post">
-      <% if params[:searchterm] == nil %>
-        <input name="searchterm" type="search" class="form-control" placeholder="Search bookmark" />
-      <%else %>
-        <input name="searchterm" type="search" class="form-control" value="<%= params[:searchterm] %>"  />
-      <%end %>
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="submit">
-          Search
-        </button>
-      </div>
-    </form>
-  </div>
-  <div class="mb-5">
-    <p class="font-sm">
-      You haven't saved anything yet, favourite a bookmark to make it appear here
-    </p>
   </div>
 
   <div class="saved-bookmarks">
 
     <div class="d-flex justify-content-between mb-3">
-      <h4>Bookmarks</h4>
-      <% if can_user_do_action("add") == true %>
-        <button class="btn btn-info" data-toggle="modal" data-target="#add-bookmark">
-          ADD NEW
-        </button>
-      <% end %>
+      <h4>Favourites</h4>
     </div>
     <div class="table-responsive">
       <table class="table table-bookmark">
@@ -219,13 +174,14 @@
           <% books = @bookmarks %>
           <% total = @total %>
         <% else %>
-          <% books = get_bookmarks_page("", params[:page], 10) %>
+          <% books = get_user_favourites() %>
           <% total = get_total_items("") %>
         <% end %>
         <% total = total.to_i %>
         <% cubes = (total/session[:lim].to_f).ceil %>
-
+        <% i = 0 %>
         <% books.each do |item| %>
+       <% i = i+1 %>
           <tr>
             <td>
               <% if is_user_fav(item[0])  %>
@@ -233,11 +189,11 @@
                   <path fill-rule="evenodd" d="M13.665 6.113a1 1 0 01-.667-.977L13 5a4 4 0 00-6.483-3.136 1 1 0 01-.8.2 4 4 0 00-3.693 6.61 1 1 0 01.2 1 4 4 0 006.67 4.087 1 1 0 011.262-.152 2.5 2.5 0 003.715-2.905 1 1 0 01.341-1.113 2.001 2.001 0 00-.547-3.478zM14 5c0 .057 0 .113-.003.17a3.001 3.001 0 01.822 5.216 3.5 3.5 0 01-5.201 4.065 5 5 0 01-8.336-5.109A5 5 0 015.896 1.08 5 5 0 0114 5z" clip-rule="evenodd"/>
                   <circle cx="8" cy="8" r="3"/>
                 </svg></a>
-                <%else%>
-                  <a href="/favourite/<%= item[0] %>"><svg class="bi bi-egg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M8 15a5 5 0 005-5c0-1.956-.69-4.286-1.742-6.12-.524-.913-1.112-1.658-1.704-2.164C8.956 1.206 8.428 1 8 1c-.428 0-.956.206-1.554.716-.592.506-1.18 1.251-1.704 2.164C3.69 5.714 3 8.044 3 10a5 5 0 005 5zm0 1a6 6 0 006-6c0-4.314-3-10-6-10S2 5.686 2 10a6 6 0 006 6z" clip-rule="evenodd"/>
-                  </svg></a>
-                <% end %>
+              <%else%>
+                <a href="/favourite/<%= item[0] %>"><svg class="bi bi-egg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M8 15a5 5 0 005-5c0-1.956-.69-4.286-1.742-6.12-.524-.913-1.112-1.658-1.704-2.164C8.956 1.206 8.428 1 8 1c-.428 0-.956.206-1.554.716-.592.506-1.18 1.251-1.704 2.164C3.69 5.714 3 8.044 3 10a5 5 0 005 5zm0 1a6 6 0 006-6c0-4.314-3-10-6-10S2 5.686 2 10a6 6 0 006 6z" clip-rule="evenodd"/>
+                </svg></a>
+              <% end %>
             </td>
             <td>
               <a href="<%= h item[2] %>"><%= h item[1]%></a>
@@ -269,31 +225,6 @@
         </tbody>
       </table>
     </div>
-    <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-      <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
-        <%= if x <= total && x!=0 then x else 10 end %> <%= if x > total then total end %> of <%= total %></p>
-      <ul class="pagination mb-md-0">
-        <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
-          <a class="page-link" href="/dashboard/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
-        </li>
-        <!--                    <li class="page-item active">
-                                <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
-                            </li> -->
-        <% [*1..cubes].each do |item| %>
-          <li class="page-item <%= if params[:page].to_i == item then 'active' else '' end %>">
-            <a class="page-link" href="/dashboard/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %>"><%= item %>
-              <% if params[:page].to_i %>
-                <span class="sr-only">(current)</span>
-              <% end %>
-            </a>
-          </li>
-        <% end %>
-        <!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
-        <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
-          <a class="page-link" href="/dashboard/<%= (params[:page].to_i + 1) %>/<%= h session[:lim] %>/<%= params[:searchterm] %>">Next</a>
-        </li>
-      </ul>
-    </nav>
   </div>
 </section>
 
