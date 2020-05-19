@@ -230,7 +230,7 @@
                             <% books = @bookmarks %>
                             <% total = @total %>
                         <% else %>
-                            <% books = get_bookmarks_page("", params[:page], 5) %>
+                            <% books = get_bookmarks_page("", params[:page], 10) %>
                             <% total = get_total_items("") %>
                         <% end %>
                         <% total = total.to_i %>

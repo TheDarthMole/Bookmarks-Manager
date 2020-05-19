@@ -5,7 +5,9 @@
     <%= erb :headinclude, :locals => {:title => "Contact"} %>
     
     <body>
-        
+    <% if session[:user] %>
+      <%= erb :header  %>
+    <% else %>
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
             <div class="container">
@@ -45,7 +47,7 @@
                 </div>
             </div>
         </nav>
-       
+       <% end %>
         
         <!--BODY CONTENT -->
         <section class="features-section container py-5">
