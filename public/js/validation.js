@@ -71,8 +71,8 @@ function inputValid() {
 	if(usernameValue === '') {
 		setErrorFor(username, 'Username cannot be blank');
 	}
-	else if (usernameValue.length < 5 || usernameValue.length > 20 ) {
-		setErrorFor(username, 'Username character must be 5 to 20 character');
+	else if (usernameValue.length < 5 || usernameValue.length > 50 ) {
+		setErrorFor(username, 'Username character must be 5 to 50 characters');
 	}
 	else {
 		setValidFor(username);
@@ -127,8 +127,8 @@ function inputValid() {
 	if(answerValue === '') {
 		setErrorFor(answer, 'Answer cannot be blank');
 	}
-	else if (answerValue.length < 5 || answerlength > 25 ) {
-		setErrorFor(answer, 'Answer must be 5 to 25 character');
+	else if (answerValue.length < 5 || answerlength > 50 ) {
+		setErrorFor(answer, 'Answer must be 5 to 50 characters');
 	}
 	else {
 		setValidFor(answer);
