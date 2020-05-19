@@ -12,13 +12,12 @@ class BookmarkDB
     def check_account_enabled(userid)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, userid
-        p userid
-        p retStatement
-        if retStatement[0][0] == 1
-            return true
-        else
-            return false
+        if retStatement[0] != nil
+            if retStatement[0][0] == 1
+                return true
+            end
         end
+            return false
     end
 
     def is_admin(accountID)
