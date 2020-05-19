@@ -537,11 +537,16 @@ class BookmarkDB
         @db.execute statement, bookmark_name,url,currentTime,bookmark_id
     end
 
-    def remove_bookmark(bookmark_id)
-        statement = "DELETE FROM database WHERE bookmark_id =? "
+    def disable_bookmark(bookmark_id)
+        statement = "UPDATE bookmarks SET enabled = 0 WHERE bookmark_id = ?"
         @db.execute statement, bookmark_id
     end
 
+    def enable_bookmark(bookmark_id)
+        statement = "UPDATE bookmarks SET enabled = 1 WHERE bookmark_id = ?"
+        @db.execute statement, bookmark_id
+    end
+        
     def get_user_bookmark(owner_id)
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE owner_id=?"
         return @db.execute statement, owner_id
@@ -654,9 +659,22 @@ class BookmarkDB
 
     # Reporting
     
-    def report_bookmark(bookmark_id, user_id)
-        
+    def report_bookmark(bookmark_id, user_id, reason_id)
+        statement = "REPLACE INTO reporting_bookmarks (user_id, bookmark_id, reason_id) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM reporting_bookmarks WHERE user_id = ? AND bookmark_id = ? LIMIT 1)"
+        @db.execute statement, user_id, bookmark_id, reason_id, user_id, bookmark_id
     end
+
+    def remove_report_bookmark(bookmark_id, user_id, reason_id)
+        statement = "DELETE FROM reporting_bookmarks WHERE bookmark_id = ? AND user_id = ? AND reason_id = ?"
+        @db.execute statement, bookmark_id, user_id, reason_id
+    end
+
+    def get_bookmark_reports(page, per_page)
+        i_min = (page.to_i - 1) * per_page.to_i
+        statement ="SELECT reporting_bookmarks.bookmark_id,user_id,bookmarks.bookmark_name FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id LIMIT ?,?"
+        return @db.execute statement, i_min, per_page
+    end
+    
 end
 
 # This section is for testing the database
