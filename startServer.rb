@@ -84,7 +84,7 @@ helpers do # functions used within erb files
     #SHOW DISABLED COMMENTS
     def view_disabled_comment(page)
         page = page.to_i
-        return @db.get_comments_for_bookmark("*",page,10)
+        return @db.get_comments_for_bookmark("*",page,100)
     end
 
     #ENABLE COMMENT
@@ -170,12 +170,13 @@ get "/" do
     erb :index
 end
 
+
 get "/dashboard/" do
     redirect "/dashboard"
 end
 
 get "/dashboard" do
-    authenticate
+  authenticate
     params[:page] = 1
     if session[:lim].nil?
         session[:lim] = 10
