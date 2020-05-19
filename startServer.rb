@@ -262,7 +262,7 @@ post "/dashboard" do
         params[:page] = 1
     end
     if session[:lim].nil?
-        session[:lim] = 5
+        session[:lim] = 10
     end
     if params[:searchterm] == ""
         redirect "/dashboard"
@@ -290,7 +290,7 @@ end
 get "/admin/bookmarks/:page/:lim" do
     adminauthenticate
     session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], 5)
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
     @total = get_total_items("")
     erb :adminbookmarks
 end
