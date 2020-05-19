@@ -630,7 +630,7 @@ class BookmarkDB
 
     def add_comment(user_id, bookmark_id, comment)
         if (plain_text_check(comment,500))
-            statement = "INSERT INTO comments (user_id, bookmark_id, text) VALUES ?,?,?"
+            statement = "INSERT INTO comments (user_id, bookmark_id, text) VALUES (?,?,?)"
             @db.execute(statement, user_id, bookmark_id, comment)
             return "Added comment"
         end
@@ -641,7 +641,7 @@ class BookmarkDB
     def get_comments_for_bookmark(bookmark_id, page, limit)
         i_min = (page.to_i - 1) * limit.to_i
         if bookmark_id == "*"
-            statement ="SELECT comments.bookmark_id,comments.comment_id,comments.user_id,comments.text,bookmarks.bookmark_name FROM comments,bookmarks WHERE comments.enabled = 0 AND bookmarks.bookmark_id=comments.bookmark_id LIMIT ?,?"
+            statement ="SELECT comments.user_id,comments.comment_id,comments.text,comments.bookmark_id,bookmarks.bookmark_name FROM comments,bookmarks WHERE comments.enabled = 0 AND bookmarks.bookmark_id=comments.bookmark_id LIMIT ?,?"
             retStatement = @db.execute statement,i_min,limit
         else
             statement = "SELECT user_id,comment_id,text FROM comments WHERE bookmark_id=? AND enabled = 1 LIMIT ?,?"
@@ -665,4 +665,7 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
+p db.add_comment(1,3,"Hello smelly comment")
+p db.get_comments_for_bookmark(1,1,10)
+p db.enable_disable_comment(1,0)
 p db.get_comments_for_bookmark("*",1,10)
