@@ -330,7 +330,6 @@ class BookmarkDB
         search = '%'+term+'%'
         retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE (bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?) AND bookmarks.enabled=1  LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,results
-        p sql
         #Adds the tags into results
         i_max = sql.length
         i_min = 0
