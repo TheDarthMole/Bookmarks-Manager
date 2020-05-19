@@ -12,11 +12,12 @@ class BookmarkDB
     def check_account_enabled(userid)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, userid
-        if retStatement[0][0] == 1
-            return true
-        else
-            return false
+        if retStatement[0] != nil
+            if retStatement[0][0] == 1
+                return true
+            end
         end
+        return false
     end
 
     def is_admin(accountID)
@@ -37,7 +38,6 @@ class BookmarkDB
         return false
     end
     
-#finds account ID in the database from email
     def get_account_id(email)
         email = email.downcase
         statement = "SELECT user_id FROM users WHERE email = ?"
@@ -76,11 +76,7 @@ class BookmarkDB
         retStatement = @db.execute statement, user_id
         return retStatement[0]
     end
-
-#checks to make sure both fields are filled, checks the email exists and retrieves the account ID
-#the password hash is then checked against the hash in the database.
-#if the password does not match, or if the fields are not filled the user will be alerted.
-#if there are more than 4 login attempts that fail, the account will be suspended
+    
     def try_login(email, password)
         if email.nil? or password.nil?
             return false
@@ -120,10 +116,7 @@ class BookmarkDB
         retStatement = @db.execute statement, email
         return retStatement[0]
     end
-
-#If password does not meet the minimum security requirements, it will alert the user here
-#It then checks that the email is valid, and if the email exists on another account
-#If the email doesn't already exist on another account, a password hash and a salt is stored in the database with the rest of the user information
+    
     def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
         password_reason = password_check(password)
         unless password_reason == true
@@ -615,10 +608,11 @@ class BookmarkDB
         return false
     end
 
+    #checks length on input name, default 30 chars
     def plain_text_check(name, *length) # Optional argument length to check for
         lengthcheck = unless length[0].nil? then length[0] else 30 end
         if name.length > lengthcheck
-            puts "long name"
+            puts "Too long "
             return false
         end
 
@@ -628,7 +622,45 @@ class BookmarkDB
         return false
     end
 
+    #
+    #
+    # Commenting
+    #
+    #
+
+    def add_comment(user_id, bookmark_id, comment)
+        if (plain_text_check(comment,500))
+            statement = "INSERT INTO comments (user_id, bookmark_id, text) VALUES (?,?,?)"
+            @db.execute(statement, user_id, bookmark_id, comment)
+            return "Added comment"
+        end
+        return "Comment too long"
+    end
+
+    #User "*" to get disabled and then the bookmark_id
+    def get_comments_for_bookmark(bookmark_id, page, limit)
+        i_min = (page.to_i - 1) * limit.to_i
+        if bookmark_id == "*"
+            statement ="SELECT comments.user_id,comments.comment_id,comments.text,comments.bookmark_id,bookmarks.bookmark_name FROM comments,bookmarks WHERE comments.enabled = 0 AND bookmarks.bookmark_id=comments.bookmark_id LIMIT ?,?"
+            retStatement = @db.execute statement,i_min,limit
+        else
+            statement = "SELECT user_id,comment_id,text FROM comments WHERE bookmark_id=? AND enabled = 1 LIMIT ?,?"
+            retStatement = @db.execute statement,bookmark_id,i_min,limit
+        end
+        return retStatement
+    end
+
+    #Set comment to be disable or disabled
+    def enable_disable_comment(comment_id,enable)
+        statement = "UPDATE comments SET enabled = ? WHERE comment_id = ?"
+        return @db.execute statement, enable, comment_id
+    end
+
+    # Reporting
     
+    def report_bookmark(bookmark_id, user_id)
+        
+    end
 end
 
 # This section is for testing the database
@@ -639,3 +671,7 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
+p db.add_comment(1,3,"Hello smelly comment")
+p db.get_comments_for_bookmark(1,1,10)
+p db.enable_disable_comment(1,0)
+p db.get_comments_for_bookmark("*",1,10)
