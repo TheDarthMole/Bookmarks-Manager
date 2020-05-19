@@ -388,6 +388,7 @@ class BookmarkDB
         return @db.execute(retStatment,bookmark_id)
     end
 
+    #FAVS
     def get_user_favourites(user_id,page,limit)
         page = page.to_i
         limit = limit.to_i
@@ -397,15 +398,22 @@ class BookmarkDB
         return @db.execute(statement,user_id,page,limit)
     end
 
+    def is_user_favourite(user_id,bookmark_id)
+        statement = "SELECT favourite_id FROM favourites WHERE user_id=? AND bookmark_id=?"
+        reStatement = @db.execute statement,user_id,bookmark_id
+        p reStatement
+        if reStatement[0] != nil
+            return true
+        end
+        return false
+    end
+
     def add_favourite(user_id, bookmark_id)
-        user_id = user_id.to_i
-        bookmark_id = bookmark_id.to_i
         statement = "INSERT INTO favourites(user_id,bookmark_id) VALUES(?,?)"
         return @db.execute(statement,user_id,bookmark_id)
     end
 
     def remove_favourite(user_id,bookmark_id)
-        user_id = user_id.to_i
         bookmark_id = bookmark_id.to_i
         statement = "DELETE FROM favourites WHERE user_id=? AND bookmark_id =?"
         return @db.execute(statement,user_id,bookmark_id)
@@ -685,7 +693,5 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
-p db.add_comment(1,3,"Hello smelly comment")
-p db.get_comments_for_bookmark(1,1,10)
-p db.enable_disable_comment(1,0)
-p db.get_comments_for_bookmark("*",1,10)
+p db.add_favourite(1,5)
+p db.is_user_favourite(1,5)
