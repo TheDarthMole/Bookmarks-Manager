@@ -3,7 +3,7 @@
 
 <!--Avoiding Duplicated code -->
 
-    <%= erb :headinclude, :locals => {:title => "Bookmarks - Admin"} %>
+    <%= erb :headinclude, :locals => {:title => "Audit - Admin"} %>
 
 <body>
     <!-- Navbar -->
@@ -16,33 +16,17 @@
     <section class="dashboard-section container py-5">
         <div class="saved-bookmarks">
             <div class="mb-3">
-                <h4>Audit Log</h4>
+                <h2>Audit Log</h2>
             </div>
-            <div class="d-flex align-items-end mb-3 flex-wrap">
-                <div class="mb-3 mb-md-0 mr-3">
-                    <label for="">From Date</label>
-                    <input type="date" class="form-control" />
-                </div>
-                <div class="mb-3 mb-md-0 mr-3">
-                    <label for="">To Date</label>
-                    <input type="date" class="form-control" />
-                </div>
-                <div class="mb-3 mb-md-0">
-                    <select name="" id="" class="form-control">
-						<option value="">Sort By</option>
-						<option value="">Ascending</option>
-						<option value="">Descending</option>
-					</select>
-                </div>
-                <div class="ml-md-auto">
-                    <button class="btn btn-info">EXPORT TO EXCEL</button>
-                </div>
+          <div class="mb-2">
+            <a href="audit/comments"> <h6>Comments - Reported</h6></a> <a href="audit/bookmarks"> <h6>Bookmarks - Reported</h6></a>
+          </div>
             </div>
             <div class="table-responsive">
                 <table class="table table-bookmark">
                     <thead>
                         <tr>
-                            <th> User ID </th>
+                            <th>User ID </th>
                             <th>Action</th>
                             <th>Affected</th>
                             <th>Time</th>
@@ -63,7 +47,7 @@
                                 <%= h item[1]%>
                             </td>
                             <td>
-                                
+
                                 <%= h Time.at(item[2])%>
                             </td>
                             
