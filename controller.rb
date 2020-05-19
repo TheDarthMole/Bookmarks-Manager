@@ -147,13 +147,8 @@ class BookmarkDB
     end
 
     def upgrade_account_to_user(userID)
-        z = get_user_role_ID(userID)
-        if z[0] == 1
             statement = "UPDATE users SET role = 3 WHERE user_id = ?"
-            @db.execute statement, userID
-        else
-            puts "Error upgrading #{userID} to admin"
-        end
+            return @db.execute statement, userID
     end
 
     def downgrade_account_to_user(userID)
@@ -655,6 +650,7 @@ class BookmarkDB
         statement = "UPDATE comments SET enabled = ? WHERE comment_id = ?"
         return @db.execute statement, enable, comment_id
     end
+
 
     # Reporting
     

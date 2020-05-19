@@ -46,19 +46,6 @@
                         <div class="mb-3 mb-md-0">
                             <h4 class="mb-0">Active Users</h4>
                         </div>
-                        <div class="input-group mb-3 mb-md-0 mr-md-3 ml-md-auto w-auto">
-                            <input type="search" class="form-control" placeholder="Search Users" />
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-									Search
-								</button>
-                            </div>
-                        </div>
-                        <div>
-                            <button class="btn btn-info">
-								ADD USER
-							</button>
-                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bookmark">
@@ -100,7 +87,11 @@
                                     <a href="/admin/users/action/<%= h item[0] %>/downgrade" data-toggle="tooltip" data-placement="top" title="Make guest" class="text-danger">
                                       <i class="fa fa-redo-alt fa-flip-horizontal"></i>
                                     </a>
+                                    <a href="/admin/users/action/<%= h item[0] %>/toadmin" data-toggle="tooltip" data-placement="top" title="Make admin" class="text-success">
+                                      <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+                                    </a>
                                   <%end %>
+
                                   <a href="/admin/users/action/<%= h item[0] %>/suspend" data-toggle="tooltip" data-placement="top" title="Suspend User" class="text-danger">
                                     <i class="fa fa-times"></i>
                                   </a>
@@ -161,12 +152,6 @@
                             <h4 class="mb-0">Suspended Users</h4>
                         </div>
                         <div class="input-group mb-3 mb-md-0 ml-md-auto w-auto">
-                            <input type="search" class="form-control" placeholder="Search Users" />
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-									Search
-								</button>
-                            </div>
                         </div>
                     </div>
                   <div class="table-responsive">
@@ -262,12 +247,6 @@
                             <h4 class="mb-0">Pending Approval Users</h4>
                         </div>
                         <div class="input-group mb-3 mb-md-0 ml-md-auto w-auto">
-                            <input type="search" class="form-control" placeholder="Search Users" />
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-                                    Search
-                                </button>
-                            </div>
                         </div>
                     </div>
                   <div class="table-responsive">
