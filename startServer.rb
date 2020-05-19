@@ -98,6 +98,23 @@ helpers do # functions used within erb files
         id = id.to_i
         return @db.enable_disable_comment(id,0)
     end
+
+  #Favourites
+    def is_user_fav(bookmark_id)
+        bookmark_id = bookmark_id.to_i
+        return @db.is_user_favourite(@db.get_account_id(session[:user]),bookmark_id)
+    end
+
+    def add_favourite(bookmark_id)
+        bookmark_id = bookmark_id.to_i
+        return @db.add_favourite(@db.get_account_id(session[:user]),bookmark_id)
+    end
+
+    def remove_favourite(bookmark_id)
+        bookmark_id = bookmark_id.to_i
+        return @db.remove_favourite(@db.get_account_id(session[:user]),bookmark_id)
+
+    end
 end
 
 get "/logout" do
@@ -164,6 +181,19 @@ get "/admin/users/action/:id/unsuspend" do
     unsuspend_user(params[:id])
     add_to_audit_log("Unsuspend user")
     redirect "/admin/users"
+end
+
+get "/unfavourite/:id" do
+    authenticate
+    remove_favourite(params[:id])
+    redirect "/dashboard"
+end
+
+
+get "/favourite/:id" do
+    authenticate
+    add_favourite(params[:id])
+    redirect "/dashboard"
 end
 
 get "/" do
