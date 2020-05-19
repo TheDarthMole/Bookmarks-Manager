@@ -119,6 +119,12 @@ helpers do # functions used within erb files
     def get_user_favourites
         return @db.get_user_favourites(@db.get_account_id(session[:user]),0,100)
     end
+    
+    # Reporting
+    def report_comment(comment_id, reason_id)
+        user_id = @db.get_account_id(session[:user])
+        return @db.report_comment(comment_id.to_i, user_id, reason_id.to_i)
+    end
 end
 
 get "/logout" do
@@ -201,6 +207,20 @@ end
 get "/favourite/:id" do
     authenticate
     add_favourite(params[:id])
+    redirect back
+end
+
+get "/deleteBookmark/:id" do
+    authenticate
+    @db.disable_bookmark(params[:id])
+    redirect back
+end
+
+get "/reportBookmark/:id" do
+    authenticate
+    p @db.exec("SELECT * FROM reporting_bookmarks")
+    @db.report_bookmark(params[:id], @db.get_account_id(session[:user]), 10)
+    p @db.exec("SELECT * FROM reporting_bookmarks")
     redirect back
 end
 
@@ -362,7 +382,6 @@ end
 
 post "/register" do
     session[:reason] = nil
-    p params[:password]
     if params[:password] == params[:passwordConfirm] # Checks to make sure the
         sqlresponse = @db.create_account(params[:email], params[:password], 
             params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
