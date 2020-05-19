@@ -16,9 +16,8 @@ Feature: register
 Scenario: Everything correct
     Given I am on the "register" page
     When I fill in "password" with "secret"
-    When I fill in "passwordrepeat" with "secret"
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "secret"
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
     When I pick "1" within "question"
     When I fill in "answer" with "xyz"
@@ -28,11 +27,10 @@ Scenario: Everything correct
 Scenario: Password blank
     Given I am on the "register" page
     When I fill in "password" with ""
-    When I fill in "passwordrepeat" with ""
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with ""
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -40,11 +38,10 @@ Scenario: Password blank
 Scenario: Passwords not matching 
     Given I am on the "register" page
     When I fill in "password" with "secret"
-    When I fill in "passwordrepeat" with "nonsense"
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "nonsense"
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -52,11 +49,10 @@ Scenario: Passwords not matching
 Scenario: Password contains invalid characters
     Given I am on the "register" page
     When I fill in "password" with "🤣"
-    When I fill in "passwordrepeat" with "🤣"
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "🤣"
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -65,11 +61,10 @@ Scenario: Password contains invalid characters
 Scenario: Password does not meet minimum requirements
     Given I am on the "register" page
     When I fill in "password" with "123"
-    When I fill in "passwordrepeat" with "123"
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "123"
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -77,12 +72,11 @@ Scenario: Password does not meet minimum requirements
 
 Scenario: Password too long
     Given I am on the "register" page
-    When I fill in "password" with "Sed mollis libero ac sapien ullamcorper ullamcorper. Ut neque erat, posuere in urna ac, blandit interdum eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed pharetra dui. Curabitur nulla massa, dignissim ut fermentum eget, accumsan sit amet massa. Curabitur at tortor eu risus ultricies aliquam eu in nunc. Mauris iaculis, sapien sed egestas consequat, erat nibh pulvinar quam, vel viverra metus tortor efficitur diam. Donec eget pulvinar nisl. Vestibulum at ultrices nulla. Suspendisse felis justo, maximus ac aliquet a, euismod et erat. Nam eget enim at eros efficitur tempus. Integer risus urna, sagittis vitae finibus vitae, dignissim eu enim. Integer non dolor massa. Donec at viverra elit. Nulla imperdiet libero magna, sed ullamcorper nulla ultrices et."
-    When I fill in "passwordrepeat" with "Sed mollis libero ac sapien ullamcorper ullamcorper. Ut neque erat, posuere in urna ac, blandit interdum eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed pharetra dui. Curabitur nulla massa, dignissim ut fermentum eget, accumsan sit amet massa. Curabitur at tortor eu risus ultricies aliquam eu in nunc. Mauris iaculis, sapien sed egestas consequat, erat nibh pulvinar quam, vel viverra metus tortor efficitur diam. Donec eget pulvinar nisl. Vestibulum at ultrices nulla. Suspendisse felis justo, maximus ac aliquet a, euismod et erat. Nam eget enim at eros efficitur tempus. Integer risus urna, sagittis vitae finibus vitae, dignissim eu enim. Integer non dolor massa. Donec at viverra elit. Nulla imperdiet libero magna, sed ullamcorper nulla ultrices et."
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "password" with "Sed mollis libero ac sapien ullamcorper ullamcorper. Ut neque erat."
+    When I fill in "passwordConfirm" with "Sed mollis libero ac sapien ullamcorper ullamcorper. Ut neque erat."
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -91,11 +85,10 @@ Scenario: Password too long
 Scenario: Password contains name
     Given I am on the "register" page
     When I fill in "password" with "john"
-    When I fill in "passwordrepeat" with "john"
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "john"
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -103,11 +96,10 @@ Scenario: Password contains name
 Scenario: Password contains consecutive characters(apples double p)
     Given I am on the "register" page
     When I fill in "password" with "11111"
-    When I fill in "passwordrepeat" with "11111"
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "11111"
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -116,11 +108,10 @@ Scenario: Password contains consecutive characters(apples double p)
 Scenario: Password null /nil /0 inputs
     Given I am on the "register" page
     When I fill in "password" with "null"
-    When I fill in "passwordrepeat" with "null"
-    When I fill in "fname" with "John"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "null"
+    When I fill in "username" with "JohnSmith"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -128,11 +119,10 @@ Scenario: Password null /nil /0 inputs
 Scenario: Username too long
     Given I am on the "register" page
     When I fill in "password" with "123"
-    When I fill in "passwordrepeat" with "123"
-    When I fill in "fname" with "Sed mollis libero ac sapien ullamcorper ullamcorper. nulla ultrices et."
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "123"
+    When I fill in "username" with "Sed mollis libero ac sapien ullamcorper ullamcorper. nulla ultrices et."
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
     When I press "Submit" within "form"
     Then I should see "Passwords did not match!"
@@ -140,11 +130,10 @@ Scenario: Username too long
 Scenario: Username contains invalid characters
     Given I am on the "register" page
     When I fill in "password" with "secret"
-    When I fill in "passwordrepeat" with "secret"
-    When I fill in "fname" with "John🤣"
-    When I fill in "lname" with "Smith"
+    When I fill in "passwordConfirm" with "secret"
+    When I fill in "username" with "JohnSmith🤣"
     When I fill in "email" with "sampleemail@gmail.com"
-    When I fill in "question" with "1"
+    When I pick "1" within "question"
     When I fill in "answer" with "xyz"
-    When I press "Submit" within "form"
+    When I press "REGISTER" within "form"
     Then I should see "Passwords did not match!"
