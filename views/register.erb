@@ -4,7 +4,7 @@
 <!-- Avoiding Duplication -->
 
     <%= erb :headinclude, :locals => {:title => "Acme corp - Register"} %>
-<!--     <link rel="stylesheet" href="/css/register.css" /> -->
+    <link rel="stylesheet" href="/css/changePassword.css" />
 
 <body>
     <!-- Navbar -->
@@ -16,12 +16,6 @@
             <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp<span class="sr-only">(current)</span></a>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav ml-lg-auto align-items-lg-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">ABOUT</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">CONTACT</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">GUEST</a>
                     </li>
@@ -116,7 +110,7 @@
                     <!-- Security Question Answer Input -->
                     <div class="form-group">
                         <label for="answer">Security Answer</label>
-                        <input name="answer" type="password" class="form-control" id="answer" placeholder="Answer"/>
+                        <input name="answer" class="form-control" id="answer" placeholder="Answer"/>
 						<i class="fas fa-check-circle"></i>
 						<i class="fas fa-exclamation-circle"></i>
                         <small></small>
