@@ -549,11 +549,16 @@ class BookmarkDB
         @db.execute statement, bookmark_name,url,currentTime,bookmark_id
     end
 
-    def remove_bookmark(bookmark_id)
-        statement = "DELETE FROM database WHERE bookmark_id =? "
+    def disable_bookmark(bookmark_id)
+        statement = "UPDATE bookmarks SET enabled = 0 WHERE bookmark_id = ?"
         @db.execute statement, bookmark_id
     end
 
+    def enable_bookmark(bookmark_id)
+        statement = "UPDATE bookmarks SET enabled = 1 WHERE bookmark_id = ?"
+        @db.execute statement, bookmark_id
+    end
+        
     def get_user_bookmark(owner_id)
         statement = "SELECT bookmark_name, url, owner_id, creation_time FROM bookmarks WHERE owner_id=?"
         return @db.execute statement, owner_id
@@ -652,9 +657,12 @@ class BookmarkDB
 
     # Reporting
     
-    def report_bookmark(bookmark_id, user_id)
-        
+    def report_bookmark(bookmark_id, user_id, reason_id)
+        statement = "INSERT INTO reporting_bookmarks (user_id, bookmark_id, reason_id) VALUES ?,?,?"
+        @db.execute statement, user_id, bookmark_id, reason_id
     end
+
+    
 end
 
 # This section is for testing the database
