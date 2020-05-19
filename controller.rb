@@ -655,6 +655,12 @@ class BookmarkDB
         statement = "UPDATE comments SET enabled = ? WHERE comment_id = ?"
         @db.execute statement, enable, comment_id
     end
+
+    # Reporting
+    
+    def report_bookmark(bookmark_id, user_id)
+        
+    end
 end
 
 # This section is for testing the database
