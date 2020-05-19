@@ -12,8 +12,6 @@ class BookmarkDB
     def check_account_enabled(userid)
         statement = "SELECT enabled FROM users WHERE user_id = ?"
         retStatement = @db.execute statement, userid
-        p userid
-        p retStatement
         if retStatement[0][0] == 1
             return true
         else
@@ -39,6 +37,7 @@ class BookmarkDB
         return false
     end
     
+#finds account ID in the database from email
     def get_account_id(email)
         email = email.downcase
         statement = "SELECT user_id FROM users WHERE email = ?"
@@ -77,7 +76,11 @@ class BookmarkDB
         retStatement = @db.execute statement, user_id
         return retStatement[0]
     end
-    
+
+#checks to make sure both fields are filled, checks the email exists and retrieves the account ID
+#the password hash is then checked against the hash in the database.
+#if the password does not match, or if the fields are not filled the user will be alerted.
+#if there are more than 4 login attempts that fail, the account will be suspended
     def try_login(email, password)
         if email.nil? or password.nil?
             return false
@@ -117,7 +120,10 @@ class BookmarkDB
         retStatement = @db.execute statement, email
         return retStatement[0]
     end
-    
+
+#If password does not meet the minimum security requirements, it will alert the user here
+#It then checks that the email is valid, and if the email exists on another account
+#If the email doesn't already exist on another account, a password hash and a salt is stored in the database with the rest of the user information
     def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
         password_reason = password_check(password)
         unless password_reason == true
@@ -633,6 +639,3 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
-p db.sort_asc(".com",1,10)
-p "------------------"
-p db.sort_desc(".com",1,10)
