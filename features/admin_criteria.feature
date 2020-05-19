@@ -27,11 +27,3 @@ Scenario: Guest accounts - denying request
 
 
 Scenario: Guest accounts - multiple requests from one account
-
-
-
-
-
-
-
-
