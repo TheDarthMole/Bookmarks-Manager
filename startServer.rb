@@ -204,6 +204,18 @@ get "/favourite/:id" do
     redirect back
 end
 
+######
+get "/about" do
+    erb :about
+end 
+
+get "/contact" do
+    erb :contact
+end
+
+
+######
+
 get "/" do
     erb :index
 end
