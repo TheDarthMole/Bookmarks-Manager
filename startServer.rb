@@ -193,6 +193,32 @@ get "/admin/users/action/:id/unsuspend" do
     redirect back
 end
 
+get "/admin/audit/bookmarks/disabled" do
+    erb :adminbookmarksdisabled
+end
+
+get "/admin/bookmarks/:id/show" do
+    @db.enable_bookmark(params[:id].to_i)
+    add_to_audit_log("enabled bookmark")
+    redirect back
+end
+
+get "/admin/bookmarks/:page/:lim/:searchterm" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :adminbookmarks
+end
+
+get "/admin/bookmarks/:page/:lim" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
+    @total = get_total_items("")
+    erb :adminbookmarks
+end
+
 get "/unfavourite/:id" do
     authenticate
     remove_favourite(params[:id])
@@ -276,16 +302,6 @@ get "/dashboard/:page/:lim/" do
     redirect "/dashboard/#{params[:page]}/#{params[:lim]}"
 end
 
-get "/admin/audit/bookmarks/disabled" do
-  erb :adminbookmarksdisabled
-end
-
-get "/admin/bookmarks/:id/show" do
-  @db.enable_bookmark(params[:id].to_i)
-  add_to_audit_log("enabled bookmark")
-  redirect back
-end
-
 post "/dashboard" do
     authenticate
     if params[:page].nil?
@@ -309,21 +325,7 @@ get "/dashboard/:page/:lim/:searchterm" do
     erb :dashboard
 end
 
-get "/admin/bookmarks/:page/:lim/:searchterm" do
-    adminauthenticate
-    session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
-    @total = get_total_items(params[:searchterm])
-    erb :adminbookmarks
-end
 
-get "/admin/bookmarks/:page/:lim" do
-    adminauthenticate
-    session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
-    @total = get_total_items("")
-    erb :adminbookmarks
-end
 
 post "/login" do
     if @db.try_login(params[:email].downcase, params[:password])
@@ -377,6 +379,7 @@ post "/createbookmark" do
     authenticate
     reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]), params[:tags])
     session[:reply] = reply
+    add_to_audit_log("ADD BOOKMARK")
     redirect "/dashboard"
 end
 
