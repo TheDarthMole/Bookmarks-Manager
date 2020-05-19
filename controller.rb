@@ -391,15 +391,14 @@ class BookmarkDB
     end
 
     #FAVS
-    def get_user_favourites(user_id,page,limit)
-        statement = "SELECT bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM favourites, bookmarks WHERE favourites.user_id =? AND favourites.bookmark_id = bookmarks.bookmark_id LIMIT ?,?"
-        return @db.execute(statement,user_id,page,limit)
+    def get_user_favourites(user_id,x,y)
+        statement = "SELECT bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM favourites, bookmarks WHERE favourites.user_id =? AND favourites.bookmark_id = bookmarks.bookmark_id"
+        return @db.execute(statement,user_id)
     end
 
     def is_user_favourite(user_id,bookmark_id)
         statement = "SELECT favourite_id FROM favourites WHERE user_id=? AND bookmark_id=?"
         reStatement = @db.execute statement,user_id,bookmark_id
-        p reStatement
         if reStatement[0] != nil
             return true
         end

@@ -156,41 +156,41 @@ get "/admin/users/action/:id/upgrade" do
     adminauthenticate
     upgrade_account_to_user(params[:id])
     add_to_audit_log("Upgrade to user")
-    redirect "/admin/users"
+    redirect back
 end
 
 get "/admin/users/action/:id/downgrade" do
     adminauthenticate
     downgrade_account_to_user(params[:id])
     add_to_audit_log("downgrade to user")
-    redirect "/admin/users"
+    redirect back
 end
 
 get "/admin/users/action/:id/toadmin" do
   adminauthenticate
   upgrade_account_to_admin(params[:id])
   add_to_audit_log("Upgrade to admin")
-  redirect "/admin/users"
+  redirect back
 end
 
 get "/admin/users/action/:id/suspend" do
     adminauthenticate
     suspend_user(params[:id])
     add_to_audit_log("Suspend user")
-    redirect "/admin/users"
+    redirect back
 end
 
 get "/admin/users/action/:id/unsuspend" do
     adminauthenticate
     unsuspend_user(params[:id])
     add_to_audit_log("Unsuspend user")
-    redirect "/admin/users"
+    redirect back
 end
 
 get "/unfavourite/:id" do
     authenticate
     remove_favourite(params[:id])
-    redirect "/dashboard"
+    redirect back
 end
 
 get "/favourite" do
@@ -201,7 +201,7 @@ end
 get "/favourite/:id" do
     authenticate
     add_favourite(params[:id])
-    redirect "/dashboard"
+    redirect back
 end
 
 get "/" do
@@ -336,6 +336,7 @@ end
 
 post "/register" do
     session[:reason] = nil
+    p params[:password]
     if params[:password] == params[:passwordConfirm] # Checks to make sure the
         sqlresponse = @db.create_account(params[:email], params[:password], 
             params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
