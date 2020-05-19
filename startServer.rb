@@ -244,7 +244,7 @@ end
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], 10)
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
     @total = get_total_items("")
     unless session[:reply]
         session[:reply] = nil
