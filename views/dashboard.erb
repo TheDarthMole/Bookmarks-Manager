@@ -208,6 +208,7 @@
           <th>Favourite</th>
           <th>Title</th>
           <th>URL</th>
+          <th>TAGS</th>
           <% if can_user_do_action("edit") == true %>
             <th>Action</th>
           <% end %>
@@ -245,6 +246,12 @@
             <td>
               <a href="<%= h item[2] %>" target="blank"><%= h item[2] %></a>
             </td>
+            <td>
+              <% i= 0 %>
+                <% item[4].each do |lol| %>
+                 #<%= lol[0] %>
+              <%end %>
+            </td>
             <% if can_user_do_action("edit") == true %>
               <td width="100">
                 <a id="edit-bookmark" data-toggle="modal" data-target="#edit-bookmark" data-id="<%= h item[0] %>" class="mr-2">
@@ -253,6 +260,14 @@
                 <a href="delete-bookmark" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
                   <i class="fa fa-times"></i>
                 </a>
+                <div class="btn-group">
+  <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
+    <span class="caret"></span></button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="/deleteBookmark/<%= item[0]%>">Delete Bookmark</a>
+    <a class="dropdown-item" href="/reportBookmark/<%= item[0]%>">Report Bookmark</a>
+  </div>
+</div>
               </td>
             <% end %>
           </tr>

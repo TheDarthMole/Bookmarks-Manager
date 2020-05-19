@@ -278,8 +278,8 @@ class BookmarkDB
 
     def view_audit_log(page,limit)
         page = ((page.to_i) - 1) * limit.to_i
-        statement = "SELECT * FROM audit_log LIMIT ?,?"
-        return @db.execute(statement,page,limit)
+        statement = "SELECT * FROM audit_log ORDER BY time DESC"
+        return @db.execute(statement)
     end
 
     def total_audit_results
@@ -328,7 +328,7 @@ class BookmarkDB
         results = results.to_i
         i_min = (page-1)*results
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE (bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?) AND bookmarks.enabled=1  LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,results
         #Adds the tags into results
         i_max = sql.length
@@ -337,12 +337,13 @@ class BookmarkDB
             sql[i_min].append(get_bookmark_tags(sql[i_min][0]))
             i_min= 1 + i_min
         end
+        p sql
         return sql
     end
     
     def get_total_results(search)
         term = '%'+search+'%'
-        retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?"
+        retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1"
         sql = @db.execute retStatment, term, term, term
 
         return sql[0][0]
@@ -354,7 +355,7 @@ class BookmarkDB
         results = results.to_i
         i_min = (page-1)*results
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? ORDER BY bookmarks.bookmark_name ASC LIMIT ?,?"
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1 ORDER BY bookmarks.bookmark_name ASC LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,page,results
         #Adds the tags into results
         i_max = sql.length
@@ -371,7 +372,7 @@ class BookmarkDB
         results = results.to_i
         i_min = (page-1)*results
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? ORDER BY bookmarks.bookmark_name DESC LIMIT ?,?"
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1 ORDER BY bookmarks.bookmark_name DESC LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,page,results
         #Adds the tags into results
         i_max = sql.length
@@ -549,6 +550,11 @@ class BookmarkDB
     def enable_bookmark(bookmark_id)
         statement = "UPDATE bookmarks SET enabled = 1 WHERE bookmark_id = ?"
         @db.execute statement, bookmark_id
+    end
+
+    def get_disabled_bookmarks
+        statement = "SELECT bookmark_id, bookmark_name, url FROM bookmarks WHERE enabled = 0"
+        return @db.execute statement
     end
         
     def get_user_bookmark(owner_id)
