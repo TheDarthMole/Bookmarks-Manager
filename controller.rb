@@ -608,10 +608,11 @@ class BookmarkDB
         return false
     end
 
+    #checks length on input name, default 30 chars
     def plain_text_check(name, *length) # Optional argument length to check for
         lengthcheck = unless length[0].nil? then length[0] else 30 end
         if name.length > lengthcheck
-            puts "long name"
+            puts "Too long "
             return false
         end
 
@@ -621,26 +622,38 @@ class BookmarkDB
         return false
     end
 
+    #
+    #
     # Commenting
-    
+    #
+    #
+
     def add_comment(user_id, bookmark_id, comment)
-        statement = "INSERT INTO comments (user_id, bookmark_id, text) VALUES ?,?,?"
-        @db.execute(statement, user_id, bookmark_id, comment)
+        if (plain_text_check(comment,500))
+            statement = "INSERT INTO comments (user_id, bookmark_id, text) VALUES ?,?,?"
+            @db.execute(statement, user_id, bookmark_id, comment)
+            return "Added comment"
+        end
+        return "Comment too long"
     end
 
-    def get_comments_for_bookmark(bookmark_id, page, per_page)
-        statement = "SELECT user_id, text FORM comments WHERE bookmark_id = ? LIMIT ?, "
-        return @db.execute statement, bookmark_id, page, per_page
+    #User "*" to get disabled and then the bookmark_id
+    def get_comments_for_bookmark(bookmark_id, page, limit)
+        i_min = (page.to_i - 1) * limit.to_i
+        if bookmark_id == "*"
+            statement ="SELECT comments.bookmark_id,comments.comment_id,comments.user_id,comments.text,bookmarks.bookmark_name FROM comments,bookmarks WHERE comments.enabled = 0 AND bookmarks.bookmark_id=comments.bookmark_id LIMIT ?,?"
+            retStatement = @db.execute statement,i_min,limit
+        else
+            statement = "SELECT user_id,comment_id,text FROM comments WHERE bookmark_id=? AND enabled = 1 LIMIT ?,?"
+            retStatement = @db.execute statement,bookmark_id,i_min,limit
+        end
+        return retStatement
     end
 
-    def disable_comment(comment_id)
-        statement = "UPDATE comments SET enabled = 0 WHERE comment_id = ?"
-        @db.execute statement, comment_id
-    end
-
-    def enable_comment(comment_id)
-        statement = "UPDATE comments SET enabled = 1 WHERE comment_id = ?"
-        @db.execute statement, comment_id
+    #Set comment to be disable or disabled
+    def enable_disable_comment(comment_id,enable)
+        statement = "UPDATE comments SET enabled = ? WHERE comment_id = ?"
+        @db.execute statement, enable, comment_id
     end
 end
 
@@ -652,6 +665,4 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
-p db.sort_asc(".com",1,10)
-p "------------------"
-p db.sort_desc(".com",1,10)
+p db.get_comments_for_bookmark("*",1,10)
