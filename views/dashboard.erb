@@ -286,7 +286,7 @@
     </div>
     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
       <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
-        <%= if x <= total && x!=0 then x else 10 end %> <%= if x > total then total end %> of <%= total %></p>
+        <%= if x <= total && x!=0 then x elsif x > total then total else 10 end %> of <%= total %></p>
       <ul class="pagination mb-md-0">
         <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
           <a class="page-link" href="/dashboard/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
