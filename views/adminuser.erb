@@ -16,13 +16,16 @@
     <section class="dashboard-section container py-5">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="active-users-tab" data-toggle="tab" href="#active-users" role="tab" aria-controls="active-users" aria-selected="true">Active</a>
+                <a class="nav-link active" id="active-users-tab" data-toggle="tab"
+                   href="#active-users" role="tab" aria-controls="active-users" aria-selected="true">Active</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="suspended-users-tab" data-toggle="tab" href="#suspended-users" role="tab" aria-controls="suspended-users" aria-selected="false">Suspended</a>
+                <a class="nav-link" id="suspended-users-tab" data-toggle="tab"
+                   href="#suspended-users" role="tab" aria-controls="suspended-users" aria-selected="false">Suspended</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="pending-users-tab" data-toggle="tab" href="#pending-users" role="tab" aria-controls="pending-users" aria-selected="false">Pending</a>
+                <a class="nav-link" id="pending-users-tab" data-toggle="tab"
+                   href="#pending-users" role="tab" aria-controls="pending-users" aria-selected="false">Pending</a>
             </li>
         </ul>
 
@@ -45,19 +48,6 @@
                     <div class="d-flex align-items-md-center mb-3 flex-wrap">
                         <div class="mb-3 mb-md-0">
                             <h4 class="mb-0">Active Users</h4>
-                        </div>
-                        <div class="input-group mb-3 mb-md-0 mr-md-3 ml-md-auto w-auto">
-                            <input type="search" class="form-control" placeholder="Search Users" />
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-									Search
-								</button>
-                            </div>
-                        </div>
-                        <div>
-                            <button class="btn btn-info">
-								ADD USER
-							</button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -100,7 +90,11 @@
                                     <a href="/admin/users/action/<%= h item[0] %>/downgrade" data-toggle="tooltip" data-placement="top" title="Make guest" class="text-danger">
                                       <i class="fa fa-redo-alt fa-flip-horizontal"></i>
                                     </a>
+                                    <a href="/admin/users/action/<%= h item[0] %>/toadmin" data-toggle="tooltip" data-placement="top" title="Make admin" class="text-success">
+                                      <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+                                    </a>
                                   <%end %>
+
                                   <a href="/admin/users/action/<%= h item[0] %>/suspend" data-toggle="tooltip" data-placement="top" title="Suspend User" class="text-danger">
                                     <i class="fa fa-times"></i>
                                   </a>
@@ -161,12 +155,6 @@
                             <h4 class="mb-0">Suspended Users</h4>
                         </div>
                         <div class="input-group mb-3 mb-md-0 ml-md-auto w-auto">
-                            <input type="search" class="form-control" placeholder="Search Users" />
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-									Search
-								</button>
-                            </div>
                         </div>
                     </div>
                   <div class="table-responsive">
@@ -217,7 +205,7 @@
                           <% session[:reply] = nil %>
                       </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total_users("*",0)[0][0] %></p>
+                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total_users("*",0)[0] %></p>
                         <ul class="pagination mb-md-0">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -262,12 +250,6 @@
                             <h4 class="mb-0">Pending Approval Users</h4>
                         </div>
                         <div class="input-group mb-3 mb-md-0 ml-md-auto w-auto">
-                            <input type="search" class="form-control" placeholder="Search Users" />
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-                                    Search
-                                </button>
-                            </div>
                         </div>
                     </div>
                   <div class="table-responsive">
@@ -320,7 +302,7 @@
                     <% session[:reply] = nil %>
                 </div>
                     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
-                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= h total_users(1,1)[0][0] %></p>
+                        <p class="mb-md-0 font-sm text-muted mr-3">Showing <%=users.length %> results of <%= total_users(1,1) %></p>
                         <ul class="pagination mb-md-0">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Previous</a>

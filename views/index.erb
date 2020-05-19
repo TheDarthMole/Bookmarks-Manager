@@ -2,13 +2,15 @@
 <html lang="en">
 
 <!-- Avoiding duplication -->
-    <%= erb :headinclude, :locals => {:title => "Acme corp - Index"} %>
+    <%= erb :headinclude, :locals => {:title => "Acme corp Home"} %>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
         <div class="container">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
+                    aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
             <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp <span class="sr-only">(current)</span></a>
@@ -17,27 +19,26 @@
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
 				<ul class="navbar-nav ml-lg-auto align-items-lg-center">
 					<li class="nav-item">
-						<a class="nav-link" href="#">ABOUT</a>
+						<a class="nav-link" href="/about">ABOUT</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">CONTACT</a>
+                <a class="nav-link" href="/contact">CONTACT</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">GUEST</a>
-            </li>
-                    
-            <li class="nav-item">
-                <a class="nav-link" href="/login">
-                    <button class="btn btn-outline-light">LOGIN</button>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/register">
-                    <button class="btn btn-light">REGISTER</button>
-                </a>
-            </li>
-            </ul>
-        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            <button class="btn btn-outline-light">LOGIN</button>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">
+                        <button class="btn btn-light">REGISTER</button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
     <!-- Hero section -->
@@ -62,7 +63,10 @@
     <section class="banner-section py-lg-5">
         <div class="bg-info text-center py-lg-5 p-3">
             <h3 class="text-white">
-                No need to install any extensions, apps or software
+                Welcome to Acme Corp's Bookmarking Tool
+            </h3>
+            <h3 class="text-white">
+                There is no need to install any extensions, apps or software
             </h3>
         </div>
     </section>
@@ -77,18 +81,12 @@
             </div>
             <div class="col-md-6 order-md-first">
                 <div class="text-center text-md-left">
-                    <h4>Easy on the go</h4>
-                    <p>
-                        Just type "xyz.io/" in front of any URL in your browsers address bar to save a bookmark
-                    </p>
-                    <h4>Cross device compatibility</h4>
-                    <p>It works on desktop and mobile devices</p>
+                    <h4>Who are we</h4>
+                    <p>Acme means "pinnacle", so the name was sometimes used to symbolize the best. We want to be the best for you, in product, customer service, and sustainability.</p><br>
+                    <h4>Our famous inventions</h4>
+                    <p>There has always been a favourite few products of ours among customers. The top being our trademarked whistling Anvil, and the runner up, our Exploding Tennis Balls.</p><br>
                     <h4>Organize Using Lists</h4>
-                    <p>
-                        Create lists on the fly by typing "AnyListName.xyz.io/" in front of a url
-                    </p>
-                    <h4>No Storage Limits</h4>
-                    <p>Store as many bookmarks as you want</p>
+                    <p>To create an account just click register, enter your details, and log in, and you will be able to access our bookmarks.</p><br>
                 </div>
             </div>
         </div>

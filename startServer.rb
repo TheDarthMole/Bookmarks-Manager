@@ -33,6 +33,10 @@ helpers do # functions used within erb files
         statement = @db.total_user(perm,enabled)
         return statement
     end
+    def upgrade_account_to_admin(id)
+        id = id.to_i
+        return @db.upgrade_account_to_admin(id)
+    end
     def upgrade_account_to_user(id)
         id = id.to_i
         return @db.upgrade_account_to_user(id)
@@ -59,7 +63,7 @@ helpers do # functions used within erb files
         return @db.add_to_admin_log(@db.get_account_id(session[:user]),action, params[:id].to_i)
     end
     def view_audit_log(page)
-        statement = @db.view_audit_log(page,10)
+        statement = @db.view_audit_log(page,1000)
         return statement
     end
     def total_audit_results
@@ -68,6 +72,52 @@ helpers do # functions used within erb files
 
     def can_user_do_action(action)
         return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
+    end
+
+    #SHOW comments FOR ID
+    def show_comment(bookmark_id,page,limit)
+        bookmark_id = bookmark_id.to_i
+        page = page.to_i
+        limit = limit.to_i
+        return @db.get_comments_for_bookmark(bookmark_id, page,limit)
+    end
+    #SHOW DISABLED COMMENTS
+    def view_disabled_comment(page)
+        page = page.to_i
+        return @db.get_comments_for_bookmark("*",page,100)
+    end
+
+    #ENABLE COMMENT
+    def enable_comment(id)
+        id = id.to_i
+        return @db.enable_disable_comment(id,1)
+    end
+
+    #DISABLE COMMENT
+    def disable_comment(id)
+        id = id.to_i
+        return @db.enable_disable_comment(id,0)
+    end
+
+  #Favourites
+    def is_user_fav(bookmark_id)
+        bookmark_id = bookmark_id.to_i
+        return @db.is_user_favourite(@db.get_account_id(session[:user]),bookmark_id)
+    end
+
+    def add_favourite(bookmark_id)
+        bookmark_id = bookmark_id.to_i
+        return @db.add_favourite(@db.get_account_id(session[:user]),bookmark_id)
+    end
+
+    def remove_favourite(bookmark_id)
+        bookmark_id = bookmark_id.to_i
+        return @db.remove_favourite(@db.get_account_id(session[:user]),bookmark_id)
+
+    end
+
+    def get_user_favourites
+        return @db.get_user_favourites(@db.get_account_id(session[:user]),0,100)
     end
 end
 
@@ -106,40 +156,81 @@ get "/admin/users/action/:id/upgrade" do
     adminauthenticate
     upgrade_account_to_user(params[:id])
     add_to_audit_log("Upgrade to user")
-    redirect "/admin/users"
+    redirect back
 end
 
 get "/admin/users/action/:id/downgrade" do
     adminauthenticate
     downgrade_account_to_user(params[:id])
     add_to_audit_log("downgrade to user")
-    redirect "/admin/users"
+    redirect back
+end
+
+get "/admin/users/action/:id/toadmin" do
+  adminauthenticate
+  upgrade_account_to_admin(params[:id])
+  add_to_audit_log("Upgrade to admin")
+  redirect back
 end
 
 get "/admin/users/action/:id/suspend" do
     adminauthenticate
     suspend_user(params[:id])
     add_to_audit_log("Suspend user")
-    redirect "/admin/users"
+    redirect back
 end
 
 get "/admin/users/action/:id/unsuspend" do
     adminauthenticate
     unsuspend_user(params[:id])
     add_to_audit_log("Unsuspend user")
-    redirect "/admin/users"
+    redirect back
 end
 
-get "/" do
-    erb :index
+get "/unfavourite/:id" do
+    authenticate
+    remove_favourite(params[:id])
+    redirect back
 end
+
+get "/favourite" do
+  authenticate
+  erb :favourites
+end
+
+get "/favourite/:id" do
+    authenticate
+    add_favourite(params[:id])
+    redirect back
+end
+
+######
+get "/about" do
+    erb :about
+end 
+
+get "/contact" do
+    erb :contact
+end
+
+
+######
+
+get "/" do
+    if session[:user]
+        erb :dashboard
+    else
+      erb :index
+    end
+end
+
 
 get "/dashboard/" do
     redirect "/dashboard"
 end
 
 get "/dashboard" do
-    authenticate
+  authenticate
     params[:page] = 1
     if session[:lim].nil?
         session[:lim] = 10
@@ -153,7 +244,7 @@ end
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], 10)
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
     @total = get_total_items("")
     unless session[:reply]
         session[:reply] = nil
@@ -171,7 +262,7 @@ post "/dashboard" do
         params[:page] = 1
     end
     if session[:lim].nil?
-        session[:lim] = 5
+        session[:lim] = 10
     end
     if params[:searchterm] == ""
         redirect "/dashboard"
@@ -199,7 +290,7 @@ end
 get "/admin/bookmarks/:page/:lim" do
     adminauthenticate
     session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], 5)
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
     @total = get_total_items("")
     erb :adminbookmarks
 end
@@ -236,6 +327,19 @@ end
 
 get "/register" do
     erb :register
+end
+
+#COMMENTS SECTION
+get "/admin/audit/comments" do
+    adminauthenticate
+    erb :admincomments
+end
+
+get "/admin/comments/action/:id/show" do
+  adminauthenticate
+  enable_comment(params[:id])
+  add_to_audit_log("Re-enable comment")
+  redirect "/admin/audit/comments"
 end
 
 post "/createbookmark" do
