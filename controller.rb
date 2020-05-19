@@ -674,6 +674,11 @@ class BookmarkDB
         statement ="SELECT reporting_bookmarks.bookmark_id,user_id,bookmarks.bookmark_name FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id LIMIT ?,?"
         return @db.execute statement, i_min, per_page
     end
+
+    def report_comment(comment_id, user_id, reason_id)
+        statement = "REPLACE INTO reporting_comments (user_id, comment_id, reason_id) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM reporting_comments WHERE user_id = ? AND comment_id = ? LIMIT 1)"
+        @db.execute statement, user_id, comment_id, reason_id, user_id, bookmark_id
+    end
     
 end
 
