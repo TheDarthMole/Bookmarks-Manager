@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--Avoiding Duplicated code -->
+
+<%= erb :headinclude, :locals => {:title => "Comment Audit - Admin"} %>
+
+<body>
+<!-- Navbar -->
+
+<%= erb :header %>
+
+<!-- modal-section -->
+
+<!-- dashboard section -->
+<section class="dashboard-section container py-5">
+  <div class="saved-bookmarks">
+    <div class="mb-3">
+      <h4>Disabled bookmarks</h4>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bookmark">
+      <thead>
+      <tr>
+        <th>Bookmark ID</th>
+        <th>URL</th>
+        <th>Bookmark Name</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody><% log = @db.get_disabled_bookmarks() %>
+      <% i = 0 %>
+      <% log.each do |item| %>
+        <tr>
+          <td>
+            <%= h item[0]%>
+          </td>
+          <td>
+            <%= h item[2]%>
+          </td>
+          <td>
+            <%= h item[1]%>
+          </td>
+          <td width="100">
+            <a href="/admin/bookmarks/<%= h item[0] %>/show" data-toggle="tooltip" data-placement="top" title="Show Comment" class="mr-2">
+              <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+            </a>
+          </td>
+        </tr>
+        <% i= i+ 1%>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  </div>
+</section>
+
+<%= erb :footer %>
+
+<script src="/js/main.js"></script>
+<script src="/js/common.js"></script>
+</body>
+
+</html>

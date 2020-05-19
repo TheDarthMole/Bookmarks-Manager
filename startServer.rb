@@ -256,6 +256,16 @@ get "/dashboard/:page/:lim/" do
     redirect "/dashboard/#{params[:page]}/#{params[:lim]}"
 end
 
+get "/admin/audit/bookmarks/disabled" do
+  erb :adminbookmarksdisabled
+end
+
+get "/admin/bookmarks/:id/show" do
+  @db.enable_bookmark(params[:id].to_i)
+  add_to_audit_log("enabled bookmark")
+  redirect back
+end
+
 post "/dashboard" do
     authenticate
     if params[:page].nil?
