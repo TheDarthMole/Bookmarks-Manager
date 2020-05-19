@@ -328,7 +328,7 @@ class BookmarkDB
         results = results.to_i
         i_min = (page-1)*results
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags, favourites WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? LIMIT ?,?"
         sql = @db.execute retStatment,search,search,search,i_min,results
         #Adds the tags into results
         i_max = sql.length
@@ -390,10 +390,6 @@ class BookmarkDB
 
     #FAVS
     def get_user_favourites(user_id,page,limit)
-        page = page.to_i
-        limit = limit.to_i
-        user_id = user_id.to_i
-
         statement = "SELECT bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM favourites, bookmarks WHERE favourites.user_id =? AND favourites.bookmark_id = bookmarks.bookmark_id LIMIT ?,?"
         return @db.execute(statement,user_id,page,limit)
     end
@@ -693,5 +689,3 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
-p db.add_favourite(1,5)
-p db.is_user_favourite(1,5)

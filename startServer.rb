@@ -115,6 +115,10 @@ helpers do # functions used within erb files
         return @db.remove_favourite(@db.get_account_id(session[:user]),bookmark_id)
 
     end
+
+    def get_user_favourites
+        return @db.get_user_favourites(@db.get_account_id(session[:user]),0,100)
+    end
 end
 
 get "/logout" do
@@ -189,6 +193,10 @@ get "/unfavourite/:id" do
     redirect "/dashboard"
 end
 
+get "/favourite" do
+  authenticate
+  erb :favourites
+end
 
 get "/favourite/:id" do
     authenticate
