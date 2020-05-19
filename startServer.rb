@@ -205,7 +205,11 @@ get "/favourite/:id" do
 end
 
 get "/" do
-    erb :index
+    if session[:user]
+        erb :dashboard
+    else
+      erb :index
+    end
 end
 
 
