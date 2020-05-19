@@ -15,6 +15,8 @@ end
    # end
 #end
  
+  
+
 #or click button
 When /^(?:I) fill in "([^\"]*)" with "([^\"]*)"?$/ do |field, value|
     fill_in(field, :with => value)
@@ -26,20 +28,39 @@ When /^(?:I) check "([^\"]*)"?$/ do |field|
     check(field)
 end
 
+
+def select_option(css_selector, value)
+    #find('select#time_zone').find("option[value='#{time_zone.name}']").select_option
+
+    find(:id => css_selector).find("option[value='#{value}']").select_option
+    #find(:id => css_selector).find(:option, value).select_option
+end
+
 When /^(?:I) pick "([^\"]*)" within "([^\"]*)"?$/ do |value, selector|
-    with_scope(selector) do
-        find("option[value='value'']").click
-    end
+    select_option(selector, value)
+    #find(selector).find(:xpath, 'option['value']').select_option
+
+    #within(selector) do
+     #   find("option[value='value'']").click
+    #end
 end
 
             
 #when I press
 #generally login or submit
 
+def find_click_button(name, location)
+    find(:text => location).find(:id => name).click
+end
+
 When /^(?:I) press "([^\"]*)" within "([^\"]*)"?$/ do |button, selector|
-    with_scope(selector) do
-        click_button(button)
-    end
+    #find(:id => selector).find(:text => button).click
+    find(:id => selector).find(:text => button).click
+    
+    #find_click_button(button, selector)
+    #with_scope(selector) do
+     #   click_button(button)
+    #end
 end
     
 Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|

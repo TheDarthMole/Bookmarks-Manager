@@ -14,6 +14,7 @@ require_relative '../../startServer.rb'
 ENV['RACK_ENV'] = 'test'
 
 Capybara.app = Sinatra::Application
+Capybara.ignore_hidden_elements = false
 
 
 RSpec.configure do |config|
@@ -25,6 +26,8 @@ class Sinatra::ApplicationWorld
     include RSpec::Matchers
     include Capybara::DSL
 end
+
+
 
 World do
     Sinatra::ApplicationWorld.new
