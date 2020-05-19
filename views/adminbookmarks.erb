@@ -263,6 +263,14 @@
                                     <a href="" data-toggle="modal" data-target="#rate-bookmark">
                                         <i class="fa fa-star"></i>
                                     </a>
+                                    <div class="btn-group">
+                                      <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
+                                        <span class="caret"></span></button>
+                                      <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/deleteBookmark/<%= item[0]%>">Delete Bookmark</a>
+                                        <a class="dropdown-item" href="/reportBookmark/<%= item[0]%>">Report Bookmark</a>
+                                      </div>
+                                </div>
                                 </td>
                             </tr>
                         <% @bookmarks = nil %>
