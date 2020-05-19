@@ -653,7 +653,7 @@ class BookmarkDB
     #Set comment to be disable or disabled
     def enable_disable_comment(comment_id,enable)
         statement = "UPDATE comments SET enabled = ? WHERE comment_id = ?"
-        @db.execute statement, enable, comment_id
+        return @db.execute statement, enable, comment_id
     end
 
     # Reporting
