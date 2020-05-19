@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--Avoiding Duplicated code -->
+
+<%= erb :headinclude, :locals => {:title => "Comment Audit - Admin"} %>
+
+<body>
+<!-- Navbar -->
+
+<%= erb :header %>
+
+<!-- modal-section -->
+
+<!-- dashboard section -->
+<section class="dashboard-section container py-5">
+  <div class="saved-bookmarks">
+    <div class="mb-3">
+      <h4>Comment Log</h4>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bookmark">
+      <thead>
+      <tr>
+        <th>User ID </th>
+        <th>Comment</th>
+        <th>Bookmark ID</th>
+        <th>Bookmark Name</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody><% log = view_disabled_comment(1) %>
+      <% log.each do |item| %>
+        <tr>
+          <td>
+            <%= h item[0]%>
+          </td>
+          <td>
+            <%= h item[2]%>
+          </td>
+          <td>
+            <%= h item[3]%>
+          </td>
+          <td>
+            <%= h item[4]%>
+          </td>
+          <td width="100">
+            <a href="/admin/comments/action/<%= h item[1] %>/show" data-toggle="tooltip" data-placement="top" title="Show Comment" class="mr-2">
+              <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+            </a>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
+    <p class="mb-md-0 font-sm text-muted mr-3">Showing entries
+      <% if params[:page] == nil then
+           y = 1
+         else y = params[:page]
+         end
+         x = 10*y
+         total = total_audit_results %>
+      <%= h (if (x < total) then x else total end) %> of <%= h total %></p>
+    <ul class="pagination mb-md-0">
+      <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Previous</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="page-item ">
+        <a class="page-link" href="#">2</a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#">Next</a>
+      </li>
+    </ul>
+  </nav>
+  </div>
+</section>
+
+<%= erb :footer %>
+
+<script src="/js/main.js"></script>
+<script src="/js/common.js"></script>
+</body>
+
+</html>
