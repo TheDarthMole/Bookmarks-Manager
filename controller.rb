@@ -628,7 +628,27 @@ class BookmarkDB
         return false
     end
 
+    # Commenting
     
+    def add_comment(user_id, bookmark_id, comment)
+        statement = "INSERT INTO comments (user_id, bookmark_id, text) VALUES ?,?,?"
+        @db.execute(statement, user_id, bookmark_id, comment)
+    end
+
+    def get_comments_for_bookmark(bookmark_id, page, per_page)
+        statement = "SELECT user_id, text FORM comments WHERE bookmark_id = ? LIMIT ?, "
+        return @db.execute statement, bookmark_id, page, per_page
+    end
+
+    def disable_comment(comment_id)
+        statement = "UPDATE comments SET enabled = 0 WHERE comment_id = ?"
+        @db.execute statement, comment_id
+    end
+
+    def enable_comment(comment_id)
+        statement = "UPDATE comments SET enabled = 1 WHERE comment_id = ?"
+        @db.execute statement, comment_id
+    end
 end
 
 # This section is for testing the database
