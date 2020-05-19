@@ -17,7 +17,7 @@ class BookmarkDB
                 return true
             end
         end
-            return false
+        return false
     end
 
     def is_admin(accountID)
