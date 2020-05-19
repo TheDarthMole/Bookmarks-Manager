@@ -1,6 +1,7 @@
 var add_bookmark = document.getElementById('add-bookmark');
 var edit_bookmark = document.getElementById('edit-bookmark');
 var delete_bookmark = document.getElementById('delete-bookmark');
+var report_bookmark = document.getElementById('report-bookmark');
 
 var modalOpen = document.querySelectorAll('a[data-toggle="modal"], button[data-toggle="modal"]');
 
@@ -18,6 +19,8 @@ for (let index = 0; index < modalOpen.length; index++) {
             case "#delete-bookmark":
                 delete_bookmark.style.display = "block";
                 break;
+            case "#report-bookmark":
+                report_bookmark.style.display = "block";
             default:
                 break;
         }
@@ -31,5 +34,6 @@ for (let index = 0; index < modalClose.length; index++) {
         add_bookmark.style.display = "none";
         edit_bookmark.style.display = "none";
         delete_bookmark.style.display = "none";
+        report_bookmark.style.display = "none";
     }
 }

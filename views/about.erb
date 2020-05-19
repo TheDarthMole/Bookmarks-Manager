@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <!-- Header -->
+    <%= erb :headinclude, :locals => {:title => "About"} %>
+    
+    <body>
+        
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp<span class="sr-only">(Current)</span></a>
+                
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav ml-lg-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about">ABOUT</a>
+                        </li>
+                       <li class="nav-item">
+                           <a class="nav-link" href="/contact">CONTACT</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">GUEST</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">
+                                <button class="btn btn-outline-light">
+                                    LOGIN
+                                </button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">
+                                <button class="btn btn-light">
+                                    REGISTER
+                                </button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Body Content -->
+        <section class="features-section container py-5">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-md-6">
+                    <div class="mb-4 mb-md-0">
+                        <img src="https://placeimg.com/640/480/tech" alt="" class="img-fluid" />
+                    </div>
+                </div>
+                <div class="col-md-6 order-md-first">
+                    <div class="text-center text-md-left">
+                        <h4>Acme Corp's Bookmark Manager</h4>
+                        <p>
+                            This Bookmarking tool is an incredibly powerful website bookmark manager that allows users to save any web article, video, music, cloud file, social media content and anything on the web with a single link. All bookmarks are automatically saved in Acme Corp's Cloud Servers. You can search and filter by title, description, source and tags.
+                        </p>
+                        <br>
+                        <h4>Save Anything from Anywhere Online</h4>
+                        <p>
+                            Any URL's can be saved by simply typing "xyz.io/" in front of any URL in your browsers address bar to save a bookmark. 
+                        </p>
+                        <br>
+                        <h4>Edit Your Bookmarks &amp; Add Notes</h4>
+                        <p>
+                            Acme Corp's Bookmarking tool gives you the ability to add your own notes to the content you're saving and make it more personalised, to find it later.
+                        </p>
+                        <br>
+                        <h4>Find any Bookmark in Seconds!</h4>
+                        <p>
+                            Any web content you save can be searched with ease via the search function in your account's dashboard. Search for titles, notes, URL's, keywords, etc. You will waste no more time searching for bookmarks!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!--BANNER -->
+        <section class="banner-section py-lg-5">
+            <Div class="bg-info text-center py-lg-5 p-3">
+                <h3 class="text-white">Our Policies</h3>
+            </Div>
+        </section>
+        
+        <!--POLICY BODY-->
+        <section class="features-section container py-5">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-md-7 order-md-first">
+                    <div class="text-center text-md-left">
+                        <h4>Accessibility</h4>
+                        <p>
+                            Acme Corp is committed to providing access to our Bookmarking Web Application for individuals with disabilities. To meet this commitment, this site is built to comply with the requirements of <a href="https://www.section508.gov/">Section 508 of the Rehabilitation Act.</a>Section 508 requires that individuals with disabilities, who are members of the public seeking information or services from us, have access to and use of information and data that is comparable to that provided to the public who are not individuals with disabilities, unless an undue burden would be imposed on us.
+                        </p>
+                        <p>
+                            This website complies by the <a href="https://www.w3.org/WAI/standards-guidelines/wcag/">Web Content Accessibility Guidlines.</a> Therefore, this website ensures the following conventions:
+                        </p>
+                        <ol>
+                            <li>Alternatives: All images and non-text content requires alternative text</li>
+                            <li>Presentation: The website's structure uses correct markup techniques to structure the website's content in a meaningful order. There is a Colour Contrast ratio of at least 4.5:1 between all text and backgrounds. </li>
+                            <li>User Control: All content and functions on the website is accessible by Keyboard and Mouse.</li>
+                            <li>Understandable: Each page has a unique and descriptive title. Users are also able to navigate through the website in a logical sequential order that perserves meaning. </li>
+                            
+                        </ol>
+                        <p>
+                            If you use assistive technology (such as a Braille reader, a screen reader, TTY, etc.) and the format of any material on our websites interferes with your ability to access the information, please go to <a href="/contact">Contact</a> section of the website
+                        </p>
+                        <h4>Copyright &amp; Permissions Notice </h4>
+                        <p>
+                            Please note that all illustrations and Photographs have been used under <a href="https://www.copyright.gov/fls/fl102.html">Fair Use</a> rules and regulations. Also note that some images on our site may have been obtained from other organizations. Permission to use these images should be obtained directly from those organizations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <%= erb :footer %>
+        
+    </body>
+</html>

@@ -95,6 +95,7 @@
             </div>
         </div>
     </div>
+    
     <div class="modal" tabindex="-1" role="dialog" id="delete-bookmark">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -137,6 +138,61 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal" tabindex="-1" role="dialog" id="report-bookmark">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Report Bookmark</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="">REASON FOR REPORTING</label>
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>Spam</option>
+                                <option>Sexual Content / Nudity</option>
+                                <option>Bullying / Harrasement</option>
+                                <option>Hate Speech / Symbols</option>
+                                <option>Violence / Dangerous Organisations</option>
+                                <option>Sale of Illegal / Regulated Goods</option>
+                                <option>Scam / Fraud</option>
+                                <option>False Information</option>
+                                <option>Duplicate Link</option>
+                                <option>I Just Don't Like It</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">
+                            CANCEL
+                        </button>
+                        <button type="button" class="btn btn-info">
+                            SUBMIT
+                        </button>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="rate-bookmark">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rate Bookmark</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="">RATE THE BOOKMARK!</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
     <!-- dashboard section -->
     <section class="dashboard-section container py-5">
         <div class="saved-bookmarks">
@@ -194,12 +250,18 @@
                                 <td>
                                     <a href="<%= h item[2] %>" target="blank"><%= h item[2] %></a>
                                 </td>
-                                <td width="100">
+                                <td width="200">
                                     <a href="" data-toggle="modal" data-target="#edit-bookmark" class="mr-2">
                                         <i class="fa fa-pencil-alt"></i>
                                     </a>
                                     <a href="" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
                                         <i class="fa fa-times"></i>
+                                    </a>
+                                    <a href="" data-toggle="modal" data-target="#report-bookmark">
+                                        <i class="fa fa-flag"></i>
+                                    </a>
+                                    <a href="" data-toggle="modal" data-target="#rate-bookmark">
+                                        <i class="fa fa-star"></i>
                                     </a>
                                 </td>
                             </tr>
