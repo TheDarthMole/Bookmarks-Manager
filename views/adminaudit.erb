@@ -59,8 +59,8 @@
             <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
                 <p class="mb-md-0 font-sm text-muted mr-3">Showing entries
                   <% if params[:page] == nil then
-                         y = 1
-                     else y = params[:page]
+                         y = 1000
+                     else y = 1000
                      end
                      x = 10*y
                 total = total_audit_results %>
@@ -72,10 +72,6 @@
                     <li class="page-item active">
                         <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="page-item ">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item">
                         <a class="page-link" href="#">Next</a> 
                     </li>
