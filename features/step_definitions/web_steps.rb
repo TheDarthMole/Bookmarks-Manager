@@ -55,7 +55,9 @@ end
 
 When /^(?:I) press "([^\"]*)" within "([^\"]*)"?$/ do |button, selector|
     #find(:id => selector).find(:text => button).click
-    find(:id => selector).find(:text => button).click
+    find(:tag => selector).find(:text => button).click
+    #find(:class => selector).find(:text => button).click
+    
     
     #find_click_button(button, selector)
     #with_scope(selector) do
@@ -63,6 +65,16 @@ When /^(?:I) press "([^\"]*)" within "([^\"]*)"?$/ do |button, selector|
     #end
 end
     
+When /^(?:I) press "([^\"]*)"?$/ do |button|
+    puts "finding text"
+    #find('*', text: button).click
+    #find(:xpath ,"/form/button[@type = 'submit']").click
+    find("button", :text => button).click
+
+    #find(:xpath ,"/form[last()]").click
+    #find(:xpath, text: button).click
+end
+
 Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|
         if page.respond_to? :should
             current_path.should == path
@@ -72,6 +84,7 @@ Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|
 end
     
 Then /^(?:|I) should see "([^\"]*)"(?: within "([^\"]*)")?$/ do  |text, selector|
+   page.find("#table").should have_content('stuff') 
     with_scope(selector) do
         fill_in(field)
         if page.respond_to? :should

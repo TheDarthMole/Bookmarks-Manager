@@ -2,11 +2,9 @@ Feature: make bookmarks
 
 #"Successfully added bookmark!"
 
-Scenario: Made a mistake
-    #what's supposed to happen? containing invalid characters? idk
-
 
 Scenario: Link name empty
+    #when I press add new
     Given I am on the "dashboard" page
     When I fill in "title" with "secret"
     When I fill in "url" with "secret"
@@ -14,6 +12,7 @@ Scenario: Link name empty
     When I press "Submit" within "form"
     When I check "favourites"
     Then I should see "Link name empty."
+    #Successfully added bookmark!
 
 Scenario: Link name contains invalid characters
     #Then I should see "Welcome"
