@@ -305,6 +305,11 @@ get "/dashboard" do
     erb :dashboard
 end
 
+get "/guest" do
+    session[:lim] = 10;
+    erb :dashboard
+end
+
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
