@@ -689,6 +689,21 @@ class BookmarkDB
         return @db.execute statement, bookmark_id
     end
 
+    def remove_report(report_id)
+        statement = "DELETE FROM reporting_comments WHERE report_id = ?"
+        @db.execute statement, report_id
+    end
+
+    def get_comment_reports
+        statement = "SELECT comments.bookmark_id,reporting_comments.user_id,comments.text,bookmarks.bookmark_name, reporting_comments.report_id FROM reporting_comments,comments,bookmarks WHERE comments.comment_id=reporting_comments.comment_id AND comments.bookmark_id=bookmarks.bookmark_id ORDER BY reporting_comments.comment_id DESC"
+        return @db.execute statement
+    end
+
+    def get_total_reports(bookmark_id)
+        statement = "SELECT COUNT(bookmark_id)FROM reporting_bookmarks WHERE bookmark_id = ?"
+        return @db.execute statement, bookmark_id
+    end
+
     def report_comment(comment_id, user_id, reason_id)
         statement = "REPLACE INTO reporting_comments (user_id, comment_id, reason_id) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM reporting_comments WHERE user_id = ? AND comment_id = ? LIMIT 1)"
         @db.execute statement, user_id, comment_id, reason_id, user_id, comment_id
