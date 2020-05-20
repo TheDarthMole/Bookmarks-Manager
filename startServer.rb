@@ -219,6 +219,17 @@ get "/admin/bookmarks/:page/:lim" do
     erb :adminbookmarks
 end
 
+get "/admin/audit/bookmarks/reported" do
+  adminauthenticate
+  erb :bookmarksreported
+end
+
+get "/admin/audit/bookmarks/reported/remove/:id" do
+    adminauthenticate
+    @db.remove_report_comment(params[:id])
+    redirect back
+end
+
 get "/unfavourite/:id" do
     authenticate
     remove_favourite(params[:id])
