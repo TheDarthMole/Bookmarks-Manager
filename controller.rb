@@ -116,6 +116,7 @@ class BookmarkDB
         retStatement = @db.execute statement, email
         return retStatement[0]
     end
+
     
     def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
         password_reason = password_check(password)
@@ -337,15 +338,14 @@ class BookmarkDB
             sql[i_min].append(get_bookmark_tags(sql[i_min][0]))
             i_min= 1 + i_min
         end
-        p sql
         return sql
     end
     
     def get_total_results(search)
         term = '%'+search+'%'
-        retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1"
+        retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE (bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?) AND bookmarks.enabled=1"
         sql = @db.execute retStatment, term, term, term
-
+        p sql
         return sql[0][0]
     end
 
@@ -415,64 +415,6 @@ class BookmarkDB
         statement = "DELETE FROM favourites WHERE user_id=? AND bookmark_id =?"
         return @db.execute(statement,user_id,bookmark_id)
     end
-
-=begin OLD CODE
-    def search_tags_bookmarks(tag_name)
-        #gets tag_id based on name
-        tag_id = get_tag_id(tag_name)
-        #saves array of bookmarks with tag_ID
-        bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
-        bookmark_list=[]
-        #goes through bookmark ID
-        bookmark_id_list.each { |i|
-            bookmark_list.append(get_bookmark(i))
-        }
-        #debug code
-        return bookmark_list
-    end
-
-    def search_owner_bookmarks(owner)
-        #gets user_id based on name
-        owner_id = @db.execute("SELECT user_id FROM users WHERE first_name=? OR last_name=?", owner,owner)
-        bookmark_list=[]
-        owner_id.each do
-            |i|
-            bookmark_list.append(get_user_bookmark(i))
-        end
-        return bookmark_list
-    end
-
-    def search_url_bookmarks(url)
-        #makes it a wildcard search
-        search = '%'+url+'%'
-        statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ? AND enabled=1"
-        retStatement = @db.execute statement,search
-        #debug
-        return retStatement
-    end
-
-    def get_bookmarks(page,result_per_page)
-        result =[]
-        i_min = (page-1)*result_per_page
-        i_max = page*result_per_page
-        while i_min != i_max
-            result.append(@db.execute("SELECT bookmark_name,url,creation_time WHERE bookmark_id=?",i_min))
-            i_min = i_min+1
-        end
-        return result
-    end
-    #creates an array to display based on page number
-    def display_bookmarks(array, page_number, number_results)
-        i_max = page_number * number_results
-        i_min = (page_number-1) * number_results
-        results = []
-        while i_min != i_max
-            results.append(array[i_min])
-            i_min = 1 + i_min
-        end
-        return results
-        end
-=end
 
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id, *tags)
@@ -679,10 +621,14 @@ class BookmarkDB
         @db.execute statement, bookmark_id, user_id, reason_id
     end
 
-    def get_bookmark_reports(page, per_page)
-        i_min = (page.to_i - 1) * per_page.to_i
-        statement = "SELECT reporting_bookmarks.bookmark_id,user_id,bookmarks.bookmark_name FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id LIMIT ?,?"
-        return @db.execute statement, i_min, per_page
+    def get_bookmark_reports
+        statement = "SELECT reporting_bookmarks.bookmark_id,reporting_bookmarks.user_id,bookmarks.url,bookmarks.bookmark_name,reporting_bookmarks.report_id FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id ORDER BY reporting_bookmarks.bookmark_id DESC"
+        return @db.execute statement
+    end
+
+    def get_total_reports(bookmark_id)
+        statement = "SELECT COUNT(bookmark_id)FROM reporting_bookmarks WHERE bookmark_id = ?"
+        return @db.execute statement, bookmark_id
     end
 
     def report_comment(comment_id, user_id, reason_id)
@@ -690,9 +636,9 @@ class BookmarkDB
         @db.execute statement, user_id, comment_id, reason_id, user_id, comment_id
     end
 
-    def remove_report_comment(comment_id, user_id)
-        statement = "DELETE FROM reporting_bookmarks WHERE comment_id = ? AND user_id = ?"
-        @db.execute statement, comment_id, user_id, reason_id
+    def remove_report_comment(report_id)
+        statement = "DELETE FROM reporting_bookmarks WHERE report_id = ?"
+        @db.execute statement, report_id
     end
     
 end

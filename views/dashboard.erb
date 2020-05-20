@@ -185,11 +185,7 @@
       </div>
     </form>
   </div>
-  <div class="mb-5">
-    <p class="font-sm">
-      You haven't saved anything yet, favourite a bookmark to make it appear here
-    </p>
-  </div>
+  
 
   <div class="saved-bookmarks">
 
@@ -240,7 +236,7 @@
                   </svg></a>
                 <% end %>
             </td>
-            <td>
+            <td width="50">
               <a href="<%= h item[2] %>"><%= h item[1]%></a>
             </td>
             <td>
@@ -254,20 +250,14 @@
             </td>
             <% if can_user_do_action("edit") == true %>
               <td width="100">
-                <a id="edit-bookmark" data-toggle="modal" data-target="#edit-bookmark" data-id="<%= h item[0] %>" class="mr-2">
-                  <i class="fa fa-pencil-alt"></i>
-                </a>
-                <a href="delete-bookmark" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                  <i class="fa fa-times"></i>
-                </a>
                 <div class="btn-group">
-  <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
-    <span class="caret"></span></button>
-  <div class="dropdown-menu">
-    <a class="dropdown-item" href="/deleteBookmark/<%= item[0]%>">Delete Bookmark</a>
-    <a class="dropdown-item" href="/reportBookmark/<%= item[0]%>">Report Bookmark</a>
-  </div>
-</div>
+                  <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
+                    <span class="caret"></span></button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/deleteBookmark/<%= item[0]%>">Delete Bookmark</a>
+                    <a class="dropdown-item" href="/reportBookmark/<%= item[0]%>">Report Bookmark</a>
+                  </div>
+                </div>
               </td>
             <% end %>
           </tr>
@@ -286,7 +276,7 @@
     </div>
     <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
       <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
-        <%= if x <= total && x!=0 then x else 10 end %> <%= if x > total then total end %> of <%= total %></p>
+        <%= if x <= total && x!=0 then x elsif x > total then total else 10 end %> of <%= total %></p>
       <ul class="pagination mb-md-0">
         <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
           <a class="page-link" href="/dashboard/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
