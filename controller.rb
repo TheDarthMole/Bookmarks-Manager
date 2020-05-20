@@ -415,64 +415,6 @@ class BookmarkDB
         return @db.execute(statement,user_id,bookmark_id)
     end
 
-=begin OLD CODE
-    def search_tags_bookmarks(tag_name)
-        #gets tag_id based on name
-        tag_id = get_tag_id(tag_name)
-        #saves array of bookmarks with tag_ID
-        bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
-        bookmark_list=[]
-        #goes through bookmark ID
-        bookmark_id_list.each { |i|
-            bookmark_list.append(get_bookmark(i))
-        }
-        #debug code
-        return bookmark_list
-    end
-
-    def search_owner_bookmarks(owner)
-        #gets user_id based on name
-        owner_id = @db.execute("SELECT user_id FROM users WHERE first_name=? OR last_name=?", owner,owner)
-        bookmark_list=[]
-        owner_id.each do
-            |i|
-            bookmark_list.append(get_user_bookmark(i))
-        end
-        return bookmark_list
-    end
-
-    def search_url_bookmarks(url)
-        #makes it a wildcard search
-        search = '%'+url+'%'
-        statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ? AND enabled=1"
-        retStatement = @db.execute statement,search
-        #debug
-        return retStatement
-    end
-
-    def get_bookmarks(page,result_per_page)
-        result =[]
-        i_min = (page-1)*result_per_page
-        i_max = page*result_per_page
-        while i_min != i_max
-            result.append(@db.execute("SELECT bookmark_name,url,creation_time WHERE bookmark_id=?",i_min))
-            i_min = i_min+1
-        end
-        return result
-    end
-    #creates an array to display based on page number
-    def display_bookmarks(array, page_number, number_results)
-        i_max = page_number * number_results
-        i_min = (page_number-1) * number_results
-        results = []
-        while i_min != i_max
-            results.append(array[i_min])
-            i_min = 1 + i_min
-        end
-        return results
-        end
-=end
-
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id, *tags)
         unless plain_text_check(bookmarkName)
