@@ -56,6 +56,9 @@ helpers do # functions used within erb files
     end
     
     def check_admin(email)
+        if email.nil?
+            return false
+        end
         return @db.is_admin(@db.get_account_id(email))
     end
 
@@ -71,6 +74,9 @@ helpers do # functions used within erb files
     end
 
     def can_user_do_action(action)
+        if session[:user].nil?
+            return false
+        end
         return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
     end
 
@@ -101,6 +107,9 @@ helpers do # functions used within erb files
 
   #Favourites
     def is_user_fav(bookmark_id)
+        if session[:user].nil?
+            return false
+        end
         bookmark_id = bookmark_id.to_i
         return @db.is_user_favourite(@db.get_account_id(session[:user]),bookmark_id)
     end
@@ -193,6 +202,43 @@ get "/admin/users/action/:id/unsuspend" do
     redirect back
 end
 
+get "/admin/audit/bookmarks/disabled" do
+    erb :adminbookmarksdisabled
+end
+
+get "/admin/bookmarks/:id/show" do
+    @db.enable_bookmark(params[:id].to_i)
+    add_to_audit_log("enabled bookmark")
+    redirect back
+end
+
+get "/admin/bookmarks/:page/:lim/:searchterm" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :adminbookmarks
+end
+
+get "/admin/bookmarks/:page/:lim" do
+    adminauthenticate
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
+    @total = get_total_items("")
+    erb :adminbookmarks
+end
+
+get "/admin/audit/bookmarks/reported" do
+  adminauthenticate
+  erb :bookmarksreported
+end
+
+get "/admin/audit/bookmarks/reported/remove/:id" do
+    adminauthenticate
+    @db.remove_report_comment(params[:id])
+    redirect back
+end
+
 get "/unfavourite/:id" do
     authenticate
     remove_favourite(params[:id])
@@ -218,9 +264,7 @@ end
 
 get "/reportBookmark/:id" do
     authenticate
-    p @db.exec("SELECT * FROM reporting_bookmarks")
     @db.report_bookmark(params[:id], @db.get_account_id(session[:user]), 10)
-    p @db.exec("SELECT * FROM reporting_bookmarks")
     redirect back
 end
 
@@ -261,6 +305,11 @@ get "/dashboard" do
     erb :dashboard
 end
 
+get "/guest" do
+    session[:lim] = 10;
+    erb :dashboard
+end
+
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
@@ -274,16 +323,6 @@ end
 
 get "/dashboard/:page/:lim/" do
     redirect "/dashboard/#{params[:page]}/#{params[:lim]}"
-end
-
-get "/admin/audit/bookmarks/disabled" do
-  erb :adminbookmarksdisabled
-end
-
-get "/admin/bookmarks/:id/show" do
-  @db.enable_bookmark(params[:id].to_i)
-  add_to_audit_log("enabled bookmark")
-  redirect back
 end
 
 post "/dashboard" do
@@ -309,21 +348,7 @@ get "/dashboard/:page/:lim/:searchterm" do
     erb :dashboard
 end
 
-get "/admin/bookmarks/:page/:lim/:searchterm" do
-    adminauthenticate
-    session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
-    @total = get_total_items(params[:searchterm])
-    erb :adminbookmarks
-end
 
-get "/admin/bookmarks/:page/:lim" do
-    adminauthenticate
-    session[:lim] = params[:lim]
-    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
-    @total = get_total_items("")
-    erb :adminbookmarks
-end
 
 post "/login" do
     if @db.try_login(params[:email].downcase, params[:password])
@@ -377,6 +402,7 @@ post "/createbookmark" do
     authenticate
     reply = @db.add_bookmark(params[:title], params[:url], @db.get_account_id(session[:user]), params[:tags])
     session[:reply] = reply
+    add_to_audit_log("ADD BOOKMARK")
     redirect "/dashboard"
 end
 
