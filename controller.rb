@@ -116,6 +116,7 @@ class BookmarkDB
         retStatement = @db.execute statement, email
         return retStatement[0]
     end
+
     
     def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
         password_reason = password_check(password)
@@ -620,10 +621,14 @@ class BookmarkDB
         @db.execute statement, bookmark_id, user_id, reason_id
     end
 
-    def get_bookmark_reports(page, per_page)
-        i_min = (page.to_i - 1) * per_page.to_i
-        statement = "SELECT reporting_bookmarks.bookmark_id,user_id,bookmarks.bookmark_name FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id LIMIT ?,?"
-        return @db.execute statement, i_min, per_page
+    def get_bookmark_reports
+        statement = "SELECT reporting_bookmarks.bookmark_id,reporting_bookmarks.user_id,bookmarks.url,bookmarks.bookmark_name,reporting_bookmarks.report_id FROM reporting_bookmarks,bookmarks WHERE bookmarks.bookmark_id=reporting_bookmarks.bookmark_id ORDER BY reporting_bookmarks.bookmark_id DESC"
+        return @db.execute statement
+    end
+
+    def get_total_reports(bookmark_id)
+        statement = "SELECT COUNT(bookmark_id)FROM reporting_bookmarks WHERE bookmark_id = ?"
+        return @db.execute statement, bookmark_id
     end
 
     def report_comment(comment_id, user_id, reason_id)
@@ -631,9 +636,9 @@ class BookmarkDB
         @db.execute statement, user_id, comment_id, reason_id, user_id, comment_id
     end
 
-    def remove_report_comment(comment_id, user_id)
-        statement = "DELETE FROM reporting_bookmarks WHERE comment_id = ? AND user_id = ?"
-        @db.execute statement, comment_id, user_id, reason_id
+    def remove_report_comment(report_id)
+        statement = "DELETE FROM reporting_bookmarks WHERE report_id = ?"
+        @db.execute statement, report_id
     end
     
 end
