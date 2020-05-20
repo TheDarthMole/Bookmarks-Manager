@@ -224,9 +224,20 @@ get "/admin/audit/bookmarks/reported" do
   erb :bookmarksreported
 end
 
-get "/admin/audit/bookmarks/reported/remove/:id" do
+get "/admin/audit/comments/reported" do
+  adminauthenticate
+  erb :admincommentaudit
+end
+
+get "/admin/audit/comments/reported/remove/:id" do
     adminauthenticate
-    @db.remove_report_comment(params[:id])
+    @db.remove_report_comment(params[:id].to_i)
+    redirect back
+end
+
+get "/admin/audit/comment/reported/remove/:id" do
+    adminauthenticate
+    @db.remove_report(params[:id])
     redirect back
 end
 
