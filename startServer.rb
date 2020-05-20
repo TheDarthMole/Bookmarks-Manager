@@ -56,6 +56,9 @@ helpers do # functions used within erb files
     end
     
     def check_admin(email)
+        if email.nil?
+            return false
+        end
         return @db.is_admin(@db.get_account_id(email))
     end
 
@@ -71,6 +74,9 @@ helpers do # functions used within erb files
     end
 
     def can_user_do_action(action)
+        if session[:user].nil?
+            return false
+        end
         return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
     end
 
@@ -101,6 +107,9 @@ helpers do # functions used within erb files
 
   #Favourites
     def is_user_fav(bookmark_id)
+        if session[:user].nil?
+            return false
+        end
         bookmark_id = bookmark_id.to_i
         return @db.is_user_favourite(@db.get_account_id(session[:user]),bookmark_id)
     end
