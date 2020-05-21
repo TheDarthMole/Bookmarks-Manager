@@ -418,9 +418,10 @@ post "/createbookmark" do
 end
 
 post "/register" do
+    p params
     session[:reason] = nil
     if params[:password] == params[:passwordConfirm] # Checks to make sure the
-        sqlresponse = @db.create_account(params[:email], params[:password], 
+        sqlresponse = @db.create_account(params[:username],params[:email], params[:password], 
             params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
         if sqlresponse == "Successfully created account!"
             erb :login

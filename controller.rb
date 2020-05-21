@@ -152,7 +152,7 @@ class BookmarkDB
     end
 
     
-    def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
+    def create_account(username, email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
         password_reason = password_check(password)
         unless password_reason == true
             return password_reason
@@ -160,12 +160,19 @@ class BookmarkDB
         unless email_check(email)
             return "Invalid email format"
         end
+        unless plain_text_check(username)
+            return "username is greater than 30"
+        end
         email = email.downcase
+        username = username.downcase
         unless check_account_exists(email)
-            hash = generate_hash(password,salt="") # salt="" means a new one is generated
-            statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
-            return "Successfully created account!"
+            unless check_username_exists(username)
+                hash = generate_hash(password,salt="") # salt="" means a new one is generated
+                statement = "INSERT INTO users (username, email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                retStatement = @db.execute statement, username, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
+                return "Successfully created account!"
+            end
+            return "Account with that username already exists!"
         end
         puts "User tried to make an account with duplicate email #{email}"
         return "Account with that email already exists!"
@@ -699,7 +706,3 @@ db = BookmarkDB.new
     db.unsuspend_user(account)
 #     db.set_password(account,"Password1!")
 end
-
-p db.try_login("nruffles1","Password1!")
-p db.try_login("nruffles1@sheffield.ac.uk","Password1!")
-p db.try_login("nruffles1@sheffield.a","Password1!")
