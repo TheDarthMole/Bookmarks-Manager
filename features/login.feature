@@ -1,38 +1,33 @@
 Feature: login
 #Scenario: Password entry failed multiple times
 
-Scenario: Correct password entered
-    Given I am on the "home" page
-    When I fill in "email" with "nonsense"
-    When I fill in "password" with "secret"
-    When I press "Submit" within "form"
-    Then I should see "Welcome"
-    Then I should see "Search bookmark"
+Scenario: Correct login procedure
+    Given I am on the "login" page
+    When I fill in "email" with "smmalinowski1@sheffield.ac.uk"
+    When I fill in "password" with "Password1!"
+    When I press "LOGIN"
+    Then I should see "ADD NEW"
+    Then I should see "FAVOURITES"
 
 Scenario: Password invalid 
-    Given I am on the "home" page
-    When I fill in "email" with "nonsense"
+    Given I am on the "login" page
+    When I fill in "email" with "smmalinowski1@sheffield.ac.uk"
     When I fill in "password" with "nonsense"
-    When I press "Submit" within "form"
-    Then I should see "Login"
-    Then I should see "Search bookmark"
-
-Scenario: Password forgotten
-    Given I am on the "home" page
-    When I fill in "email" with "nonsense"
-    When I fill in "password" with "nonsense"
-    When I press "Login" within "nav"
-    Then I should see "Login"
-    Then I should see "Username"
+    When I press "LOGIN"
+    Then I should see "You have entered incorrect credentials"
 
 Scenario: Username invalid 
-    Given I am on the "home" page
+    Given I am on the "login" page
     When I fill in "email" with "nonsense"
-    When I fill in "password" with "nonsense"
-    When I press "Submit" within "form"
-    Then I should see "Login"
-    Then I should see "Username incorrect."
-    Then I should see "Search bookmark"
+    When I fill in "password" with "Password1!"
+    When I press "LOGIN"
+    Then I should see "You have entered incorrect credentials"
+
+Scenario: Password forgotten
+    Given I am on the "login" page
+    When I go to "Forgot Password?"
+    Then I should see "Enter email to recover password"
+
 
 
 

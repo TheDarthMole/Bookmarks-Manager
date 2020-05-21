@@ -3,7 +3,7 @@ Feature: make bookmarks
 Background: filling with various values
 
 Scenario: Normal case
-Given I am logged in
+    Given I am logged in
     Given I am on the "dashboard" page
     When I press "add new"
     When I fill in "title" with "secret"
