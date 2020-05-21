@@ -49,23 +49,23 @@
                     <% end %>
                     <% session[:reply] = nil %>
                     <div class="form-group">
-                        <label for="">Email Address<span class="text-danger">*</span></label>
-                        <input name="email" type="text" class="form-control" placeholder="john@doe.com" />
+                        <label for="email">Email Address<span class="text-danger">*</span></label>
+                        <input name="email" id="email" type="text" class="form-control" placeholder="john@doe.com" />
                     </div>
                     <div class="form-group">
-                        <label for="">Password<span class="text-danger">*</span></label>
-                        <input name="password" type="password" class="form-control" placeholder="********" />
+                        <label for="password">Password<span class="text-danger">*</span></label>
+                        <input name="password"  id ="password" type="password" class="form-control" placeholder="********" />
                     </div>
                 </div>
                 <div class="mb-4">
                     <a>
-                        <button type="submit" class="btn btn-info">LOGIN</button>
+                        <button type="submit" id="submit" class="btn btn-info">LOGIN</button>
                     </a>
                     <div>
                         <a href="#" class="font-sm">Forgot Password?</a>
                     </div>
                 </div>
-                <p>Don't have an account? <a href="/register">Register</a></p>
+                <p>Don't have an account? <a id="register-link" href="/register">Register</a></p>
             </form>
             <div class="col-md-6">
                 <img src="https://placeimg.com/640/480/tech" alt="" class="img-fluid" />
