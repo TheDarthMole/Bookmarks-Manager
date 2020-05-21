@@ -13,3 +13,6 @@ gem 'cucumber'
 gem 'rspec'
 gem 'simplecov'
 gem 'minitest'
+gem 'warden'
+gem 'factory_bot'
+

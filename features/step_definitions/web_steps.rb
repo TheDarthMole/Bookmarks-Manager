@@ -1,21 +1,12 @@
-#Given /^(?:|I) am on the "([^\"]*)" page (.+)$/ do |page_name|
- #   visit path_to(page_name)
-#end
 
 Given /^(?:|I )am on (.+)$/ do |page_name|
   visit path_to(page_name)
 end
 
-#put returns from controller.rb
 
-#or click button
-#When /^(?:I) fill in "([^\"]*)" with "([^\"]*)"(?: within "([^\"]*)")?$/ do |field, value, selector|
- #   scope(selector) do
-  #      fill_in(field, :with => value)
-   # end
-#end
- 
-  
+Given /^(?:I) am logged in?$/ do
+    login_as(FactoryBot.create(:user))
+end
 
 #or click button
 When /^(?:I) fill in "([^\"]*)" with "([^\"]*)"?$/ do |field, value|
@@ -38,11 +29,7 @@ end
 
 When /^(?:I) pick "([^\"]*)" within "([^\"]*)"?$/ do |value, selector|
     select_option(selector, value)
-    #find(selector).find(:xpath, 'option['value']').select_option
-
-    #within(selector) do
-     #   find("option[value='value'']").click
-    #end
+    
 end
 
             
@@ -55,14 +42,16 @@ end
 
 When /^(?:I) press "([^\"]*)" within "([^\"]*)"?$/ do |button, selector|
     #find(:id => selector).find(:text => button).click
-    find(:id => selector).find(:text => button).click
-    
-    #find_click_button(button, selector)
-    #with_scope(selector) do
-     #   click_button(button)
-    #end
+    find(:tag => selector).find(:text => button).click
+   
 end
     
+When /^(?:I) press "([^\"]*)"?$/ do |button|
+   
+    find("button", :text => button).click
+
+end
+
 Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|
         if page.respond_to? :should
             current_path.should == path
@@ -70,14 +59,8 @@ Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|
             assert current_path.should == path    
         end
 end
-    
-Then /^(?:|I) should see "([^\"]*)"(?: within "([^\"]*)")?$/ do  |text, selector|
-    with_scope(selector) do
-        fill_in(field)
-        if page.respond_to? :should
-            page.should have_content(text)
-        else
-            assert page.has_content?(text)
-        end
-    end
+
+Then /^(?:|I) should see "([^\"]*)"?$/ do  |text|
+   page.should have_content(text)     
 end
+
