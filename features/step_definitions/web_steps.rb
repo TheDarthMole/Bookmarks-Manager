@@ -7,8 +7,10 @@ end
 Given /^(?:I) am logged in?$/ do
     #here visit path and do commands, no factoeybot
     visit path_to("login")
-    
-    #login_as(FactoryBot.create(:user))
+    fill_in("email", :with => "smmalinowski1@sheffield.ac.uk")
+    fill_in("password", :with => "Password1!")
+    find("button", :text => "LOGIN").click
+    #also logout?
 end
 
 #or click button
