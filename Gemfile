@@ -14,5 +14,4 @@ gem 'thin'
 # gem 'simplecov'
 # gem 'minitest'
 # gem 'warden'
-# gem 'factory_bot'
-
+# gem 'selenium-webdriver'
