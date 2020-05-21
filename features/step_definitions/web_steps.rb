@@ -66,7 +66,7 @@ When /^(?:I) press "([^\"]*)" within "([^\"]*)"?$/ do |button, selector|
 end
     
 When /^(?:I) press "([^\"]*)"?$/ do |button|
-    puts "finding text"
+    #puts "finding text"
     #find('*', text: button).click
     #find(:xpath ,"/form/button[@type = 'submit']").click
     find("button", :text => button).click
@@ -83,14 +83,9 @@ Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|
         end
 end
     
-Then /^(?:|I) should see "([^\"]*)"(?: within "([^\"]*)")?$/ do  |text, selector|
-   page.find("#table").should have_content('stuff') 
-    with_scope(selector) do
-        fill_in(field)
-        if page.respond_to? :should
-            page.should have_content(text)
-        else
-            assert page.has_content?(text)
-        end
-    end
+#Then /^(?:|I) should see "([^\"]*)"(?: within "([^\"]*)")?$/ do  |text, selector|
+Then /^(?:|I) should see "([^\"]*)"?$/ do  |text|
+   #page.find(selector).should have_content(text)     
+   page.should have_content(text)     
 end
+
