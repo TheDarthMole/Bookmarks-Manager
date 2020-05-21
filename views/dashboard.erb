@@ -46,15 +46,15 @@
         <div class="modal-body">
           <div class="form-group">
             <label for="title">TITLE</label>
-            <input name="title" type="text" class="form-control" placeholder="Bookmark Title" required/>
+            <input name="title" type="text" class="form-control" placeholder="Bookmark Title" id="bookmark-name" required/>
           </div>
           <div class="form-group">
             <label for="url">URL</label>
-            <input name="url" type="text" class="form-control" pattern="https?://.+" placeholder="Bookmark URL" required/>
+            <input name="url" type="text" id="bookmark-url" class="form-control" pattern="https?://.+" placeholder="Bookmark URL" required/>
           </div>
           <div class="form-group">
             <label for="tags">Tags - e.g. "Office Productivity Tools Work"</label>
-            <textarea name="tags" class="form-control" rows="3" placeholder="Add Tags"></textarea>
+            <textarea name="tags" class="form-control" id="bookmark-tags" rows="3" placeholder="Add Tags"></textarea>
           </div>
           <!-- add tags^^-->
 
@@ -73,7 +73,7 @@
           <button type="button" class="btn btn-outline-info" data-dismiss="modal">
             CANCEL
           </button>
-          <button type="submit" class="btn btn-info">SAVE</button>
+          <button type="submit" class="btn btn-info" id="save-bookmark">SAVE</button>
         </div>
       </form>
     </div>
@@ -185,11 +185,7 @@
       </div>
     </form>
   </div>
-  <div class="mb-5">
-    <p class="font-sm">
-      You haven't saved anything yet, favourite a bookmark to make it appear here
-    </p>
-  </div>
+  
 
   <div class="saved-bookmarks">
 
@@ -269,7 +265,7 @@
           <% @total = nil %>
         <% end %>
         <% if session[:reply] %>
-          <div class="alert alert-warning" role="alert">
+          <div class="alert alert-warning" role="alert" id="alert">
             <%= h session[:reply] %>
           </div>
         <% end %>

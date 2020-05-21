@@ -77,14 +77,44 @@ class BookmarkDB
         return retStatement[0]
     end
     
-    def try_login(email, password)
-        if email.nil? or password.nil?
+    def check_username_exists(username)
+        statement = "SELECT username FROM users WHERE username = ?"
+        retStatement = @db.execute statement, username
+        if retStatement[0]
+            return true
+        else
             return false
         end
-        email = email.downcase
+    end
+    
+    def get_email_from_username(username)
+        statement = "SELECT email FROM users WHERE username = ?"
+        retStatement = @db.execute statement, username
+        return retStatement[0][0]
+    end
+    
+    def login_string_to_email(login_name)
+        if check_username_exists(login_name)
+            return @db.execute("SELECT email FROM users WHERE username = ?", login_name)[0][0]
+        elsif check_account_exists(login_name)
+            return login_name
+        else
+            return false
+        end
+    end
+    
+    def try_login(login_name, password)
+        if login_name.nil? or password.nil?
+            return false
+        end
+        login_name = login_name.downcase
         
-        if check_account_exists(email)
-            account_id = get_account_id(email)
+        if check_account_exists(login_name) or check_username_exists(login_name)
+            if check_username_exists(login_name)
+                account_id = get_account_id(get_email_from_username(login_name))
+            else
+                account_id = get_account_id(login_name)
+            end
             unless check_account_enabled(account_id)
                 increment_login_attempts(account_id)
                 return false
@@ -93,9 +123,13 @@ class BookmarkDB
                 suspend_user(account_id, "Login Attempts")
                 return false
             end
-            statement = "SELECT password, salt FROM users WHERE email = ?"
-            retStatement = @db.execute(statement, email)[0]
-            if not password or not email
+            if check_username_exists(login_name)
+                statement = "SELECT password, salt FROM users WHERE username = ?"
+            else
+                statement = "SELECT password, salt FROM users WHERE email = ?"
+            end
+            retStatement = @db.execute(statement, login_name)[0]
+            if not password or not login_name
                 increment_login_attempts(account_id)
                 return false
             end
@@ -118,7 +152,7 @@ class BookmarkDB
     end
 
     
-    def create_account(email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
+    def create_account(username, email, password, first_name, last_name, sec_question, sec_answer) # Doesn't need account type, seperate function to update
         password_reason = password_check(password)
         unless password_reason == true
             return password_reason
@@ -126,12 +160,19 @@ class BookmarkDB
         unless email_check(email)
             return "Invalid email format"
         end
+        unless plain_text_check(username)
+            return "username is greater than 30"
+        end
         email = email.downcase
+        username = username.downcase
         unless check_account_exists(email)
-            hash = generate_hash(password,salt="") # salt="" means a new one is generated
-            statement = "INSERT INTO users (email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            retStatement = @db.execute statement, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
-            return "Successfully created account!"
+            unless check_username_exists(username)
+                hash = generate_hash(password,salt="") # salt="" means a new one is generated
+                statement = "INSERT INTO users (username, email, password, salt, first_name, last_name, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                retStatement = @db.execute statement, username, email.downcase, hash[0], hash[1], first_name, last_name, sec_question, sec_answer
+                return "Successfully created account!"
+            end
+            return "Account with that username already exists!"
         end
         puts "User tried to make an account with duplicate email #{email}"
         return "Account with that email already exists!"
@@ -416,64 +457,6 @@ class BookmarkDB
         return @db.execute(statement,user_id,bookmark_id)
     end
 
-=begin OLD CODE
-    def search_tags_bookmarks(tag_name)
-        #gets tag_id based on name
-        tag_id = get_tag_id(tag_name)
-        #saves array of bookmarks with tag_ID
-        bookmark_id_list = @db.execute("SELECT bookmark_ID FROM bookmark_tags where tag_ID =?", tag_id)
-        bookmark_list=[]
-        #goes through bookmark ID
-        bookmark_id_list.each { |i|
-            bookmark_list.append(get_bookmark(i))
-        }
-        #debug code
-        return bookmark_list
-    end
-
-    def search_owner_bookmarks(owner)
-        #gets user_id based on name
-        owner_id = @db.execute("SELECT user_id FROM users WHERE first_name=? OR last_name=?", owner,owner)
-        bookmark_list=[]
-        owner_id.each do
-            |i|
-            bookmark_list.append(get_user_bookmark(i))
-        end
-        return bookmark_list
-    end
-
-    def search_url_bookmarks(url)
-        #makes it a wildcard search
-        search = '%'+url+'%'
-        statement = "SELECT bookmark_name, url, creation_time FROM bookmarks WHERE url LIKE ? AND enabled=1"
-        retStatement = @db.execute statement,search
-        #debug
-        return retStatement
-    end
-
-    def get_bookmarks(page,result_per_page)
-        result =[]
-        i_min = (page-1)*result_per_page
-        i_max = page*result_per_page
-        while i_min != i_max
-            result.append(@db.execute("SELECT bookmark_name,url,creation_time WHERE bookmark_id=?",i_min))
-            i_min = i_min+1
-        end
-        return result
-    end
-    #creates an array to display based on page number
-    def display_bookmarks(array, page_number, number_results)
-        i_max = page_number * number_results
-        i_min = (page_number-1) * number_results
-        results = []
-        while i_min != i_max
-            results.append(array[i_min])
-            i_min = 1 + i_min
-        end
-        return results
-        end
-=end
-
     #BOOKMAKRS
     def add_bookmark(bookmarkName, url, owner_id, *tags)
         unless plain_text_check(bookmarkName)
@@ -723,4 +706,3 @@ db = BookmarkDB.new
     db.unsuspend_user(account)
 #     db.set_password(account,"Password1!")
 end
-
