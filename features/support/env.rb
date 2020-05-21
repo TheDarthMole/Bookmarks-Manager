@@ -43,6 +43,9 @@ class Sinatra::ApplicationWorld
     include Capybara::DSL
 end
 
+
+
+
 World do
     Sinatra::ApplicationWorld.new
 end

@@ -1,4 +1,5 @@
 
+
 Given /^(?:|I )am on (.+)$/ do |page_name|
   visit path_to(page_name)
 end
@@ -12,6 +13,8 @@ Given /^(?:I) am logged in?$/ do
     find("button", :text => "LOGIN").click
     #also logout?
 end
+
+
 
 #or click button
 When /^(?:I) fill in "([^\"]*)" with "([^\"]*)"?$/ do |field, value|
@@ -57,6 +60,11 @@ When /^(?:I) press "([^\"]*)"?$/ do |button|
 
 end
 
+
+When /^(?:I) press "([^\"]*)" to save?$/ do |button|
+    find("button", :id => button).click
+end
+
 When /^(?:I) go to "([^\"]*)"?$/ do |link|
    
     find("a", :text => link).click
@@ -70,6 +78,16 @@ Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|
         else
             assert current_path.should == path    
         end
+end
+
+
+Then /^(?:|I) should get "([^\"]*)" alert?$/ do  |text|
+   find("div", :id => "alert").should have_content(text)     
+end
+
+
+Then /^(?:|I) delete bookmark alert?$/ do 
+   find("div", :id => "alert").should have_content(text)     
 end
 
 Then /^(?:|I) should see "([^\"]*)"?$/ do  |text|
