@@ -56,6 +56,9 @@ helpers do # functions used within erb files
     end
     
     def check_admin(email)
+        if email.nil?
+            return false
+        end
         return @db.is_admin(@db.get_account_id(email))
     end
 
@@ -71,6 +74,9 @@ helpers do # functions used within erb files
     end
 
     def can_user_do_action(action)
+        if session[:user].nil?
+            return false
+        end
         return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
     end
 
@@ -101,6 +107,9 @@ helpers do # functions used within erb files
 
   #Favourites
     def is_user_fav(bookmark_id)
+        if session[:user].nil?
+            return false
+        end
         bookmark_id = bookmark_id.to_i
         return @db.is_user_favourite(@db.get_account_id(session[:user]),bookmark_id)
     end
@@ -307,6 +316,11 @@ get "/dashboard" do
     erb :dashboard
 end
 
+get "/guest" do
+    session[:lim] = 10;
+    erb :dashboard
+end
+
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
@@ -349,7 +363,7 @@ end
 
 post "/login" do
     if @db.try_login(params[:email].downcase, params[:password])
-        session[:user] = params[:email].downcase
+        session[:user] = @db.login_string_to_email (params[:email].downcase)
         session[:pass] = params[:password]
         session[:loggedin] = true
         redirect "/dashboard"
@@ -404,9 +418,10 @@ post "/createbookmark" do
 end
 
 post "/register" do
+    p params
     session[:reason] = nil
     if params[:password] == params[:passwordConfirm] # Checks to make sure the
-        sqlresponse = @db.create_account(params[:email], params[:password], 
+        sqlresponse = @db.create_account(params[:username],params[:email], params[:password], 
             params[:fname], params[:lname], params[:question], params[:answer]) # Change for username removal
         if sqlresponse == "Successfully created account!"
             erb :login
