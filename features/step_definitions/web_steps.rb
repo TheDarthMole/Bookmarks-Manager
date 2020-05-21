@@ -5,7 +5,10 @@ end
 
 
 Given /^(?:I) am logged in?$/ do
-    login_as(FactoryBot.create(:user))
+    #here visit path and do commands, no factoeybot
+    visit path_to("login")
+    
+    #login_as(FactoryBot.create(:user))
 end
 
 #or click button
@@ -51,6 +54,13 @@ When /^(?:I) press "([^\"]*)"?$/ do |button|
     find("button", :text => button).click
 
 end
+
+When /^(?:I) go to "([^\"]*)"?$/ do |link|
+   
+    find("a", :text => link).click
+
+end
+
 
 Then /^(?:|I) should get redirected to "([^\"]*)"$/ do |path|
         if page.respond_to? :should
