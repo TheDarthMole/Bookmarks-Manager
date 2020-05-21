@@ -363,7 +363,7 @@ end
 
 post "/login" do
     if @db.try_login(params[:email].downcase, params[:password])
-        session[:user] = params[:email].downcase
+        session[:user] = @db.login_string_to_email (params[:email].downcase)
         session[:pass] = params[:password]
         session[:loggedin] = true
         redirect "/dashboard"

@@ -77,14 +77,44 @@ class BookmarkDB
         return retStatement[0]
     end
     
-    def try_login(email, password)
-        if email.nil? or password.nil?
+    def check_username_exists(username)
+        statement = "SELECT username FROM users WHERE username = ?"
+        retStatement = @db.execute statement, username
+        if retStatement[0]
+            return true
+        else
             return false
         end
-        email = email.downcase
+    end
+    
+    def get_email_from_username(username)
+        statement = "SELECT email FROM users WHERE username = ?"
+        retStatement = @db.execute statement, username
+        return retStatement[0][0]
+    end
+    
+    def login_string_to_email(login_name)
+        if check_username_exists(login_name)
+            return @db.execute("SELECT email FROM users WHERE username = ?", login_name)[0][0]
+        elsif check_account_exists(login_name)
+            return login_name
+        else
+            return false
+        end
+    end
+    
+    def try_login(login_name, password)
+        if login_name.nil? or password.nil?
+            return false
+        end
+        login_name = login_name.downcase
         
-        if check_account_exists(email)
-            account_id = get_account_id(email)
+        if check_account_exists(login_name) or check_username_exists(login_name)
+            if check_username_exists(login_name)
+                account_id = get_account_id(get_email_from_username(login_name))
+            else
+                account_id = get_account_id(login_name)
+            end
             unless check_account_enabled(account_id)
                 increment_login_attempts(account_id)
                 return false
@@ -93,9 +123,13 @@ class BookmarkDB
                 suspend_user(account_id, "Login Attempts")
                 return false
             end
-            statement = "SELECT password, salt FROM users WHERE email = ?"
-            retStatement = @db.execute(statement, email)[0]
-            if not password or not email
+            if check_username_exists(login_name)
+                statement = "SELECT password, salt FROM users WHERE username = ?"
+            else
+                statement = "SELECT password, salt FROM users WHERE email = ?"
+            end
+            retStatement = @db.execute(statement, login_name)[0]
+            if not password or not login_name
                 increment_login_attempts(account_id)
                 return false
             end
@@ -666,3 +700,6 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 end
 
+p db.try_login("nruffles1","Password1!")
+p db.try_login("nruffles1@sheffield.ac.uk","Password1!")
+p db.try_login("nruffles1@sheffield.a","Password1!")
