@@ -42,7 +42,7 @@ end
 RSpec.configure do |config|
   config.include Capybara::DSL
   config.include Warden::Test::Helpers
-  config.include FactoryBot::Syntax::Methods
+  #config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
     FactoryBot.find_definitions
@@ -58,6 +58,7 @@ class Sinatra::ApplicationWorld
     include Capybara::DSL
 end
 
+World(FactoryBot::Syntax::Methods)
 
 
 World do
