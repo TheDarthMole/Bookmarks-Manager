@@ -203,12 +203,6 @@
             </td>
             <% if can_user_do_action("edit") == true %>
               <td width="100">
-                <a id="edit-bookmark" data-toggle="modal" data-target="#edit-bookmark" data-id="<%= h item[0] %>" class="mr-2">
-                  <i class="fa fa-pencil-alt"></i>
-                </a>
-                <a href="delete-bookmark" data-toggle="modal" data-target="#delete-bookmark" class="text-danger">
-                  <i class="fa fa-times"></i>
-                </a>
                   <div class="btn-group">
                   <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
                     <span class="caret"></span></button>
