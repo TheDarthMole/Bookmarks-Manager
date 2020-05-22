@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Avoiding Duplication -->
+
+    <%= erb :headinclude, :locals => {:title => "Acme corp - Register"} %>
+    <link rel="stylesheet" href="/css/changePassword.css" />
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+			</button>
+            <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Acme corp<span class="sr-only">(current)</span></a>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                <ul class="navbar-nav ml-lg-auto align-items-lg-center">
+                    <li class="nav-item">
+                      <a class="nav-link" href="/about">ABOUT</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/contact">CONTACT</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">GUEST</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/login">
+                          <button class="btn btn-outline-light">LOGIN</button>
+                      </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- signup section -->
+    <section class="signup-section container py-5">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-md-6">
+                
+                    <h1 class="text-info mb-4">
+                        <i class="far fa-bookmark"></i> Acme corp
+                    </h1>
+                    <% if session[:reason] %>
+                    <div class="alert alert-warning" role="alert">
+                        <%= h session[:reason] %>
+                    </div>
+                    <% end %>
+                    <% session[:reason] = nil %>
+                <form name="form" id="form" class="mb-4 mb-md-0" action="/editBookmark/<%= h params[:bookmark_id] %>" method="post">
+                <% bookmark = get_bookmark(params[:bookmark_id])[0] %>
+<!--                     bookmark_name,url, owner_id, creation_time -->
+                  <!-- Bookmark Name Input -->
+                    <div class="form-group">
+                        <label for="name">Bookmark Name</label>
+                        <input name="name" type="text" class="form-control"  id="name" value="<%= h bookmark[0] %>" required/>
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <small></small> <!-- where the validation message is displayed -->
+                    </div>      
+                
+                  <!-- First name Input -->
+                  <div class="form-group">
+                      <label for="firstname">URL</label>
+                      <input name="url" type="text" class="form-control"  id="url" value="<%= h bookmark[1] %>" required/>
+                      <i class="fas fa-check-circle"></i>
+                      <i class="fas fa-exclamation-circle"></i>
+                      <small></small> <!-- where the validation message is displayed -->
+                  </div>                        
+
+                <!-- Last name Input -->
+                <div class="form-group">
+                    <label for="lastname">Owner</label>
+                    <input name="owner" type="text" class="form-control"  id="owner" value="<%= h bookmark[0] %>" disabled/>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small></small> <!-- where the validation message is displayed -->
+
+                </div>
+      
+                    <!-- Email Input -->
+                    
+                    <div class="form-group">
+                        <label for="tags">Tags</label>
+                        <% tags = get_tags_for_bookmark(params[:bookmark_id]).flatten(1).join(" ")%>
+                        <input name="tags" type="text" class="form-control" id="tags" value="<%= h tags %>" required/>
+						<i class="fas fa-check-circle"></i>
+						<i class="fas fa-exclamation-circle"></i>
+                        <small></small>
+						
+                    </div>
+                    
+                     <button class="btn btn-info mb-4" type="submit">SUBMIT</button>
+                     
+				</form>
+       
+            </div>
+        </div>
+    </section>
+
+    <%= erb :footer %>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/common.js"></script>
+</body>
+
+</html>
