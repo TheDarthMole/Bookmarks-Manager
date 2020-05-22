@@ -281,12 +281,13 @@
         </tbody>
       </table>
     </div>
+    <% url = request.path_info %>
         <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
       <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
         <%= if x <= total && x!=0 then x elsif x > total then total else 10 end %> of <%= total %></p>
       <ul class="pagination mb-md-0">
         <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
-          <a class="page-link" href="/dashboard/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
+          <a class="page-link" href="/<%= h request.path_info.split("/")[1] %>/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
                                                                                                                                    <% elsif (url.include? "desc")%>/desc
                                                                                                                                    <%end  %>" tabindex="-1">Previous</a>
         </li>
@@ -295,7 +296,7 @@
                             </li> -->
         <% [*1..cubes].each do |item| %>
           <li class="page-item <%= if params[:page].to_i == item then 'active' else '' end %>">
-            <a class="page-link" href="/dashboard/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
+            <a class="page-link" href="/<%= h request.path_info.split("/")[1] %>/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
                                                                                                                                    <% elsif (url.include? "desc")%>/desc
                                                                                                                                    <%end  %>"><%= item %>
               <% if params[:page].to_i %>
@@ -306,11 +307,7 @@
         <% end %>
         <!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
         <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
-          <% url = request.path_info %>
-          <% p url %>
-          <% asc = "/asc"%>
-          <% p url.include? "desc" %>
-          <a class="page-link" href="/dashboard/<%= (params[:page].to_i + 1) %>/<%= h session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
+          <a class="page-link" href="/<%= h request.path_info.split("/")[1] %>/<%= (params[:page].to_i + 1) %>/<%= h session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
                                                                                                                                    <% elsif (url.include? "desc")%>/desc
                                                                                                                                    <%end  %>">Next</a>
         </li>
