@@ -1,3 +1,5 @@
+
+
 const form = document.getElementById('form');
 const email = document.getElementById('email');
 const password = document.getElementById('password');
@@ -44,9 +46,9 @@ function setValidFor(input) {
 
 // to enable reusing form
 form.addEventListener('submit', (e) => {
-	e.preventDefault();
-	
-	inputValid();
+  if(!inputValid()){
+    e.preventDefault();
+  }
 });
 
 
@@ -57,15 +59,14 @@ function inputValid() {
 	
 	const emailValue = email.value.trim();
 	const passwordValue = password.value;
-	
+	var isValid = true;
 	
 	//Email Validation
 	if(emailValue === '') {
-		setErrorFor(email, 'Email cannot be blank');
+		setErrorFor(email, 'Username or email cannot be blank');
+    isValid = false;
 	} 
-	else if (!isEmail(emailValue)) {
-		setErrorFor(email, 'Not a valid email');
-	} 
+
 	else {
 		setValidFor(email);
 	}
@@ -74,14 +75,14 @@ function inputValid() {
 	//Password Validation
 	if(passwordValue === '') {
 		setErrorFor(password, 'Password cannot be blank');
+    isValid = false;
 	} 
 	else if (!isPassword(passwordValue)) {
 		setErrorFor(password, 'Password length should be between 8 to 25 characters and must contain a lowercase letter, an uppercase letter, a number and a special character ');
-	}
+    isValid = false;
+  }
 	else {
 		setValidFor(password);
 	}
-	
-	
-
+	return isValid;
 }
