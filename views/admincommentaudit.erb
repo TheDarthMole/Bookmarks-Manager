@@ -27,6 +27,7 @@
         <th>user_id</th>
         <th>text</th>
         <th>bookmark name</th>
+        <th>Total reports</th>
         <th>Action</th>
       </tr>
       </thead>
@@ -46,6 +47,9 @@
           </td>
           <td>
           <%= h item[3]%>
+          </td>
+          <td>
+          <%= @db.get_total_reports_comments(item[5])[0][0]%>
           </td>
           <td width="100">
 
