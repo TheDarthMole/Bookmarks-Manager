@@ -3,7 +3,9 @@
 
 <!--Avoiding Duplicated code -->
 
-<%= erb :headinclude, :locals => {:title => "Comment Audit - Admin"} %>
+<% bookmark = @db.get_bookmark(params[:id]) %>
+<%  title =  bookmark[0][0].to_s + "'s comment" %>
+<%= erb :headinclude, :locals => {:title => title} %>
 
 <body>
 <!-- Navbar -->
