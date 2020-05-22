@@ -672,6 +672,11 @@ class BookmarkDB
         return @db.execute statement, bookmark_id
     end
 
+    def get_total_reports_comments(comment_id)
+        statement = "SELECT COUNT(comment_id)FROM reporting_comments WHERE comment_id = ?"
+        return @db.execute statement, comment_id
+    end
+
     #REMOVES THE COMMENT REPORT
     def remove_report(report_id)
         statement = "DELETE FROM reporting_comments WHERE report_id = ?"
