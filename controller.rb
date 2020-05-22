@@ -725,7 +725,10 @@ class BookmarkDB
         @db.execute statement, bookmark_id, user_id
     end
     
-   
+    def get_average_rating(bookmark_id)
+        statement = "SELECT AVG (bookmark_id)FROM rating WHERE bookmark_id = ?"
+        return @db.execute statement, bookmark_id
+    end
     
     # REACTIVATION
     
