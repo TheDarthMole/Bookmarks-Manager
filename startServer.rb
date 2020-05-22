@@ -560,16 +560,13 @@ post "/register" do
 end
 
 get "/change-password" do
-    if session[:user]
         erb :changePassword
-    else
-        redirect "/"
-    end
+
 end
 
 post "/change-password" do
-    session[:changePassMessage] = @db.change_password(session[:user], params[:oldpassword], params[:password], params[:passwordconfirm])
-    redirect "/change-password"
+   @db.change_password(params[:email], params[:oldpassword], params[:password], params[:passwordconfirm])
+    redirect "/dashboard"
 end
 
 def authenticate
