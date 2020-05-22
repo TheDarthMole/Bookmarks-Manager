@@ -727,6 +727,22 @@ class BookmarkDB
     
    
     
+    # REACTIVATION
+    
+    def request_reactivation(email)
+        statement = "UPDATE users SET request_reactivate = 1 WHERE email = ?"
+        @db.execute statement, email
+    end
+    
+    def get_request_reactivation_users()
+        statement = "SELECT user_id, username, email, role, first_name, last_name FROM users WHERE request_reactivate = 1"
+        return @db.execute statement
+    end
+    
+    def remove_request_reactivation(email)
+        statement = "UPDATE users SET request_reactivate = 0 WHERE email = ?"
+        @db.execute statement, email
+    end
 end
 
 # This section is for testing the database
@@ -737,3 +753,4 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 
 end
+db.request_reactivation("testuser@sheffield.ac.uk")
