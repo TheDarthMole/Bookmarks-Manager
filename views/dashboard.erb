@@ -212,7 +212,9 @@
           <th>Favourite</th>
           <th>Title</th>
           <th>URL</th>
-          <th>TAGS</th>
+          <th>Creation time</th>
+          <th>Tags</th>
+
           <% if can_user_do_action("edit") == true %>
             <th>Action</th>
           <% end %>
@@ -249,6 +251,9 @@
             </td>
             <td>
               <a href="<%= h item[2] %>" target="blank"><%= h item[2] %></a>
+            </td>
+            <td>
+              <%= Time.at(item[3]) %>
             </td>
             <td>
               <% i= 0 %>
