@@ -386,7 +386,6 @@ class BookmarkDB
         term = '%'+search+'%'
         retStatment = "SELECT COUNT(DISTINCT bookmarks.bookmark_id) FROM bookmark_tags , bookmarks, tags WHERE (bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ?) AND bookmarks.enabled=1"
         sql = @db.execute retStatment, term, term, term
-        p sql
         return sql[0][0]
     end
 

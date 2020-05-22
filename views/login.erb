@@ -5,6 +5,7 @@
     
     <%= erb :headinclude, :locals => {:title => "Login"}%>
 <!--     <link rel="stylesheet" href="/css/login.css" /> -->
+  <link rel="stylesheet" href="/css/changePassword.css" />
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-info container-fluid">
@@ -37,39 +38,65 @@
     <!-- login section -->
     <section class="login-section container py-5">
         <div class="row align-items-center justify-content-between">
-            <form class="col-md-6" action="login" method="post">
+            <form class="col-md-6" id="form" action="login" method="post">
                 <div class="mb-4 mb-md-0">
                     <h1 class="text-info mb-4">
                         <i class="far fa-bookmark"></i> Acme corp
                     </h1>
                     <% if session[:reply] %>
+                      <% if session[:reply].include? 'suspended' %>
+                        <div class=" modal" id="myModal" tabindex="-1" role="dialog">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title">Account suspended</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <p>It seems like your account is suspended</p>
+                              </div>
+                              <div class="modal-footer border-top-0">
+                               
+                                  <a href="/requestReactivation/<%= h session[:suspendedUser] %>"  class="btn btn-info">Request reactivation</a>
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      <%end%>
                     <div class="alert alert-<%= if session[:reply].include? 'suspended' then 'danger' else 'warning' end %>" role="alert">
-                      <% suspendedName = session[:user] %>
                       <%= h session[:reply] %>
                     </div>
                     <% end %>
+                    <% session[:reply] = nil %>
                     <div class="form-group">
                         <label for="email">Username or Email Address<span class="text-danger">*</span></label>
                         <input name="email" id="email" type="text" class="form-control" placeholder="john@doe.com" />
+                         <i class="fas fa-check-circle"></i>
+                          <i class="fas fa-exclamation-circle"></i>
+                          <small></small>
                     </div>
+                  
                     <div class="form-group">
                         <label for="password">Password<span class="text-danger">*</span></label>
-                        <input name="password"  id ="password" type="password" class="form-control" placeholder="********" />
-                    </div>
+                        <input name="password" id="password" type="password" class="form-control" placeholder="********" />
+                         <i class="fas fa-check-circle"></i>
+                          <i class="fas fa-exclamation-circle"></i>
+                          <small></small>
+                  </div>
                 </div>
                 <div class="mb-4">
                     <a>
-                        <button type="submit" id="submit" class="btn btn-info">LOGIN</button>
+                        <button type="submit" class="btn btn-info">LOGIN</button>
                     </a>
                     <div>
-                        <a href="#" class="font-sm">Forgot Password?</a>
+                        <a href="/forgotpassword" class="font-sm">Forgot Password?</a>
                     </div>
-                    <% if session[:reply] %>
-                    <a type="button" class="btn btn-warning" href="/requestReactivation/<%= h session[:suspendedUser] %>">Request account reactivation</a>
-                    <% end %>
-                    <% session[:reply] = nil %>
                 </div>
-                <p>Don't have an account? <a id="register-link" href="/register">Register</a></p>
+                <p>Don't have an account? <a href="/register">Register</a></p>
             </form>
             <div class="col-md-6">
                 <img src="https://placeimg.com/640/480/tech" alt="" class="img-fluid" />
@@ -78,8 +105,12 @@
     </section>
 
     <%= erb :footer %>
-
+    
+    <script src="/js/pop.js"></script>
+  <script src="/js/loginvalidation.js"></script>
     <script src="/js/common.js"></script>
 </body>
 
 </html>
+
+
