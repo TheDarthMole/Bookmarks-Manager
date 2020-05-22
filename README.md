@@ -24,10 +24,14 @@ There was no testing on other platforms, so the developers cannot promise functi
 
 First of all we need to make sure all of the dependencies are installed, to do this run bundler
 
-Bundler installs all the ruby gems that are required
+Bundler installs all the ruby gems that are required.
 
 ```
 bundle install
+```
+You might need to run
+```
+sudo bundle install
 ```
 
 Once this has completed, you should have the required gems to start the server
@@ -64,6 +68,8 @@ Then run `bundle install` to install the required third party code. Then type:
 `cucumber features/specific_test.feature` if there is a need to test a specific feature in isolation. 
 `Cucumber features/specific_test.feature --name "Scenario name" ` if testing specific scenario in a feature
 Then navigate to the coverage directory. There is a test report from the last run as an index.html file. 
+
+The tests for `make_bookmarks.feature` will create some test-purpose bookmarks, which you can then safely delete.
 
 ### Break down into end to end tests
 Explain what these tests test and why
