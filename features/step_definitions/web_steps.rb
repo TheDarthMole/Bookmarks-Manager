@@ -94,3 +94,11 @@ Then /^(?:|I) should see "([^\"]*)"?$/ do  |text|
    page.should have_content(text)     
 end
 
+Then /^(?:|I) should see "([^\"]*)" popup?$/ do  |text|
+    message = page.find("#link_url").native.attribute("validationMessage")
+    expect(message).to eq "Please fill out this field."
+
+
+
+end
+

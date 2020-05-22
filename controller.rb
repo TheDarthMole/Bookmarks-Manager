@@ -396,8 +396,8 @@ class BookmarkDB
         results = results.to_i
         i_min = (page-1)*results
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1 ORDER BY bookmarks.bookmark_name ASC LIMIT ?,?"
-        sql = @db.execute retStatment,search,search,search,page,results
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1 ORDER BY lower(bookmarks.bookmark_name), bookmarks.bookmark_name ASC LIMIT ?,?"
+        sql = @db.execute retStatment,search,search,search,i_min,results
         #Adds the tags into results
         i_max = sql.length
         i_min = 0
@@ -413,8 +413,8 @@ class BookmarkDB
         results = results.to_i
         i_min = (page-1)*results
         search = '%'+term+'%'
-        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1 ORDER BY bookmarks.bookmark_name DESC LIMIT ?,?"
-        sql = @db.execute retStatment,search,search,search,page,results
+        retStatment = "SELECT distinct bookmarks.bookmark_id,bookmarks.bookmark_name,bookmarks.url,bookmarks.creation_time FROM bookmark_tags , bookmarks, tags WHERE bookmarks.bookmark_name LIKE ? OR (tags.name LIKE ? AND tags.tag_id=bookmark_tags.tag_ID AND bookmark_tags.bookmark_ID=bookmarks.bookmark_id) OR bookmarks.url LIKE ? AND bookmarks.enabled=1 ORDER BY bookmarks.bookmark_name COLLATE NOCASE DESC LIMIT ?,?"
+        sql = @db.execute retStatment,search,search,search,i_min,results
         #Adds the tags into results
         i_max = sql.length
         i_min = 0
@@ -672,31 +672,77 @@ class BookmarkDB
         return @db.execute statement, bookmark_id
     end
 
+    def get_total_reports_comments(comment_id)
+        statement = "SELECT COUNT(comment_id)FROM reporting_comments WHERE comment_id = ?"
+        return @db.execute statement, comment_id
+    end
+
+    #REMOVES THE COMMENT REPORT
     def remove_report(report_id)
         statement = "DELETE FROM reporting_comments WHERE report_id = ?"
         @db.execute statement, report_id
     end
 
+    #GETS ALL COMMENT REPORTS
     def get_comment_reports
-        statement = "SELECT comments.bookmark_id,reporting_comments.user_id,comments.text,bookmarks.bookmark_name, reporting_comments.report_id FROM reporting_comments,comments,bookmarks WHERE comments.comment_id=reporting_comments.comment_id AND comments.bookmark_id=bookmarks.bookmark_id ORDER BY reporting_comments.comment_id DESC"
+        statement = "SELECT comments.bookmark_id,reporting_comments.user_id,comments.text,bookmarks.bookmark_name, reporting_comments.report_id,reporting_comments.comment_id FROM reporting_comments,comments,bookmarks WHERE comments.comment_id=reporting_comments.comment_id AND comments.bookmark_id=bookmarks.bookmark_id ORDER BY reporting_comments.comment_id DESC"
         return @db.execute statement
     end
+
+    def reset_comment_reports(comment_id)
+        statement = "DELETE FROM reporting_comments WHERE comment_id = ?"
+        return @db.execute statement,comment_id
+    end
+
 
     def get_total_reports(bookmark_id)
         statement = "SELECT COUNT(bookmark_id)FROM reporting_bookmarks WHERE bookmark_id = ?"
         return @db.execute statement, bookmark_id
     end
 
+
     def report_comment(comment_id, user_id, reason_id)
         statement = "REPLACE INTO reporting_comments (user_id, comment_id, reason_id) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM reporting_comments WHERE user_id = ? AND comment_id = ? LIMIT 1)"
         @db.execute statement, user_id, comment_id, reason_id, user_id, comment_id
     end
 
+    #REMOVES THE BOOKMARK REPORT
     def remove_report_comment(report_id)
         statement = "DELETE FROM reporting_bookmarks WHERE report_id = ?"
         @db.execute statement, report_id
     end
+
     
+    #Rating
+    
+    def rating_bookmarks (bookmark_id, user_id, rating)
+        statement = "REPLACE INTO ratings (user_id, bookmark_id, rating) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM rating WHERE user_id = ? AND bookmark_id = ? LIMIT 1)"
+        @db.execute statement, user_id, bookmark_id, rating, user_id, bookmark_id        
+    end
+    
+    def remove_report_rating (bookmark_id, user_id)
+        statement = "DELETE FROM rating WHERE bookmark_id = ? AND user_id = ?"
+        @db.execute statement, bookmark_id, user_id
+    end
+    
+   
+    
+    # REACTIVATION
+    
+    def request_reactivation(email)
+        statement = "UPDATE users SET request_reactivate = 1 WHERE email = ?"
+        @db.execute statement, email
+    end
+    
+    def get_request_reactivation_users()
+        statement = "SELECT user_id, username, email, role, first_name, last_name FROM users WHERE request_reactivate = 1"
+        return @db.execute statement
+    end
+    
+    def remove_request_reactivation(email)
+        statement = "UPDATE users SET request_reactivate = 0 WHERE email = ?"
+        @db.execute statement, email
+    end
 end
 
 # This section is for testing the database
@@ -705,4 +751,5 @@ db = BookmarkDB.new
 (1..6).each do |account| # Makes sure admins can always login
     db.unsuspend_user(account)
 #     db.set_password(account,"Password1!")
+
 end

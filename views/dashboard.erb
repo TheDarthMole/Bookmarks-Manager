@@ -56,18 +56,6 @@
             <label for="tags">Tags - e.g. "Office Productivity Tools Work"</label>
             <textarea name="tags" class="form-control" id="bookmark-tags" rows="3" placeholder="Add Tags"></textarea>
           </div>
-          <!-- add tags^^-->
-
-          <div class="form-group">
-            <label for="list">LIST</label>
-            <select name="list" class="form-control">
-              <option value="">None</option>
-            </select>
-          </div>
-          <div>
-            <input type="checkbox" name="stick" id="sticky" />
-            <label for="sticky">FAVOURITE</label>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-info" data-dismiss="modal">
@@ -101,16 +89,6 @@
             <label for="">NOTES</label>
             <textarea class="form-control" rows="3" placeholder="Add Notes"></textarea>
           </div>
-          <div class="form-group">
-            <label for="">LIST</label>
-            <select class="form-control">
-              <option value="">None</option>
-            </select>
-          </div>
-          <div>
-            <input type="checkbox" name="stick" id="sticky" />
-            <label for="sticky">FAVOURITE</label>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-info" data-dismiss="modal">
@@ -143,19 +121,6 @@
             <label for="notes">NOTES</label>
             <textarea name="notes" class="form-control" rows="3" placeholder="Add Notes"></textarea>
           </div>
-          <div class="form-group">
-            <label for="">LIST</label>
-            <select class="form-control">
-              <option value="">None</option>
-            </select>
-          </div>
-
-          <!--
-          <div>
-              <input type="checkbox" name="stick" id="sticky" />
-              <label for="sticky">FAVOURITE</label>
-          </div>
-          -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-info" data-dismiss="modal">
@@ -171,6 +136,7 @@
 <% end %>
 <!-- dashboard section -->
 <section class="dashboard-section container py-5">
+  <% if !session[:user].nil? %>
   <div>
     <form class="input-group mb-3" action="/dashboard" method="post">
       <% if params[:searchterm] == nil %>
@@ -179,13 +145,20 @@
         <input name="searchterm" type="search" class="form-control" value="<%= params[:searchterm] %>"  />
       <%end %>
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="submit">
-          Search
-        </button>
+        <div class="btn-group">
+          <button class="btn btn-light btn-outline-dark" type="submit">Search</button>
+          <button type="button" class="btn btn-light btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/dashboard/1/10/<%= params[:searchterm] %>/asc">Asc</a>
+            <a class="dropdown-item" href="/dashboard/1/10/<%= params[:searchterm] %>/desc">Desc</a>
+          </div>
+        </div>
       </div>
     </form>
   </div>
-  
+  <% end %>
 
   <div class="saved-bookmarks">
 
@@ -204,7 +177,9 @@
           <th>Favourite</th>
           <th>Title</th>
           <th>URL</th>
-          <th>TAGS</th>
+          <th>Creation time</th>
+          <th>Tags</th>
+
           <% if can_user_do_action("edit") == true %>
             <th>Action</th>
           <% end %>
@@ -237,15 +212,18 @@
                 <% end %>
             </td>
             <td width="50">
-              <a href="<%= h item[2] %>"><%= h item[1]%></a>
+              <a href="/comments/<%= item[0] %>"><%= h item[1]%></a>
             </td>
             <td>
               <a href="<%= h item[2] %>" target="blank"><%= h item[2] %></a>
             </td>
             <td>
+              <%= Time.at(item[3]) %>
+            </td>
+            <td>
               <% i= 0 %>
-                <% item[4].each do |lol| %>
-                 #<%= lol[0] %>
+                <% item[4].each do |tags| %>
+                 #<%= tags[0] %>
               <%end %>
             </td>
             <% if can_user_do_action("edit") == true %>
@@ -274,19 +252,24 @@
         </tbody>
       </table>
     </div>
-    <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
+    <% url = request.path_info %>
+        <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
       <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
         <%= if x <= total && x!=0 then x elsif x > total then total else 10 end %> of <%= total %></p>
       <ul class="pagination mb-md-0">
         <li class="page-item <%= if params[:page].to_i <= 1 then 'disabled' else '' end %>">
-          <a class="page-link" href="/dashboard/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %>" tabindex="-1">Previous</a>
+          <a class="page-link" href="/<%= h request.path_info.split("/")[1] %>/<%= (params[:page].to_i - 1) %>/<%= session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
+                                                                                                                                   <% elsif (url.include? "desc")%>/desc
+                                                                                                                                   <%end  %>" tabindex="-1">Previous</a>
         </li>
         <!--                    <li class="page-item active">
                                 <a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
                             </li> -->
         <% [*1..cubes].each do |item| %>
           <li class="page-item <%= if params[:page].to_i == item then 'active' else '' end %>">
-            <a class="page-link" href="/dashboard/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %>"><%= item %>
+            <a class="page-link" href="/<%= h request.path_info.split("/")[1] %>/<%= item %>/<%= session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
+                                                                                                                                   <% elsif (url.include? "desc")%>/desc
+                                                                                                                                   <%end  %>"><%= item %>
               <% if params[:page].to_i %>
                 <span class="sr-only">(current)</span>
               <% end %>
@@ -295,7 +278,9 @@
         <% end %>
         <!--                     <li class="page-item"><a class="page-link" href="#"><%= cubes %></a></li> -->
         <li class="page-item <%= if params[:page].to_i >= cubes then 'disabled' else '' end %>">
-          <a class="page-link" href="/dashboard/<%= (params[:page].to_i + 1) %>/<%= h session[:lim] %>/<%= params[:searchterm] %>">Next</a>
+          <a class="page-link" href="/<%= h request.path_info.split("/")[1] %>/<%= (params[:page].to_i + 1) %>/<%= h session[:lim] %>/<%= params[:searchterm] %><% if (url.include?('asc')) %>/asc
+                                                                                                                                   <% elsif (url.include? "desc")%>/desc
+                                                                                                                                   <%end  %>">Next</a>
         </li>
       </ul>
     </nav>
