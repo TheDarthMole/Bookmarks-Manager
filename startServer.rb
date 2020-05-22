@@ -250,6 +250,13 @@ get "/admin/audit/comment/reported/remove/:id" do
     redirect back
 end
 
+
+#COMMENTS PAGE LOAD
+get "/comments/:id" do
+  authenticate
+  erb :comments
+end
+
 get "/unfavourite/:id" do
     authenticate
     remove_favourite(params[:id])
