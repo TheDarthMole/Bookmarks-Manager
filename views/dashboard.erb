@@ -244,15 +244,15 @@
                 <% end %>
             </td>
             <td width="50">
-              <a href="<%= h item[2] %>"><%= h item[1]%></a>
+              <a href="/comments/<%= item[0] %>"><%= h item[1]%></a>
             </td>
             <td>
               <a href="<%= h item[2] %>" target="blank"><%= h item[2] %></a>
             </td>
             <td>
               <% i= 0 %>
-                <% item[4].each do |lol| %>
-                 #<%= lol[0] %>
+                <% item[4].each do |tags| %>
+                 #<%= tags[0] %>
               <%end %>
             </td>
             <% if can_user_do_action("edit") == true %>
