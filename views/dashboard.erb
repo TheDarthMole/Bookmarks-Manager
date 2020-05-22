@@ -281,7 +281,7 @@
         </tbody>
       </table>
     </div>
-    <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
+        <nav class="d-flex align-items-center mb-3 justify-content-end flex-wrap">
       <p class="mb-md-0 font-sm text-muted mr-3">Showing entries <% x = params[:lim].to_i * params[:page].to_i %>
         <%= if x <= total && x!=0 then x elsif x > total then total else 10 end %> of <%= total %></p>
       <ul class="pagination mb-md-0">
