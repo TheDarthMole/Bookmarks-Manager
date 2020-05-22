@@ -354,6 +354,11 @@ class BookmarkDB
         statement = "INSERT INTO bookmark_tags (bookmark_id, tag_id) VALUES (?, (SELECT tag_id FROM tags WHERE name = ?) )"
         @db.execute statement, bookmark_id, tag_name
     end
+    
+    def remove_all_tags_for_bookmark(bookmark_id)
+        statement = "DELETE FROM bookmark_tags WHERE bookmark_id = ?"
+        @db.execute statement, bookmark_id
+    end
 
 
     def remove_tag(tag_name, bookmark_id)

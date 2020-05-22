@@ -79,6 +79,10 @@ helpers do # functions used within erb files
         end
         return @db.can_user_perform_action(@db.get_account_id(session[:user]), action)
     end
+    
+    def get_tags_for_bookmark(bookmark_id)
+        return @db.get_bookmark_tags(bookmark_id)
+    end
 
     #SHOW comments FOR ID
     def show_comment(bookmark_id,page,limit)
@@ -133,6 +137,10 @@ helpers do # functions used within erb files
     def report_comment(comment_id, reason_id)
         user_id = @db.get_account_id(session[:user])
         return @db.report_comment(comment_id.to_i, user_id, reason_id.to_i)
+    end
+    
+    def get_bookmark(bookmark_id)
+        return @db.get_bookmark(bookmark_id)
     end
 end
 
@@ -489,6 +497,22 @@ end
 get "/register" do
     erb :register
 end
+
+get "/editBookmark/:bookmark_id" do
+    authenticate
+    erb :editBookmark
+end
+
+post "/editBookmark/:bookmark_id" do
+    authenticate
+    @db.update_bookmark(params[:bookmark_id], params[:name], params[:url])
+    @db.remove_all_tags_for_bookmark(params[:bookmark_id])
+    params[:tags].split(" ").each do |n|
+        @db.add_tag_bookmark(n, params[:bookmark_id])
+    end
+    redirect "/editBookmark/#{params[:bookmark_id]}"
+end
+
 
 #COMMENTS SECTION
 get "/admin/audit/comments" do
