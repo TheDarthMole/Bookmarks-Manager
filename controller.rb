@@ -516,7 +516,7 @@ class BookmarkDB
     def get_bookmark(bookmark_id)
         statement = "SELECT bookmark_name,url, owner_id, creation_time FROM bookmarks WHERE enabled=1 AND bookmark_id=?"
         retStatment = @db.execute statement, bookmark_id
-        return retStatment[0]
+        return retStatment
     end
 
     def update_bookmark(bookmark_id, bookmark_name, url)
@@ -634,10 +634,10 @@ class BookmarkDB
     def get_comments_for_bookmark(bookmark_id, page, limit)
         i_min = (page.to_i - 1) * limit.to_i
         if bookmark_id == "*"
-            statement ="SELECT comments.user_id,comments.comment_id,comments.text,comments.bookmark_id,bookmarks.bookmark_name FROM comments,bookmarks WHERE comments.enabled = 0 AND bookmarks.bookmark_id=comments.bookmark_id LIMIT ?,?"
+            statement ="SELECT comments.user_id,comments.comment_id,comments.text,comments.bookmark_id,bookmarks.bookmark_name FROM comments,bookmarks,users WHERE comments.enabled = 0 AND bookmarks.bookmark_id=comments.bookmark_id LIMIT ?,?"
             retStatement = @db.execute statement,i_min,limit
         else
-            statement = "SELECT user_id,comment_id,text FROM comments WHERE bookmark_id=? AND enabled = 1 LIMIT ?,?"
+            statement = "SELECT  comments.user_id,comments.comment_id,comments.text,users.first_name,users.last_name FROM comments,users WHERE comments.bookmark_id=? AND comments.enabled = 1 AND comments.user_id=users.user_id LIMIT ?,?"
             retStatement = @db.execute statement,bookmark_id,i_min,limit
         end
         return retStatement
