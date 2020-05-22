@@ -37,8 +37,17 @@ This should start the server up on `port 4567`. If you are hosting this on codio
 
 In order to login to the website, you can either make your own account (As a standard user) or you could try logging into one of the admin accounts with the username and password:
 
-`Email: admin@acmecorp.com`
-`Password: Password1!`
+We also have accounts for all of the role types:
+`Username: role1   Email: role1@acme.com   Password: Password1!`
+`Username: role2   Email: role2@acme.com   Password: Password1!`
+`Username: role3   Email: role3@acme.com   Password: Password1!`
+`Username: role4   Email: role4@acme.com   Password: Password1!`
+`Username: admin   Email: admin@acme.com   Password: Password1!`
+`Username: user    Email: user@acme.com    Password: Password1!`
+
+The username or the email can be used to login to the website
+
+For further information about accounts and their permissions, navigate to `/admin/users` as an admin
 
 This should give you access to the whole website as an admin.
 ## Running the tests
