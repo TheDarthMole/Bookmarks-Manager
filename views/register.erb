@@ -17,18 +17,18 @@
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav ml-lg-auto align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="/about">ABOUT</a>
+                      <a class="nav-link" href="/about">ABOUT</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">CONTACT</a>
+                      <a class="nav-link" href="/contact">CONTACT</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/guest">GUEST</a>
+                      <a class="nav-link" href="#">GUEST</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">
-                            <button class="btn btn-outline-light">LOGIN</button>
-                        </a>
+                      <a class="nav-link" href="/login">
+                          <button class="btn btn-outline-light">LOGIN</button>
+                      </a>
                     </li>
                 </ul>
             </div>
@@ -50,44 +50,39 @@
                     <% session[:reason] = nil %>
                 <form name="form" id="form" class="mb-4 mb-md-0" action="/register" method="post">
                 
-                
-                <!-- User name Input -->
+                  <!-- User name Input -->
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input name="username" type="text" class="form-control"  id="username" placeholder="john" />
-						<i class="fas fa-check-circle"></i>
-						<i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
                         <small></small> <!-- where the validation message is displayed -->
-						
-                    </div>
-                    
+                    </div>      
+                
+                  <!-- First name Input -->
+                  <div class="form-group">
+                      <label for="firstname">Firstname</label>
+                      <input name="fname" type="text" class="form-control"  id="firstname" placeholder="john" />
+                      <i class="fas fa-check-circle"></i>
+                      <i class="fas fa-exclamation-circle"></i>
+                      <small></small> <!-- where the validation message is displayed -->
+                  </div>                        
+
+                <!-- Last name Input -->
+                <div class="form-group">
+                    <label for="lastname">Lastname</label>
+                    <input name="lname" type="text" class="form-control"  id="lastname" placeholder="doe" />
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small></small> <!-- where the validation message is displayed -->
+
+                </div>
+      
                     <!-- Email Input -->
                     
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input name="email" type="text" class="form-control" id="email" placeholder="john@doe.com" />
-						<i class="fas fa-check-circle"></i>
-						<i class="fas fa-exclamation-circle"></i>
-                        <small></small>
-						
-                    </div>
-                                        
-                    <!-- First Name Input -->
-                    
-                    <div class="form-group">
-                        <label for="fname">First Name</label>
-                        <input name="fname" type="text" class="form-control" id="fname" placeholder="john" />
-						<i class="fas fa-check-circle"></i>
-						<i class="fas fa-exclamation-circle"></i>
-                        <small></small>
-						
-                    </div>
-                                        
-                    <!-- Last Name Input -->
-                    
-                    <div class="form-group">
-                        <label for="lname">Last Name</label>
-                        <input name="lname" type="text" class="form-control" id="lname" placeholder="doe" />
 						<i class="fas fa-check-circle"></i>
 						<i class="fas fa-exclamation-circle"></i>
                         <small></small>
@@ -130,11 +125,9 @@
 						</select>
                         <i class="fas fa-check-circle"></i>
 						<i class="fas fa-exclamation-circle"></i>
-						<small></small>
-						
+						<small></small>						
                     </div>
-                    
-                    
+                          
                     <!-- Security Question Answer Input -->
                     <div class="form-group">
                         <label for="answer">Security Answer</label>
