@@ -321,6 +321,20 @@ get "/guest" do
     erb :dashboard
 end
 
+get "/guest/:page/:lim" do
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
+    @total = get_total_items("")
+    unless session[:reply]
+        session[:reply] = nil
+    end
+    erb :dashboard
+end
+
+get "/guest/:page/:lim/" do
+    redirect "/guest/#{params[:page]}/#{params[:lim]}"
+end
+
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
