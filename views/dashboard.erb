@@ -178,6 +178,7 @@
           <th>Title</th>
           <th>URL</th>
           <th>Rating</th>
+          <th>Owner</th>
           <th>Creation time</th>
           <th>Tags</th>
 
@@ -222,11 +223,14 @@
               <%= @db.get_average_rating(item[0].to_i)[0][0] %>
             </td>
             <td>
+              <%= item[4] %>
+            </td>
+            <td>
               <%= Time.at(item[3]).asctime %>
             </td>
             <td>
               <% i= 0 %>
-                <% item[4].each do |tags| %>
+                <% item[5].each do |tags| %>
                  #<%= tags[0] %>
               <%end %>
             </td>
