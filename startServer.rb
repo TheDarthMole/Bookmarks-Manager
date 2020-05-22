@@ -259,12 +259,37 @@ get "/deletecomment/:id" do
     redirect back
 end
 
+get "/comment/report/:id" do
+  authenticate
+  report_comment(params[:id],1)
+  redirect back
+end
+
 
 #COMMENTS PAGE LOAD
+#
+#
 get "/comments/:id" do
-  authenticate
-  erb :comments
+  string = "/comments/" + params[:id] + "/"
+  redirect string
+
 end
+
+get "/comments/:id/" do
+  authenticate
+  @comment = params[:comment]
+  erb :TESTcomment
+end
+
+post "/comments/:id/" do
+    authenticate
+    @comment = params[:comment]
+
+    @db.add_comment(@db.get_account_id(session[:user]),params[:id],@comment)
+    erb :TESTcomment
+end
+
+
 
 get "/unfavourite/:id" do
     authenticate
@@ -413,6 +438,7 @@ end
 
 get "/requestReactivation/:reactivateEmail" do
     @db.request_reactivation(params[:reactivateEmail])
+    p params[:reactivateEmail]
     session[:reply] = "Account reactivation successfully sent"
     redirect "/login"
 end
