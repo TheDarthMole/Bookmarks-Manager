@@ -160,7 +160,7 @@ end
 
 get "/admin/users" do
     adminauthenticate
-    session[:lim] = 5
+    session[:lim] = 10
     params[:page] = 1
     erb :adminuser
 end
