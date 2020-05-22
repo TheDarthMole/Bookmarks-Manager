@@ -413,6 +413,7 @@ end
 
 get "/requestReactivation/:reactivateEmail" do
     @db.request_reactivation(params[:reactivateEmail])
+    p params[:reactivateEmail]
     session[:reply] = "Account reactivation successfully sent"
     redirect "/login"
 end
