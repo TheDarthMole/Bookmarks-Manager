@@ -136,6 +136,13 @@ helpers do # functions used within erb files
     end
 end
 
+
+get "/rate/:id/:rate" do
+    authenticate
+    @db.rating_bookmarks(params[:id].to_i,@db.get_account_id(session[:user]),params[:rate].to_i)
+    redirect back
+end
+
 get "/logout" do
     session.clear
     redirect "/"
