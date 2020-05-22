@@ -716,17 +716,20 @@ class BookmarkDB
     #Rating
     
     def rating_bookmarks (bookmark_id, user_id, rating)
-        statement = "REPLACE INTO ratings (user_id, bookmark_id, rating) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM rating WHERE user_id = ? AND bookmark_id = ? LIMIT 1)"
-        @db.execute statement, user_id, bookmark_id, rating, user_id, bookmark_id        
+        statement = "REPLACE INTO ratings (user_id, bookmark_id, rating) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM ratings WHERE user_id = ? AND bookmark_id = ? LIMIT 1)"
+        @db.execute statement, user_id, bookmark_id, rating, user_id, bookmark_id
+        statements = "UPDATE ratings SET rating=? WHERE bookmark_id=? AND user_id=?"
+        @db.execute statements, rating,bookmark_id,user_id
     end
-    
-    def remove_report_rating (bookmark_id, user_id)
-        statement = "DELETE FROM rating WHERE bookmark_id = ? AND user_id = ?"
-        @db.execute statement, bookmark_id, user_id
+
+
+    def get_average_rating(bookmark_id)
+        statement = "SELECT AVG (rating) FROM ratings WHERE bookmark_id = ?"
+        return @db.execute statement, bookmark_id
     end
-    
-   
-    
+
+
+
     # REACTIVATION
     
     def request_reactivation(email)
@@ -743,6 +746,8 @@ class BookmarkDB
         statement = "UPDATE users SET request_reactivate = 0 WHERE email = ?"
         @db.execute statement, email
     end
+
+
 end
 
 # This section is for testing the database
