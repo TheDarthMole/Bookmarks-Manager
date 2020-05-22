@@ -250,6 +250,13 @@ get "/admin/audit/comment/reported/remove/:id" do
     redirect back
 end
 
+
+#COMMENTS PAGE LOAD
+get "/comments/:id" do
+  authenticate
+  erb :comments
+end
+
 get "/unfavourite/:id" do
     authenticate
     remove_favourite(params[:id])
@@ -367,8 +374,30 @@ end
 
 get "/dashboard/:page/:lim/:searchterm" do
     authenticate
+    if params[:searchterm] == "desc" then
+      redirect "/dashboard/1/10/http/desc"
+    end
+    if params[:searchterm] == "asc" then
+        redirect "/dashboard/1/10/http/asc"
+    end
     session[:lim] = params[:lim]
     @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :dashboard
+end
+
+get "/dashboard/:page/:lim/:searchterm/asc" do
+    authenticate
+    session[:lim] = params[:lim]
+    @bookmarks = @db.sort_asc(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :dashboard
+end
+
+get "/dashboard/:page/:lim/:searchterm/desc" do
+    authenticate
+    session[:lim] = params[:lim]
+    @bookmarks = @db.sort_desc(params[:searchterm], params[:page], params[:lim])
     @total = get_total_items(params[:searchterm])
     erb :dashboard
 end
