@@ -229,11 +229,22 @@
             <% if can_user_do_action("edit") == true %>
               <td width="100">
                 <div class="btn-group">
-                  <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
+                  <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
                     <span class="caret"></span></button>
                   <div class="dropdown-menu">
+                    <li class="dropdown-header">Report</li>
+                    <% if check_admin(session[:user]) %>
                     <a class="dropdown-item" href="/deleteBookmark/<%= item[0]%>">Delete Bookmark</a>
+                      <% end %>
                     <a class="dropdown-item" href="/reportBookmark/<%= item[0]%>">Report Bookmark</a>
+                    <li class="dropdown-header">Comments</li>
+                    <a class="dropdown-item" href="/comments/<%= item[0] %>">Comment Section</a>
+                    <li class="dropdown-header">Rating</li>
+                    <a class="dropdown-item" href="#">5 Star</a>
+                    <a class="dropdown-item" href="#">4 Star</a>
+                    <a class="dropdown-item" href="#">3 Star</a>
+                    <a class="dropdown-item" href="#">2 Star</a>
+                    <a class="dropdown-item" href="#">1 Star</a>
                   </div>
                 </div>
               </td>
