@@ -238,7 +238,8 @@ get "/admin/audit/comments/reported" do
   erb :admincommentaudit
 end
 
-get "/admin/audit/comments/reported/remove/:id" do
+#GETS RID OF REPORT
+get "/admin/audit/bookmarks/reported/remove/:id" do
     adminauthenticate
     @db.remove_report_comment(params[:id].to_i)
     redirect back
@@ -247,6 +248,14 @@ end
 get "/admin/audit/comment/reported/remove/:id" do
     adminauthenticate
     @db.remove_report(params[:id])
+    redirect back
+end
+
+
+get "/deletecomment/:id" do
+    adminauthenticate
+    @db.enable_disable_comment(params[:id],0)
+    @db.reset_comment_reports(params[:id])
     redirect back
 end
 
