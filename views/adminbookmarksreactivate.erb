@@ -16,22 +16,23 @@
 <section class="dashboard-section container py-5">
   <div class="saved-bookmarks">
     <div class="mb-3">
-      <h4>Reported bookmarks</h4>
+      <h4>Reactivate Users</h4>
     </div>
   </div>
   <div class="table-responsive">
     <table class="table table-bookmark">
       <thead>
       <tr>
-        <th>Bookmark ID</th>
         <th>User ID</th>
-        <th>Bookmark Name</th>
-        <th>URL</th>
-        <th>Amount reported</th>
+        <th>Email</th>
+        <th>Username</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Role ID</th>
         <th>Action</th>
       </tr>
       </thead>
-      <tbody><% log = @db.get_bookmark_reports() %>
+      <tbody><% log = @db.get_request_reactivation_users() %>
       <% i = 0 %>
       <% log.each do |item| %>
         <tr>
@@ -39,27 +40,24 @@
             <%= h item[0]%>
           </td>
           <td>
-            <%= h item[1]%>
+            <%= h item[2]%>
           </td>
           <td>
-            <%= h item[2] %>
+              <%= h item[1] %>
           </td>
           <td>
-            <%= h item[3]%>
+               <%= h item[4] %>
           </td>
           <td>
-            <%= @db.get_total_reports(item[0].to_i)[0][0] %>
+            <%= h item[5]%>
           </td>
-
+          <td>
+            <%= h item[3] %>
+          </td>
           <td width="100">
-            <div class="btn-group">
-              <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-thumbs-down"></span> Action
-                <span class="caret"></span></button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="/deleteBookmark/<%= h item[4]%>">Delete Bookmark</a>
-                <a class="dropdown-item" href="/admin/audit/bookmarks/reported/remove/<%= h item[4]%>">Remove Bookmark Report</a>
-              </div>
-            </div>
+            <a href="/admin/audit/reactivate/<%= h item[2] %>" data-toggle="tooltip" data-placement="top" title="Reactivate user" class="mr-2">
+              <i class="fa fa-redo-alt fa-flip-horizontal"></i>
+            </a>
           </td>
         </tr>
         <% i= i+ 1%>

@@ -7,9 +7,11 @@ gem 'openssl', git: 'https://github.com/ruby/openssl'
 gem 'sqlite3'
 gem 'thin'
 
-#gems for testing
-gem 'capybara'
-gem 'cucumber'
-gem 'rspec'
-gem 'simplecov'
-gem 'minitest'
+#gems for testing, enable if needed
+# gem 'capybara'
+# gem 'cucumber'
+# gem 'rspec'
+# gem 'simplecov'
+# gem 'minitest'
+# gem 'warden'
+# gem 'selenium-webdriver'

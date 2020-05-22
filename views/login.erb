@@ -44,28 +44,32 @@
                     </h1>
                     <% if session[:reply] %>
                     <div class="alert alert-<%= if session[:reply].include? 'suspended' then 'danger' else 'warning' end %>" role="alert">
+                      <% suspendedName = session[:user] %>
                       <%= h session[:reply] %>
                     </div>
                     <% end %>
-                    <% session[:reply] = nil %>
                     <div class="form-group">
-                        <label for="">Email Address<span class="text-danger">*</span></label>
-                        <input name="email" type="text" class="form-control" placeholder="john@doe.com" />
+                        <label for="email">Username or Email Address<span class="text-danger">*</span></label>
+                        <input name="email" id="email" type="text" class="form-control" placeholder="john@doe.com" />
                     </div>
                     <div class="form-group">
-                        <label for="">Password<span class="text-danger">*</span></label>
-                        <input name="password" type="password" class="form-control" placeholder="********" />
+                        <label for="password">Password<span class="text-danger">*</span></label>
+                        <input name="password"  id ="password" type="password" class="form-control" placeholder="********" />
                     </div>
                 </div>
                 <div class="mb-4">
                     <a>
-                        <button type="submit" class="btn btn-info">LOGIN</button>
+                        <button type="submit" id="submit" class="btn btn-info">LOGIN</button>
                     </a>
                     <div>
                         <a href="#" class="font-sm">Forgot Password?</a>
                     </div>
+                    <% if session[:reply] %>
+                    <a type="button" class="btn btn-warning" href="/requestReactivation/<%= h session[:suspendedUser] %>">Request account reactivation</a>
+                    <% end %>
+                    <% session[:reply] = nil %>
                 </div>
-                <p>Don't have an account? <a href="/register">Register</a></p>
+                <p>Don't have an account? <a id="register-link" href="/register">Register</a></p>
             </form>
             <div class="col-md-6">
                 <img src="https://placeimg.com/640/480/tech" alt="" class="img-fluid" />
