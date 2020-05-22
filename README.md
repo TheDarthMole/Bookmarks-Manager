@@ -24,10 +24,14 @@ There was no testing on other platforms, so the developers cannot promise functi
 
 First of all we need to make sure all of the dependencies are installed, to do this run bundler
 
-Bundler installs all the ruby gems that are required
+Bundler installs all the ruby gems that are required.
 
 ```
 bundle install
+```
+You might need to run
+```
+sudo bundle install
 ```
 
 Once this has completed, you should have the required gems to start the server
