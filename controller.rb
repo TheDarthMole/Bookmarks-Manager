@@ -704,6 +704,11 @@ class BookmarkDB
         @db.execute statement, user_id, bookmark_id, rating, user_id, bookmark_id        
     end
     
+    def remove_report_rating (bookmark_id, user_id)
+        statement = "DELETE FROM rating WHERE bookmark_id = ? AND user_id = ?"
+        @db.execute statement, bookmark_id, user_id
+    end
+    
    
     
 end
