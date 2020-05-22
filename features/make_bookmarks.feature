@@ -1,8 +1,6 @@
 Feature: make bookmarks
 
-Background: filling with various values
-
-#just problems with then and javascript
+Background: Simulating the process of bookmark creation
 
 Scenario: Normal case
     Given I am logged in
@@ -21,7 +19,7 @@ Scenario: Link name empty
     When I fill in "bookmark-url" with "https://www.codio.com/"
     When I fill in "bookmark-tags" with "cloud"
     When I press "save-bookmark" to save
-    Then I should see "Add bookmark"
+    Then I should see "Add Bookmark"
 
 Scenario: Link name contains invalid characters
     Given I am logged in
@@ -31,7 +29,7 @@ Scenario: Link name contains invalid characters
     When I fill in "bookmark-url" with "https://www.codio.com/"
     When I fill in "bookmark-tags" with "cloud"
     When I press "save-bookmark" to save
-    Then I should see "Add bookmark"    
+    Then I should see "Add Bookmark"    
 #?
 
 Scenario: Link name is too long
@@ -52,21 +50,7 @@ Scenario: Link URl empty
     When I fill in "bookmark-name" with "miros"
     When I fill in "bookmark-tags" with "robots"
     When I press "save-bookmark" to save
-    Then I should see "Add bookmark"
-    #Then I should see "Please fill out this field"
-
-Scenario: Link URL contains invalid characters
-    Given I am logged in
-    Given I am on the "dashboard" page
-    When I press "ADD NEW"
-    When I fill in "bookmark-name" with "codio"
-    When I fill in "bookmark-url" with "https://www.codio.com/😀"
-    When I fill in "bookmark-tags" with "cloud"
-    When I press "save-bookmark" to save
-    #trying without js
-    
-    Then I should see "Add bookmark"
-    #Then I should see "Link name empty."
+    Then I should see "Add Bookmark"
 
 Scenario: Link URL too long
     Given I am logged in
@@ -87,7 +71,6 @@ Scenario: Link URL not valid
     When I fill in "bookmark-url" with "/consequentialrobotics.com/"
     When I fill in "bookmark-tags" with "robots"
     When I press "save-bookmark" to save
-    #Then I should see "Please fill out this field"
     Then I should see "Please start the url with http:// or https://"
 
 Scenario: Link URL already in the bookmarks
