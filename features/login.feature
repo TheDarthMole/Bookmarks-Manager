@@ -1,5 +1,5 @@
 Feature: login
-#Scenario: Password entry failed multiple times
+Background: Simulating the process of a user logging in
 
 Scenario: Correct login procedure
     Given I am on the "login" page
@@ -26,7 +26,7 @@ Scenario: Username invalid
 Scenario: Password forgotten
     Given I am on the "login" page
     When I go to "Forgot Password?"
-    Then I should see "Enter email to recover password"
+    Then I should see "Username or Email Address"
 
 
 
