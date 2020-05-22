@@ -14,18 +14,47 @@
 
     <!-- dashboard section -->
     <section class="dashboard-section container py-5">
+      <!-- Audit button -->
+
+      <div class="saved-bookmarks">
+        <div class="mb-3">
+          <h2>Audit Log</h2>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bookmark">
+            <thead>
+            <tr>
+              <th><div class="btn-group">
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Comments
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="audit/comments">Reported</a>
+                  <a class="dropdown-item" href="audit/comments/reported">Disabled</a>
+                </div>
+              </div>
+              </th>
+              <th>
+                <a href="audit/reactivate" class="btn btn-warning">Users reactivate request</a>
+              </th>
+              <th><div class="btn-group">
+              <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Bookmarks
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="audit/bookmarks/reported">Reported</a>
+                <a class="dropdown-item" href="audit/bookmarks/disabled">Disabled</a>
+              </div>
+            </div></th>
+            </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+
+
+
         <div class="saved-bookmarks">
-            <div class="mb-3">
-                <h2>Audit Log</h2>
-            </div>
-          <div class="mb-2">
-            <a href="audit/comments"> <h6>Comments - Disabled</h6></a>
-            <a href="audit/comments/reported"> <h6>Comments - Reported</h6></a> 
-            <a href="audit/bookmarks/reported"> <h6>Bookmarks - Reported</h6></a>
-            <a href="audit/bookmarks/disabled"> <h6>Bookmarks - Disabled</h6></a>
-            <a href="audit/reactivate"> <h6>Users - Reactivate</h6></a>
-    
-            </div>
             <div class="table-responsive">
                 <table class="table table-bookmark">
                     <thead>
