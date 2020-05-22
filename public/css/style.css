@@ -33,7 +33,7 @@ body {
 	border-radius: 16px;
 }
 a{
-	color: #17a2b8;
+	color: #128193;
 }
 .tab-content{
 	padding-top: 1rem;
@@ -57,11 +57,11 @@ a{
 	text-align: center;
 }
 .page-link{
-	color: #17a2b8;
+	color: #128193;
 }
 .page-item.active .page-link{
-	background-color: #17a2b8;
-	border-color: #17a2b8;
+	background-color: #128193;
+	border-color: #128193;
 }
 /* helper classes */
 .font-sm {
