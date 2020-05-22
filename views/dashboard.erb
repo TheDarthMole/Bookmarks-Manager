@@ -222,7 +222,7 @@
               <%= @db.get_average_rating(item[0].to_i)[0][0] %>
             </td>
             <td>
-              <%= Time.at(item[3]) %>
+              <%= Time.at(item[3]).asctime %>
             </td>
             <td>
               <% i= 0 %>
