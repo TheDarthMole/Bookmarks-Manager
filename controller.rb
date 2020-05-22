@@ -697,6 +697,15 @@ class BookmarkDB
         @db.execute statement, report_id
     end
     
+    #Rating
+    
+    def rating_bookmarks (bookmark_id, user_id, rating)
+        statement = "REPLACE INTO ratings (user_id, bookmark_id, rating) SELECT ?,?,? WHERE NOT EXISTS (SELECT * FROM rating WHERE user_id = ? AND bookmark_id = ? LIMIT 1)"
+        @db.execute statement, user_id, bookmark_id, rating, user_id, bookmark_id        
+    end
+    
+   
+    
 end
 
 # This section is for testing the database
