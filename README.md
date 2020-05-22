@@ -20,7 +20,7 @@ Ruby
 
 First of all we need to make sure all of the dependancies are installed, to do this run bundler
 
-Bundler installs all the ruby gems thar are required
+Bundler installs all the ruby gems that are required
 
 ```
 bundle install
