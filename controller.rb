@@ -754,9 +754,9 @@ db = BookmarkDB.new
 
 end
 db.request_reactivation("testuser@sheffield.ac.uk")
-db.create_account("Role1", "Role1@acme.com", "Password1!", "Role1", "Role1", "1", "1") 
-db.create_account("Role2", "Role2@acme.com", "Password1!", "Role2", "Role2", "1", "1")
-db.create_account("Role3", "Role3@acme.com", "Password1!", "Role3", "Role3", "1", "1") 
-db.create_account("Role4", "Role4@acme.com", "Password1!", "Role4", "Role4", "1", "1") 
-db.create_account("Admin", "Admin@acme.com", "Password1!", "Admin", "Admin", "1", "1") 
-db.create_account("User", "User@acme.com", "Password1!", "User", "User", "1", "1") 
+db.downgrade_account_to_user(db.get_account_id("Role1@acme.com"))
+db.upgrade_account_to_admin(db.get_account_id("Role2@acme.com"))
+db.upgrade_account_to_user(db.get_account_id("Role3@acme.com"))
+
+db.upgrade_account_to_admin(db.get_account_id("Admin@acme.com"))
+db.downgrade_account_to_user(db.get_account_id("User@acme.com"))
