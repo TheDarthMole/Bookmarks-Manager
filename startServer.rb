@@ -238,7 +238,8 @@ get "/admin/audit/comments/reported" do
   erb :admincommentaudit
 end
 
-get "/admin/audit/comments/reported/remove/:id" do
+#GETS RID OF REPORT
+get "/admin/audit/bookmarks/reported/remove/:id" do
     adminauthenticate
     @db.remove_report_comment(params[:id].to_i)
     redirect back
@@ -248,6 +249,21 @@ get "/admin/audit/comment/reported/remove/:id" do
     adminauthenticate
     @db.remove_report(params[:id])
     redirect back
+end
+
+
+get "/deletecomment/:id" do
+    adminauthenticate
+    @db.enable_disable_comment(params[:id],0)
+    @db.reset_comment_reports(params[:id])
+    redirect back
+end
+
+
+#COMMENTS PAGE LOAD
+get "/comments/:id" do
+  authenticate
+  erb :comments
 end
 
 get "/unfavourite/:id" do
@@ -321,6 +337,20 @@ get "/guest" do
     erb :dashboard
 end
 
+get "/guest/:page/:lim" do
+    session[:lim] = params[:lim]
+    @bookmarks = get_bookmarks_page("", params[:page], params[:lim])
+    @total = get_total_items("")
+    unless session[:reply]
+        session[:reply] = nil
+    end
+    erb :dashboard
+end
+
+get "/guest/:page/:lim/" do
+    redirect "/guest/#{params[:page]}/#{params[:lim]}"
+end
+
 get "/dashboard/:page/:lim" do
     authenticate
     session[:lim] = params[:lim]
@@ -353,13 +383,51 @@ end
 
 get "/dashboard/:page/:lim/:searchterm" do
     authenticate
+    if params[:searchterm] == "desc" then
+      redirect "/dashboard/1/10/http/desc"
+    end
+    if params[:searchterm] == "asc" then
+        redirect "/dashboard/1/10/http/asc"
+    end
     session[:lim] = params[:lim]
     @bookmarks = get_bookmarks_page(params[:searchterm], params[:page], params[:lim])
     @total = get_total_items(params[:searchterm])
     erb :dashboard
 end
 
+get "/dashboard/:page/:lim/:searchterm/asc" do
+    authenticate
+    session[:lim] = params[:lim]
+    @bookmarks = @db.sort_asc(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :dashboard
+end
 
+get "/dashboard/:page/:lim/:searchterm/desc" do
+    authenticate
+    session[:lim] = params[:lim]
+    @bookmarks = @db.sort_desc(params[:searchterm], params[:page], params[:lim])
+    @total = get_total_items(params[:searchterm])
+    erb :dashboard
+end
+
+get "/requestReactivation/:reactivateEmail" do
+    @db.request_reactivation(params[:reactivateEmail])
+    session[:reply] = "Account reactivation successfully sent"
+    redirect "/login"
+end
+
+
+get "/admin/audit/reactivate" do
+    adminauthenticate
+    erb :adminbookmarksreactivate
+end
+
+get "/admin/audit/reactivate/:user" do
+    @db.unsuspend_user(@db.get_account_id(params[:user]))
+    @db.remove_request_reactivation(params[:user])
+    redirect "/admin/audit/reactivate"
+end
 
 post "/login" do
     if @db.try_login(params[:email].downcase, params[:password])
@@ -371,6 +439,7 @@ post "/login" do
         if @db.check_account_exists(params[:email].downcase)
             if not @db.check_account_enabled(@db.get_account_id(params[:email].downcase))
                 session[:reply] = "Your account has been suspended"
+                session[:suspendedUser] = @db.login_string_to_email(params[:email].downcase)
             else 
                 session[:reply] = "You have entered incorrect credentials, attempts remaining: " + (6 - @db.get_login_attempts(@db.get_account_id(params[:email])).to_i ).to_s
             end
@@ -418,7 +487,6 @@ post "/createbookmark" do
 end
 
 post "/register" do
-    p params
     session[:reason] = nil
     if params[:password] == params[:passwordConfirm] # Checks to make sure the
         sqlresponse = @db.create_account(params[:username],params[:email], params[:password], 
