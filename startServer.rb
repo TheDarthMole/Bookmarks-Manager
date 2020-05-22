@@ -359,7 +359,9 @@ get "/dashboard/:page/:lim/:searchterm" do
     erb :dashboard
 end
 
-
+get "/requestReactivation/:reactivateEmail" do
+    
+end
 
 post "/login" do
     if @db.try_login(params[:email].downcase, params[:password])
@@ -371,6 +373,8 @@ post "/login" do
         if @db.check_account_exists(params[:email].downcase)
             if not @db.check_account_enabled(@db.get_account_id(params[:email].downcase))
                 session[:reply] = "Your account has been suspended"
+                p @db.login_string_to_email(params[:email].downcase)
+                session[:suspendedUser] = @db.login_string_to_email(params[:email].downcase)
             else 
                 session[:reply] = "You have entered incorrect credentials, attempts remaining: " + (6 - @db.get_login_attempts(@db.get_account_id(params[:email])).to_i ).to_s
             end
