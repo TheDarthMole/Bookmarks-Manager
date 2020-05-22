@@ -753,4 +753,3 @@ db = BookmarkDB.new
 #     db.set_password(account,"Password1!")
 
 end
-db.request_reactivation("testuser@sheffield.ac.uk")
