@@ -438,6 +438,7 @@ end
 
 get "/requestReactivation/:reactivateEmail" do
     @db.request_reactivation(params[:reactivateEmail])
+    p params[:reactivateEmail]
     session[:reply] = "Account reactivation successfully sent"
     redirect "/login"
 end
@@ -536,8 +537,6 @@ get "/change-password" do
 end
 
 post "/change-password" do
-    puts params 
-    puts session[:user]
     session[:changePassMessage] = @db.change_password(session[:user], params[:oldpassword], params[:password], params[:passwordconfirm])
     redirect "/change-password"
 end
