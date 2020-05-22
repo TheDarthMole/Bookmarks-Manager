@@ -4,9 +4,9 @@ require 'rspec'
 require 'simplecov'
 require 'capybara/cucumber'
 require 'capybara/dsl'
-require 'warden'
-require 'warden/test/helpers'
-require 'factory_bot'
+#require 'warden'
+#require 'warden/test/helpers'
+#require 'factory_bot'
 
 
 
@@ -31,20 +31,15 @@ end
 
 RSpec.configure do |config|
   config.include Capybara::DSL
-  config.include Warden::Test::Helpers
+  #config.include Warden::Test::Helpers
     
 end
-
-
 
 class Sinatra::ApplicationWorld
     include RSpec::Expectations
     include RSpec::Matchers
     include Capybara::DSL
 end
-
-
-
 
 World do
     Sinatra::ApplicationWorld.new
