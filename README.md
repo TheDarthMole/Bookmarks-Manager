@@ -69,6 +69,8 @@ Then run `bundle install` to install the required third party code. Then type:
 `Cucumber features/specific_test.feature --name "Scenario name" ` if testing specific scenario in a feature
 Then navigate to the coverage directory. There is a test report from the last run as an index.html file. 
 
+The tests for `make_bookmarks.feature` will create some test-purpose bookmarks, which you can then safely delete.
+
 ### Break down into end to end tests
 Explain what these tests test and why
 These tests check whether the user interaction proceeds as expected, handling inputs and producing outputs.
