@@ -80,24 +80,26 @@
                                   <b><%= h item[4] %></b>
                                 </td>
                                 <td width="100">
-                                  <% if  item[4] == "guest"%>
-                                    <a href="/admin/users/action/<%= h item[0] %>/upgrade" data-toggle="tooltip" data-placement="top" title="Make User" class="mr-2">
-                                      <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                    </a>
-                                  <%end %>
+                                  <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Action
+                                    </button>
+                                    <div class="dropdown-menu">
+                                      <% if  item[4] == "guest"%>
+                                      <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/upgrade">Upgrade to user</a>
+                                      <%end %>
+                                      <% if  item[4] == "user"%>
+                                      <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/downgrade">Make Guest</a>
+                                      <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/toadmin">Make Admin</a>
+                                      <%end %>
+                                      <% if item[4] == "admin\r\n" %>
+                                        <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/upgrade">Make user</a>
+                                      <% end %>
+                                      <div class="dropdown-divider"></div>
+                                      <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/suspend">Suspend User</a>
+                                    </div>
+                                  </div>
 
-                                  <% if  item[4] == "user"%>
-                                    <a href="/admin/users/action/<%= h item[0] %>/downgrade" data-toggle="tooltip" data-placement="top" title="Make guest" class="text-danger">
-                                      <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                    </a>
-                                    <a href="/admin/users/action/<%= h item[0] %>/toadmin" data-toggle="tooltip" data-placement="top" title="Make admin" class="text-success">
-                                      <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                    </a>
-                                  <%end %>
-
-                                  <a href="/admin/users/action/<%= h item[0] %>/suspend" data-toggle="tooltip" data-placement="top" title="Suspend User" class="text-danger">
-                                    <i class="fa fa-times"></i>
-                                  </a>
                                 </td>
 
                               </tr>
@@ -188,9 +190,7 @@
                                           <b><%= h item[4] %></b>
                                         </td>
                                         <td width="100">
-                                            <a href="/admin/users/action/<%= h item[0] %>/unsuspend" data-toggle="tooltip" data-placement="top" title="Make Active" class="mr-2">
-                                                <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                                            </a>
+                                          <a href="/admin/users/action/<%= h item[0] %>/unsuspend" class="btn btn-sm btn-success">Unsuspend</a>
                                         </td>
 
                                    </tr>
@@ -247,7 +247,7 @@
                 <div class="users-section">
                     <div class="d-flex align-items-md-center mb-3 flex-wrap">
                         <div class="mb-3 mb-md-0">
-                            <h4 class="mb-0">Pending Approval Users</h4>
+                            <h4 class="mb-0">Upgrade requests</h4>
                         </div>
                         <div class="input-group mb-3 mb-md-0 ml-md-auto w-auto">
                         </div>
@@ -282,14 +282,26 @@
                               <b><%= h item[4] %></b>
                             </td>
                             <td width="100">
-                              <a href="/admin/users/action/<%= h item[0] %>/upgrade" data-toggle="tooltip" data-placement="top" title="Make User" class="mr-2">
-                                <i class="fa fa-redo-alt fa-flip-horizontal"></i>
-                              </a>
-                              <a href="/admin/users/action/<%= h item[0] %>/suspend" data-toggle="tooltip" data-placement="top" title="Suspend User" class="text-danger">
-                                <i class="fa fa-times"></i>
-                              </a>
+                              <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Action
+                                </button>
+                                <div class="dropdown-menu">
+                                  <% if  item[4] == "guest"%>
+                                    <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/upgrade">Upgrade to user</a>
+                                  <%end %>
+                                  <% if  item[4] == "user"%>
+                                    <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/downgrade">Make Guest</a>
+                                    <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/toadmin">Make Admin</a>
+                                  <%end %>
+                                  <% if item[4] == "admin\r\n" %>
+                                    <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/upgrade">Make user</a>
+                                  <% end %>
+                                  <div class="dropdown-divider"></div>
+                                  <a class="dropdown-item" href="/admin/users/action/<%= h item[0] %>/suspend">Suspend User</a>
+                                </div>
+                              </div>
                             </td>
-
                           </tr>
                         <% end %>
                         </tbody>
