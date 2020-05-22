@@ -374,7 +374,20 @@ get "/dashboard/:page/:lim/:searchterm" do
 end
 
 get "/requestReactivation/:reactivateEmail" do
-    
+    @db.request_reactivation(params[:reactivateEmail])
+    session[:reply] = "Account reactivation successfully sent"
+    redirect "/login"
+end
+
+get "/admin/audit/reactivate" do
+    adminauthenticate
+    erb :adminbookmarksreactivate
+end
+
+get "/admin/audit/reactivate/:user" do
+    @db.unsuspend_user(@db.get_account_id(params[:user]))
+    @db.remove_request_reactivation(params[:user])
+    redirect "/admin/audit/reactivate"
 end
 
 post "/login" do
