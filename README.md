@@ -22,6 +22,21 @@ There was no testing on other platforms, so the developers cannot promise functi
 
 ### Installing
 
+#### With Docker (recommended)
+Build the container with
+```bash
+$ docker build -t "bookmark-manager" .
+```
+
+Then start the container
+```bash
+$ docker run -it -p 4567:4567 bookmark-manager
+```
+
+Access the website from `http://127.0.0.1:4567`
+
+#### Installing manually
+
 First of all we need to make sure all of the dependencies are installed, to do this run bundler
 
 Bundler installs all the ruby gems that are required.
@@ -46,12 +61,14 @@ This should start the server up on `port 4567`. If you are hosting this on codio
 In order to login to the website, you can either make your own account (As a standard user) or you could try logging into one of the admin accounts with the username and password:
 
 We also have accounts for all of the role types:
-`Username: role1   Email: role1@acme.com   Password: Password1!`
-`Username: role2   Email: role2@acme.com   Password: Password1!`
-`Username: role3   Email: role3@acme.com   Password: Password1!`
-`Username: role4   Email: role4@acme.com   Password: Password1!`
-`Username: admin   Email: admin@acme.com   Password: Password1!`
-`Username: user    Email: user@acme.com    Password: Password1!`
+```creds
+Username: role1   Email: role1@acme.com   Password: Password1!
+Username: role2   Email: role2@acme.com   Password: Password1!
+Username: role3   Email: role3@acme.com   Password: Password1!
+Username: role4   Email: role4@acme.com   Password: Password1!
+Username: admin   Email: admin@acme.com   Password: Password1!
+Username: user    Email: user@acme.com    Password: Password1!
+```
 
 The username or the email can be used to login to the website
 
